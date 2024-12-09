@@ -6,6 +6,15 @@
 
 <app-channel-chat-history></app-channel-chat-history>
 
+<div class="chat-input-container">
+    <app-chat-input></app-chat-input>
+</div>
+
+
+
+
+
+
 @if(editChannelDialogOpened && activeChannelData){
     <app-edit-channel-dialog
         [channelData]="activeChannelData!"

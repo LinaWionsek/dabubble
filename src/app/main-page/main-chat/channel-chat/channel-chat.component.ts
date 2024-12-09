@@ -11,11 +11,12 @@ import { AddMembersDialogComponent } from './add-members-dialog/add-members-dial
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ChannelChatHeaderComponent } from "./channel-chat-header/channel-chat-header.component";
 import { ChannelChatHistoryComponent } from "./channel-chat-history/channel-chat-history.component";
+import { ChatInputComponent } from "../../../shared-components/chat-input/chat-input.component";
 
 @Component({
   selector: 'app-channel-chat',
   standalone: true,
-  imports: [EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent, ChannelChatHeaderComponent, ChannelChatHistoryComponent],
+  imports: [EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent, ChannelChatHeaderComponent, ChannelChatHistoryComponent, ChatInputComponent],
   templateUrl: './channel-chat.component.html',
   styleUrl: './channel-chat.component.scss',
 })
