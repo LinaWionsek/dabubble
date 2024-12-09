@@ -9,7 +9,6 @@ export class ChannelService {
   activeChannel$ = this.activeChannelSource.asObservable();
 
   setActiveChannel(channelId: string) {
-    console.log('setActiveChannel called with:', channelId);
     this.activeChannelSource.next(channelId);
   }
 }
