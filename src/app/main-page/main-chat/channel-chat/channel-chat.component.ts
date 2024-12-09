@@ -16,7 +16,7 @@ import { ChannelChatHeaderComponent } from "./channel-chat-header/channel-chat-h
   standalone: true,
   imports: [EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent, ChannelChatHeaderComponent],
   templateUrl: './channel-chat.component.html',
-  styleUrl: './channel-chat.component.scss'
+  styleUrl: './channel-chat.component.scss',
 })
 export class ChannelChatComponent {
   editChannelDialogOpened = false;
@@ -39,7 +39,6 @@ export class ChannelChatComponent {
  
   constructor(private channelService: ChannelService) {}
 
-
   ngOnInit() {
     this.channelService.activeChannel$.subscribe(channelId => {
       if(this.activeChannel !==channelId){
@@ -53,11 +52,12 @@ export class ChannelChatComponent {
     this.getAllUsers();
   }
 
+  getUserChannels() {
+    const userChannelsCollection = collection(this.firestore, 'channels');
+    this.channels$ = collectionData(userChannelsCollection, {
+      idField: 'id',
+    }) as Observable<Channel[]>;
 
-  getUserChannels(){
-    const userChannelsCollection = collection(this.firestore, 'channels' );
-    this.channels$ = collectionData(userChannelsCollection, { idField: 'id'}) as Observable<Channel[]>;
-    
     this.channels$.subscribe((changes) => {
       this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
       
@@ -77,11 +77,15 @@ export class ChannelChatComponent {
 
   getAllUsers(){
     const userCollection = collection(this.firestore, 'users');
-    this.allUsers$ = collectionData(userCollection, { idField: 'id'}) as Observable<User[]>;
+    this.allUsers$ = collectionData(userCollection, {
+      idField: 'id',
+    }) as Observable<User[]>;
 
     this.allUsers$.subscribe((changes) => {
-      this.users = Array.from(new Map(changes.map(user => [user.id, user])).values());
-    })
+      this.users = Array.from(
+        new Map(changes.map((user) => [user.id, user])).values()
+      );
+    });
   }
 
 
@@ -115,22 +119,20 @@ export class ChannelChatComponent {
     this.addMembersDialogOpened = true;
   }
 
-
   openShowMembersDialog() {
     
     this.showMembersDialogOpened = true;
   }
 
-  
   closeEditDialog() {
     this.editChannelDialogOpened = false;
   }
 
-  closeAddMembersDialog(){
+  closeAddMembersDialog() {
     this.addMembersDialogOpened = false;
   }
 
-  closeShowMembersDialog(){
+  closeShowMembersDialog() {
     this.showMembersDialogOpened = false;
   }
 
