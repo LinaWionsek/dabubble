@@ -9,4 +9,5 @@
 .chat-input-container{
     height: 145px;
     width: 100%;
+    @include display-flex();
 }

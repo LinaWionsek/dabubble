@@ -37,7 +37,7 @@ export class ChannelChatComponent {
   users: User[] = [];
   activeChannelUsers: User[] = [];
   firestore: Firestore = inject(Firestore);
-
+  inputUsecase = 'channel';
  
   constructor(private channelService: ChannelService) {}
 
