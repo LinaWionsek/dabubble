@@ -1,34 +1,8 @@
-<div class="channel-chat-header">
-    <div class="channel-title-div" #channelTitleDiv (click)="openEditChannelDialog()" [ngClass]="{ 'active' : editChannelDialogOpened }">
-        <img src="./../../../../assets/img/tag_large.png">
-        <span class="channel-title">{{activeChannelData?.name}}</span>
-        <img src="./../../../../assets/img/keyboard_arrow_down.png">
-    </div>
-
-    <div class="channel-members-div">
-        <div class="show-members-div" #showMembersDiv (click)="openShowMembersDialog()">
-            <div class="avatar-container">
-                @for (user of activeChannelUsers; track $index) {
-                    <img class="avatar-img-small" [src]="user.avatar" [ngStyle]="{
-                        'margin-left': $index === 0 ? '0px' : '-10px',
-                        'z-index': $index
-                      }">
-                }
-            </div>
-
-            @if(activeChannelUsers.length > 0){
-                <span class="member-number-span">{{activeChannelUsers.length}}</span>
-            }
-            
-        </div>
-        
-        <div class="icon-container" #addMembersDiv (click)="openAddMembersDialog()">
-            <img src="./../../../../assets/img/person_add.png">
-        </div>
-
-    </div>
-
-</div>
+<app-channel-chat-header 
+    [activeChannelData]="activeChannelData" 
+    [activeChannelUsers]="activeChannelUsers"
+    (dialogStateChange)="handleDialogStateChange($event)">
+</app-channel-chat-header>
 
 
 
