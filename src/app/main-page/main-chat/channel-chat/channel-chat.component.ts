@@ -8,14 +8,20 @@ import { EditChannelDialogComponent } from './edit-channel-dialog/edit-channel-d
 import { CommonModule } from '@angular/common';
 import { ShowMembersDialogComponent } from './show-members-dialog/show-members-dialog.component';
 import { AddMembersDialogComponent } from './add-members-dialog/add-members-dialog.component';
-import { ComponentPortal } from '@angular/cdk/portal';
+import { AddChannelDialogComponent } from '../../add-channel-dialog/add-channel-dialog.component';
+
 
 @Component({
   selector: 'app-channel-chat',
   standalone: true,
-  imports: [ EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent ],
+  imports: [
+    CommonModule,
+    ShowMembersDialogComponent,
+    AddMembersDialogComponent,
+    EditChannelDialogComponent
+  ],
   templateUrl: './channel-chat.component.html',
-  styleUrl: './channel-chat.component.scss'
+  styleUrl: './channel-chat.component.scss',
 })
 export class ChannelChatComponent {
   @ViewChild('channelTitleDiv', { static: false }) channelTitleDiv!: ElementRef;
@@ -41,14 +47,13 @@ export class ChannelChatComponent {
   avatars: string[] = [
     './../../../../assets/img/Avatar 1.png',
     './../../../../assets/img/Avatar.png',
-    './../../../../assets/img/Avatar 3.png'
+    './../../../../assets/img/Avatar 3.png',
   ];
 
   constructor(private channelService: ChannelService) {}
 
-
   ngOnInit() {
-    this.channelService.activeChannel$.subscribe(channelId => {
+    this.channelService.activeChannel$.subscribe((channelId) => {
       this.activeChannel = channelId;
       this.updateActiveChannelData();
     });
@@ -57,31 +62,38 @@ export class ChannelChatComponent {
     this.getAllUsers();
   }
 
+  getUserChannels() {
+    const userChannelsCollection = collection(this.firestore, 'channels');
+    this.channels$ = collectionData(userChannelsCollection, {
+      idField: 'id',
+    }) as Observable<Channel[]>;
 
-  getUserChannels(){
-    const userChannelsCollection = collection(this.firestore, 'channels' );
-    this.channels$ = collectionData(userChannelsCollection, { idField: 'id'}) as Observable<Channel[]>;
-    
     this.channels$.subscribe((changes) => {
-      this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+      this.allUserChannels = Array.from(
+        new Map(changes.map((channel) => [channel.id, channel])).values()
+      );
       this.updateActiveChannelData();
-    })
+    });
   }
 
-  updateActiveChannelData(){
-    this.activeChannelData = this.allUserChannels.find(channel => channel.id === this.activeChannel);
+  updateActiveChannelData() {
+    this.activeChannelData = this.allUserChannels.find(
+      (channel) => channel.id === this.activeChannel
+    );
   }
 
-
-  getAllUsers(){
+  getAllUsers() {
     const userCollection = collection(this.firestore, 'users');
-    this.allUsers$ = collectionData(userCollection, { idField: 'id'}) as Observable<User[]>;
+    this.allUsers$ = collectionData(userCollection, {
+      idField: 'id',
+    }) as Observable<User[]>;
 
     this.allUsers$.subscribe((changes) => {
-      this.users = Array.from(new Map(changes.map(user => [user.id, user])).values());
-    })
+      this.users = Array.from(
+        new Map(changes.map((user) => [user.id, user])).values()
+      );
+    });
   }
-
 
   openEditChannelDialog() {
     const rect = this.channelTitleDiv.nativeElement.getBoundingClientRect();
@@ -96,34 +108,29 @@ export class ChannelChatComponent {
     const rect = this.addMembersDiv.nativeElement.getBoundingClientRect();
     this.addMembersDialogPosition = {
       top: `${rect.bottom + 10}px`,
-      left: `${rect.left -470}px`,
+      left: `${rect.left - 470}px`,
     };
     this.addMembersDialogOpened = true;
   }
-
 
   openShowMembersDialog() {
     const rect = this.showMembersDiv.nativeElement.getBoundingClientRect();
     this.showMembersDialogPosition = {
       top: `${rect.bottom + 10}px`,
-      left: `${rect.left -280}px`,
+      left: `${rect.left - 280}px`,
     };
     this.showMembersDialogOpened = true;
   }
 
-  
   closeEditDialog() {
     this.editChannelDialogOpened = false;
   }
 
-  closeAddMembersDialog(){
+  closeAddMembersDialog() {
     this.addMembersDialogOpened = false;
   }
 
-  closeShowMembersDialog(){
+  closeShowMembersDialog() {
     this.showMembersDialogOpened = false;
   }
-
-
-
 }

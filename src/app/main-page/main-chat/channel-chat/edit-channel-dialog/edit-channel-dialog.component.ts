@@ -1,20 +1,30 @@
-import { Component, OnInit, inject, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { ChannelService } from '../../../../services/channel.service';
 import { Observable } from 'rxjs';
 import { Channel } from './../../../../models/channel.class';
-import { Firestore, collection, collectionData, doc, updateDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  doc,
+  updateDoc,
+} from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
-import { Overlay, OverlayRef, OverlayConfig } from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
-
 
 @Component({
   selector: 'app-edit-channel-dialog',
   standalone: true,
-  imports: [ CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './edit-channel-dialog.component.html',
-  styleUrl: './edit-channel-dialog.component.scss'
+  styleUrl: './edit-channel-dialog.component.scss',
 })
 export class EditChannelDialogComponent {
   @Input() channelData!: Channel;
@@ -26,11 +36,10 @@ export class EditChannelDialogComponent {
   editingChannelName = false;
   editingChannelDescription = false;
 
-  constructor(private overlay: Overlay) {}
+  constructor() {}
 
-
-  closeDialog(){
-    if (this.channelData.name && this.channelData.name.length >= 4){
+  closeDialog() {
+    if (this.channelData.name && this.channelData.name.length >= 4) {
       this.dialogClosed.emit();
     }
   }
@@ -39,10 +48,12 @@ export class EditChannelDialogComponent {
     event.stopPropagation();
   }
 
-
-  async editChannel(form: NgForm){
-    if(form.valid){
-      const channelDocRef = doc(this.firestore, `channels/${this.channelData.id}`);
+  async editChannel(form: NgForm) {
+    if (form.valid) {
+      const channelDocRef = doc(
+        this.firestore,
+        `channels/${this.channelData.id}`
+      );
       try {
         await updateDoc(channelDocRef, { ...this.channelData });
       } catch (error) {
@@ -50,8 +61,6 @@ export class EditChannelDialogComponent {
       }
     }
   }
-
-
 
   saveChanges(form: NgForm) {
     if (form.valid) {
@@ -63,10 +72,8 @@ export class EditChannelDialogComponent {
     }
   }
 
-
-
-  getErrorMessage(errors:any): string{
-    if(errors.required){
+  getErrorMessage(errors: any): string {
+    if (errors.required) {
       return 'Bitte einen Namen mit mindestens 4 Zeichen eingeben.';
     }
     if (errors.minlength) {
@@ -75,20 +82,18 @@ export class EditChannelDialogComponent {
     return '';
   }
 
-
   resetInvalidFields(form: NgForm): void {
     const controls = form.controls;
-  
+
     if (controls['channelName']?.invalid) {
-      this.channelData.name = ''; 
+      this.channelData.name = '';
     }
   }
-
 
   onEditButtonClick(event: Event, field: 'name' | 'description'): void {
     if (field === 'name' && !this.editingChannelName) {
       this.toggleEditing('name');
-      event.preventDefault(); 
+      event.preventDefault();
     } else if (field === 'description' && !this.editingChannelDescription) {
       this.toggleEditing('description');
       event.preventDefault();
@@ -103,8 +108,8 @@ export class EditChannelDialogComponent {
     }
   }
 
-  editChannelName(form: NgForm){
-    if(!this.editingChannelName){
+  editChannelName(form: NgForm) {
+    if (!this.editingChannelName) {
       this.editingChannelName = true;
     } else if (this.editingChannelName && form.controls['channelName']?.valid) {
       this.editingChannelName = false;
@@ -112,9 +117,8 @@ export class EditChannelDialogComponent {
     }
   }
 
-
-  editChannelDescription(form: NgForm){
-    if(!this.editingChannelDescription){
+  editChannelDescription(form: NgForm) {
+    if (!this.editingChannelDescription) {
       this.editingChannelDescription = true;
     } else {
       this.editingChannelDescription = false;
@@ -122,10 +126,5 @@ export class EditChannelDialogComponent {
     }
   }
 
-  leaveChannel(){
-
-  }
-
-
-
+  leaveChannel() {}
 }
