@@ -9,19 +9,16 @@ import { CommonModule } from '@angular/common';
 import { ShowMembersDialogComponent } from './show-members-dialog/show-members-dialog.component';
 import { AddMembersDialogComponent } from './add-members-dialog/add-members-dialog.component';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { ChannelChatHeaderComponent } from "./channel-chat-header/channel-chat-header.component";
 
 @Component({
   selector: 'app-channel-chat',
   standalone: true,
-  imports: [ EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent ],
+  imports: [EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent, ChannelChatHeaderComponent],
   templateUrl: './channel-chat.component.html',
   styleUrl: './channel-chat.component.scss'
 })
 export class ChannelChatComponent {
-  @ViewChild('channelTitleDiv', { static: false }) channelTitleDiv!: ElementRef;
-  @ViewChild('showMembersDiv', { static: false }) showMembersDiv!: ElementRef;
-  @ViewChild('addMembersDiv', { static: false }) addMembersDiv!: ElementRef;
-
   editChannelDialogOpened = false;
   showMembersDialogOpened = false;
   addMembersDialogOpened = false;
@@ -40,7 +37,6 @@ export class ChannelChatComponent {
   firestore: Firestore = inject(Firestore);
 
  
-
   constructor(private channelService: ChannelService) {}
 
 
@@ -94,31 +90,34 @@ export class ChannelChatComponent {
   }
 
 
+  handleDialogStateChange(event: { dialogType: string; opened: boolean; position: { top: string; left: string } }) {
+    const { dialogType, opened, position } = event;
+
+    if (dialogType === 'editChannel') {
+      this.editChannelDialogOpened = opened;
+      this.editChannelDialogPosition = position;
+    } else if (dialogType === 'addMembers') {
+      this.addMembersDialogOpened = opened;
+      this.addMembersDialogPosition = position;
+    } else if (dialogType === 'showMembers') {
+      this.showMembersDialogOpened = opened;
+      this.showMembersDialogPosition = position;
+    }
+  }
+
   openEditChannelDialog() {
-    const rect = this.channelTitleDiv.nativeElement.getBoundingClientRect();
-    this.editChannelDialogPosition = {
-      top: `${rect.bottom + 10}px`,
-      left: `${rect.left}px`,
-    };
+    
     this.editChannelDialogOpened = true;
   }
 
   openAddMembersDialog() {
-    const rect = this.addMembersDiv.nativeElement.getBoundingClientRect();
-    this.addMembersDialogPosition = {
-      top: `${rect.bottom + 10}px`,
-      left: `${rect.left -470}px`,
-    };
+    
     this.addMembersDialogOpened = true;
   }
 
 
   openShowMembersDialog() {
-    const rect = this.showMembersDiv.nativeElement.getBoundingClientRect();
-    this.showMembersDialogPosition = {
-      top: `${rect.bottom + 10}px`,
-      left: `${rect.left -280}px`,
-    };
+    
     this.showMembersDialogOpened = true;
   }
 
@@ -134,7 +133,6 @@ export class ChannelChatComponent {
   closeShowMembersDialog(){
     this.showMembersDialogOpened = false;
   }
-
 
 
 }
