@@ -42,20 +42,20 @@ export class ChannelChatComponent {
   allUsers$!: Observable<User[]>;
   allUserChannels: Channel[] = [];
   users: User[] = [];
+  activeChannelUsers: User[] = [];
   firestore: Firestore = inject(Firestore);
 
-  avatars: string[] = [
-    './../../../../assets/img/Avatar 1.png',
-    './../../../../assets/img/Avatar.png',
-    './../../../../assets/img/Avatar 3.png',
-  ];
+ 
 
   constructor(private channelService: ChannelService) {}
 
   ngOnInit() {
-    this.channelService.activeChannel$.subscribe((channelId) => {
-      this.activeChannel = channelId;
-      this.updateActiveChannelData();
+    this.channelService.activeChannel$.subscribe(channelId => {
+      if(this.activeChannel !==channelId){
+        this.activeChannel = channelId;
+        this.updateActiveChannelData();
+        this.getActiveChannelUsers();
+      }
     });
 
     this.getUserChannels();
@@ -69,20 +69,23 @@ export class ChannelChatComponent {
     }) as Observable<Channel[]>;
 
     this.channels$.subscribe((changes) => {
-      this.allUserChannels = Array.from(
-        new Map(changes.map((channel) => [channel.id, channel])).values()
-      );
-      this.updateActiveChannelData();
-    });
+      this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+      
+      const updatedChannel = this.allUserChannels.find(channel => channel.id === this.activeChannel);
+      if (updatedChannel) {
+        this.activeChannelData = updatedChannel;
+        this.getActiveChannelUsers();
+      }
+    })
   }
 
-  updateActiveChannelData() {
-    this.activeChannelData = this.allUserChannels.find(
-      (channel) => channel.id === this.activeChannel
-    );
+  
+  updateActiveChannelData(){
+    this.activeChannelData = this.allUserChannels.find(channel => channel.id === this.activeChannel);
   }
 
-  getAllUsers() {
+
+  getAllUsers(){
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
       idField: 'id',
@@ -94,6 +97,12 @@ export class ChannelChatComponent {
       );
     });
   }
+
+
+  getActiveChannelUsers(){
+    this.activeChannelUsers = this.users.filter(user => this.activeChannelData?.userIds.includes(user.id));
+  }
+
 
   openEditChannelDialog() {
     const rect = this.channelTitleDiv.nativeElement.getBoundingClientRect();

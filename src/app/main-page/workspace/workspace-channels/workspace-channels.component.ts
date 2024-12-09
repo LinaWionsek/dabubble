@@ -35,6 +35,7 @@ export class WorkspaceChannelsComponent implements OnInit{
   channels$!: Observable<Channel[]>;
   allUserChannels: Channel[] = [];
   firestore: Firestore = inject(Firestore);
+  private isInitialized = false;
 
   activeIndex: number | null = null;
   activeChannel:string = '';
@@ -61,7 +62,11 @@ export class WorkspaceChannelsComponent implements OnInit{
     
     this.channels$.subscribe((changes) => {
       this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
-      this.activateChannel(0);
+      
+      if (!this.isInitialized && this.allUserChannels.length > 0) {
+        this.activateChannel(0); 
+        this.isInitialized = true;
+      }
     })
 
   }

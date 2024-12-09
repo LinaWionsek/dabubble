@@ -19,7 +19,7 @@
                     <div class="chip-container">
                         @for (user of selectedUsers; track $index) {
                             <div class="chip-div">
-                                <img src="{{user.avatar}}" class="avatar-img-small">
+                                <img src="{{user.avatar}}" class="avatar-img">
                                 <span class="name-span">{{user.firstName + ' ' + user.lastName}}</span>
                                 <img src="./../../../assets/img/close.png" class="cancel-user-adding-icon" (click)="cancelUserAdding(user.id)">
                             </div>
@@ -31,7 +31,7 @@
                 <input type="text" id="names-input" placeholder="Namen eingeben" (input)="searchUsers($event)" [(ngModel)]="userSearchQuery" autocomplete="off">
                
                 @if(displaySearchResultContainer){
-                    <div class="search-result-container">
+                    <div class="search-result-container" [ngStyle]="{ top: selectedUsers!.length >= 2 ? '130px' : '64px' }">
                         @for (user of foundUsers; track $index) {
                             <div class="member-div" (click)="addFoundUserToChannel(user.id)">
                                 <img src="{{user.avatar}}" class="avatar-img">
@@ -44,7 +44,7 @@
             </div> 
 
             <div class="button-div">
-                <button [disabled] ="!newMemberName.trim()" (click)="addMember()">Hinzufügen</button>
+                <button [disabled]="selectedUsers?.length === 0" (click)="addMember()">Hinzufügen</button>
             </div>
         </div>
 

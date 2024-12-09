@@ -10,18 +10,14 @@
         </div>
     
      <div class="dialog-content">
-         <div class="member-div">
-             <img src="./../../../../../assets/img/Avatar 1.png">
-             <span class="name-span">Frederick Beck (Du)</span>
-         </div>
-         <div class="member-div">
-             <img src="./../../../../../assets/img/Avatar.png">
-             <span class="name-span">Sofia Müller</span>
-         </div>
-         <div class="member-div">
-             <img src="./../../../../../assets/img/Avatar 3.png">
-             <span class="name-span">Noah Braun</span>
-         </div>
+        @for (user of channelUsers; track $index) {
+            <div class="member-div">
+                <img src="{{user.avatar}}" class="avatar-img-small">
+                <span class="name-span">{{user.firstName + ' ' + user.lastName}}</span>
+            </div>
+        }
+       
+         
     
      </div>
     

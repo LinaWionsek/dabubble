@@ -50,7 +50,7 @@
                     <label class="radio-label">
                       <input type="radio" name="options" value="option1" checked [(ngModel)]="selectedOption">
                       <span class="custom-radio"></span>
-                      <span class="radio-span">Alle Mitglieder von <span class="channel-name-span">{{activeChannelData?.name}} </span>hinzufügen</span>
+                      <span class="radio-span">Alle Mitglieder von <span class="channel-name-span">#{{activeChannelData?.name}} </span>hinzufügen</span>
                     </label>
                     <label class="radio-label">
                       <input type="radio" name="options" value="option2" [(ngModel)]="selectedOption">
@@ -65,7 +65,7 @@
                             <div class="chip-container">
                                 @for (user of selectedUsers; track $index) {
                                     <div class="chip-div">
-                                        <img src="{{user.avatar}}" class="avatar-img-small">
+                                        <img src="{{user.avatar}}" class="avatar-img">
                                         <span class="name-span">{{user.firstName + ' ' + user.lastName}}</span>
                                         <img src="./../../../assets/img/close.png" class="cancel-user-adding-icon" (click)="cancelUserAdding(user.id)">
                                     </div>
@@ -77,7 +77,7 @@
                         <input type="text" id="names-input" placeholder="Namen eingeben" (input)="searchUsers($event)" [(ngModel)]="userSearchQuery" autocomplete="off">
                        
                         @if(displaySearchResultContainer){
-                            <div class="search-result-container">
+                            <div class="search-result-container" [ngStyle]="{ top: selectedUsers!.length >= 2 ? '130px' : '64px' }">
                                 @for (user of foundUsers; track $index) {
                                     <div class="member-div" (click)="addFoundUserToChannel(user.id)">
                                         <img src="{{user.avatar}}" class="avatar-img">

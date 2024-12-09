@@ -207,8 +207,8 @@ input.error::placeholder {
 
  .search-result-container{
     position: absolute;
-    top: 56px;
     left: 24px;
+    border-top-left-radius: 0;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
     border-bottom-left-radius: 30px;
@@ -259,16 +259,13 @@ input.error::placeholder {
     border-radius: 30px;
 }
 
-.avatar-img-small{
-    width: 24px;
-    height: 24px;
-}
+
 
 .cancel-user-adding-icon{
     height: 16px;
     width: 16px;
     transition: all 125ms ease;
-    margin-left: 4px;
+    margin-left: 8px;
 
     &:hover{
         cursor: pointer;

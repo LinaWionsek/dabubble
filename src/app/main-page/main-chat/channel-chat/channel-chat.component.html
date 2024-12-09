@@ -8,14 +8,18 @@
     <div class="channel-members-div">
         <div class="show-members-div" #showMembersDiv (click)="openShowMembersDialog()">
             <div class="avatar-container">
-                @for (avatar of avatars; track $index) {
-                    <img [src]="avatar" [ngStyle]="{
+                @for (user of activeChannelUsers; track $index) {
+                    <img class="avatar-img-small" [src]="user.avatar" [ngStyle]="{
                         'margin-left': $index === 0 ? '0px' : '-10px',
                         'z-index': $index
                       }">
                 }
             </div>
-            <span class="member-number-span">3</span>
+
+            @if(activeChannelUsers.length > 0){
+                <span class="member-number-span">{{activeChannelUsers.length}}</span>
+            }
+            
         </div>
         
         <div class="icon-container" #addMembersDiv (click)="openAddMembersDialog()">

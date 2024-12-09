@@ -20,6 +20,17 @@ export class ShowMembersDialogComponent {
   @Output() dialogClosed = new EventEmitter<void>();
   @Output() openAddMembersDialog= new EventEmitter<void>();
 
+  channelUsers:User[] = [];
+
+
+  ngOnInit(){
+    this.populateChannelUsersArray();
+  }
+
+  populateChannelUsersArray(){
+    this.channelUsers = this.allUsers.filter(user => this.channelData.userIds.includes(user.id));
+  }
+  
 
   closeDialog(){
     this.dialogClosed.emit();

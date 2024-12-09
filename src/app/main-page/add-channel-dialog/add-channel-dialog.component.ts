@@ -112,12 +112,14 @@ export class AddChannelDialogComponent {
       this.addMembersToChannel();
       try {
         const channelCollection = collection(this.firestore, 'channels');
-        await addDoc(channelCollection, { ...this.channel});
+        const docRef = await addDoc(channelCollection, { ...this.channel});
+        this.channelService.setActiveChannel(docRef.id);
         this.channel = new Channel();
         this.closeDialog();
       } catch (error) {
         console.error(error);
       }
+      
     }
 
 
@@ -125,8 +127,7 @@ export class AddChannelDialogComponent {
       if (this.selectedOption === 'option1' && this.activeChannelData){
         this.channel.userIds = this.activeChannelData.userIds;
       } else if (this.selectedOption === 'option2'){
-        //push userIds to channelMembers on input first
-        //set this.channel.userIds to this.channelMembers
+        this.selectedUsers?.forEach(user => this.channel.userIds.push(user.id));
       }
     }
 

@@ -20,10 +20,8 @@ export class AddMembersDialogComponent {
 
   firestore: Firestore = inject(Firestore);
 
-
-  newMemberName = '';
   channelMembers: string[] = this.channelData?.userIds;;
-  newMemberId = '';
+ 
 
   userSearchQuery: string = '';
   foundUsers?: User[] = [];
@@ -40,24 +38,13 @@ export class AddMembersDialogComponent {
     event.stopPropagation();
   }
 
+
   addMember(){
-    this.getNewMemberId();
-    this.updateChannelMembers();    
-  }
-
-  getNewMemberId(){
-    const newMember = this.allUsers.find((user) => user.firstName + user.lastName === this.newMemberName.trim());
-    if (newMember){
-      this.newMemberId = newMember.id;
-    }
-  }
-
-  updateChannelMembers(){
-    if(this.newMemberId){
-      this.channelMembers.push(this.newMemberId);
-      this.channelData.userIds = this.channelMembers;
-      this.updateChannel();
-    }
+    const newUserIds = this.selectedUsers?.map(user => user.id) || [];
+    this.channelData.userIds.push(...newUserIds);
+    this.updateChannel(); 
+    this.selectedUsers = [];
+    this.closeDialog();
   }
 
 
@@ -69,6 +56,7 @@ export class AddMembersDialogComponent {
       console.error(error);
     }
   }
+
 
   searchUsers(event: Event){
     const inputElement = event.target as HTMLInputElement;
@@ -89,17 +77,20 @@ export class AddMembersDialogComponent {
 
 
   addFoundUserToChannel(id: string){
-    this.channelData.userIds.push(id);
     const selectedUser = this.allUsers.find(user => user.id === id);
-
-    if(selectedUser && !this.selectedUsers?.some(selectedUser => selectedUser.id === id)){
-      this.selectedUsers?.push(selectedUser);
+  
+    if (selectedUser && !this.channelData.userIds.includes(selectedUser.id)) {
+      this.channelData.userIds.push(selectedUser.id);
+      if (!this.selectedUsers?.some(user => user.id === id)) {
+        this.selectedUsers?.push(selectedUser);
+      }
     }
 
     this.userSearchQuery = '';
     this.displaySearchResultContainer = false;
     this.foundUsers = [];
   }    
+
 
 
   cancelUserAdding(id:string){
