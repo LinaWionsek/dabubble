@@ -5,3 +5,8 @@
     flex: 1;
     @include display-flex($fd:column);
 }
+
+.chat-input-container{
+    height: 145px;
+    width: 100%;
+}
