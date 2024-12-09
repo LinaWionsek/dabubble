@@ -73,7 +73,7 @@ export class AuthService {
       const userSnap = await getDoc(userRef);
       const userFirestoreData = userSnap.data() as userData | undefined;
 
-      const userData = {
+      const userData: userData = {
         id: currentUser.uid,
         email: currentUser.email ?? '',
         firstName: userFirestoreData?.firstName ?? '',
