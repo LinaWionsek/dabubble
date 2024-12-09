@@ -226,6 +226,7 @@ html {
   @include size(40px, 40px, 8px);
   border-radius: 20px;
   cursor: pointer;
+  transition: 125ms ease-in-out;
   > img {
     @include size(24px, 24px);
   }
