@@ -32,3 +32,23 @@
 .search-bar {
   @include size(990px);
 }
+
+.user-profile {
+  @include display-flex($gap: 16px);
+  > .user-avatar {
+    @include size(75px, 75px);
+  }
+  > span {
+    @include font-style($font-size-32, $font-weight-700, $text-color-black);
+  }
+  &:hover {
+    cursor: pointer;
+    > span {
+      color: $secondary-color-purple;
+    }
+    > .drop_down_arrow {
+      filter: brightness(0) saturate(100%) invert(30%) sepia(39%)
+        saturate(4108%) hue-rotate(229deg) brightness(98%) contrast(93%);
+    }
+  }
+}

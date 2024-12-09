@@ -8,7 +8,8 @@
     <span>DABubble</span>
   </section>
 
-  <section *ngIf="showSearchBar" class="search-bar">
+  @if (showSearchBar) {
+  <section class="search-bar">
     <div class="search-bar-input-container">
       <input
         class="search-bar-input"
@@ -25,15 +26,18 @@
     </div>
   </section>
 
-  <section *ngIf="showUserProfile" class="user-profile">
-    <img
-      src="./../../../assets/img/placeholder_header.png"
-      alt="placeholder_header"
-    />
+  } @if (showUserProfile) {
+  <section class="user-profile">
+    <span>{{ user?.firstName }} {{ user?.lastName }}</span>
+    <img class="user-avatar" [src]="getAvatarBaseName(user?.avatar)" alt="user_avatar" />
+
+    <img class="drop_down_arrow" src="./../../../assets/img/drop_down_arrow.png" alt="" />
   </section>
 
-  <section *ngIf="showRegistrationLink" class="header-right">
+  } @if (showRegistrationLink) {
+  <section class="header-right">
     <span>Neu bei DABubble ?</span>
     <a class="primary-href" routerLink="/registration">Konto erstellen</a>
   </section>
+  }
 </header>

@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { User } from '../../models/user.class';
+import { AuthService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-header',
@@ -13,8 +16,10 @@ export class HeaderComponent implements OnInit {
   showRegistrationLink: boolean = false;
   showSearchBar: boolean = false;
   showUserProfile: boolean = false;
+  user: User | null = null;
+  private authSubscription: Subscription | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.showSearchBar = false;
@@ -27,6 +32,19 @@ export class HeaderComponent implements OnInit {
         this.updateHeaderOnRoute(event.urlAfterRedirects);
       }
     });
+
+    this.authSubscription = this.authService.getUserStatus().subscribe(
+      (user) => {
+        this.user = user;
+      },
+      (error) => console.error('Fehler beim Überwachen des Auth-Status:', error)
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   updateHeaderOnRoute(url: string) {
@@ -40,5 +58,12 @@ export class HeaderComponent implements OnInit {
       this.showSearchBar = true;
       this.showUserProfile = true;
     }
+  }
+
+  getAvatarBaseName(avatarPath: string | undefined): string {
+    if (!avatarPath) {
+      return './../../../assets/img/avatar_empty.png';
+    }
+    return avatarPath.replace('_large', '');
   }
 }
