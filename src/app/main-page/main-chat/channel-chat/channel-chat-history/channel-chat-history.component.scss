@@ -1,0 +1,13 @@
+@import "mixins", "styles";
+
+:host{
+    height: 100%;
+    width: 100%;
+}
+
+.history-container{
+    height: 100%;
+    width: 100%;
+    border: 2px solid red;
+   
+}
