@@ -1,4 +1,5 @@
 <header>
+
   <section [ngClass]="{'padding-left-34': showSearchBar}" class="header-left" routerLink="/login">
     <img class="logo" src="../../assets/img/da_bubble_logo.png" alt="da_bubble_logo" />
     <span>DABubble</span>
@@ -7,27 +8,35 @@
   @if(showSearchBar){
     <div class="header-center">
       @if(showSearchBar){
-        <div class="search-bar">
-          <input class="search-bar-input" placeholder="Devspace durchsuchen" type="text" />
-          <img src="./../../assets/img/search_icon.png" alt="search_icon" />
-        </div>
-        }
-    
-        @if(showUserProfile){
-        <div class="user-profile">
+      <div class="search-bar">
+        <input class="search-input" placeholder="Devspace durchsuchen" type="text" />
+        <img src="./../../assets/img/search_icon.png" alt="search_icon" />
+      </div>
+      }
+
+      @if(showUserProfile){
+      <div class="user-profile-container">
+        <div (click)="openUserMenu()" class="user-profile">
           <span>Frederick Beck</span>
           <img class="profile-img" src="./../../assets/img/avatar_3_large.png" alt="">
           <img class="menu-icon" src="./../../assets/img/keyboard_arrow_down.png" alt="">
         </div>
-        }
+      </div>
+      }
+    </div>
+  }
+
+  @if(showUserMenu){
+    <div (click)="closeUserMenu()" class="dialog-bg">
+      <app-header-user-dialog></app-header-user-dialog>
     </div>
   }
 
   @if(showRegistrationLink){
-  <section *ngIf="showRegistrationLink" class="header-right">
-    <span>Neu bei DABubble ?</span>
-    <a class="primary-href" routerLink="/registration">Konto erstellen</a>
-  </section>
+    <section *ngIf="showRegistrationLink" class="header-right">
+      <span>Neu bei DABubble ?</span>
+      <a class="primary-href" routerLink="/registration">Konto erstellen</a>
+    </section>
   }
 
 </header>

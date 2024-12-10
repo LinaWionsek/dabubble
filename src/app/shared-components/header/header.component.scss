@@ -2,55 +2,15 @@
 
 header {
   @include size(100%);
- 
   @include display-flex($jc: space-between);
 }
-.header-center {
-  display: flex;
-  align-items: center;
-  width: 1505px;
-  gap: 16px;
-}
-// .header {
-//   @include display-flex($jc: space-between, $gap: 32px);
-//   @include size(100%);
-//   // height: 85px;
-//   background: $bg-color-gray;
-// }
-.search-bar {
-  @include position(relative);
-  input {
-    width: 989px;
-    outline: none;
-    border: none;
-    border-radius: 42px;
-    padding: 17.5px 45px;
-    font-size: $font-size-24;
-  }
-  img {
-    @include position(absolute, 14px, $rig: 48px);
-  }
-}
-.padding-top-8 {
-  padding-top: 8px;
-}
-.user-profile {
-  @include size(500px);
-  @include display-flex($jc: flex-end, $gap: 24px);
-  @include font-style(32px, 700);
-}
-.profile-img {
-  @include size(70px, 70px);
-}
-.menu-icon{
-    @include size(30px, 30px);
-}
+
 .padding-left-34 {
   padding-left: 34px;
 }
+
 .header-left {
   @include display-flex($gap: 16px);
-  // padding-left: 34px;
   transition: 225ms ease-in-out;
   &:hover {
     transform: scale(1.05);
@@ -61,8 +21,74 @@ header {
   }
   > span {
     @include font-style($font-size-32, $font-weight-700, $text-color-black);
-    //32px
   }
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  width: 1505px;
+  gap: 16px;
+}
+
+.search-bar {
+  @include position(relative);
+  img {
+    @include position(absolute, 18px, $rig: 48px);
+    &:hover {
+      background-color: $bg-color-gray;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
+  &:hover .search-input:not(:focus):not(:not(:placeholder-shown)) {
+    border-color: $border-color-purple;
+  }
+}
+
+.search-input {
+  height: 70px;
+  width: 989px;
+  outline: none;
+  border: 1px solid $bg-color-gray;
+  border-radius: 42px;
+  padding: 17.5px 45px;
+  font-size: $font-size-24;
+  &:hover {
+    border-color: $border-color-purple;
+  }
+  &:focus {
+    border-color: $secondary-color-purple;
+  }
+  &:not(:placeholder-shown) {
+    border-color: $primary-color-purple;
+  }
+}
+
+.user-profile-container {
+  @include size(500px);
+  @include display-flex($jc: flex-end);
+}
+
+.user-profile {
+  @include display-flex($jc: flex-end, $gap: 24px);
+  @include font-style(32px, 700);
+  &:hover {
+    color: $highlight-color-purple;
+    cursor: pointer;
+    > .menu-icon {
+      filter: invert(32%) sepia(61%) saturate(2933%) hue-rotate(228deg)
+        brightness(96%) contrast(97%);
+    }
+  }
+}
+
+.profile-img {
+  @include size(70px, 70px);
+}
+
+.menu-icon {
+  @include size(30px, 30px);
 }
 
 .header-right {
@@ -72,6 +98,12 @@ header {
   }
 }
 
-// .search-bar {
-//   @include size(990px);
-// }
+.dialog-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
