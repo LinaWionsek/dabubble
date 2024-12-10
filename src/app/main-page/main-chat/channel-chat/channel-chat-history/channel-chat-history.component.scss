@@ -9,5 +9,5 @@
     height: 100%;
     width: 100%;
     @include display-flex($jc: flex-end, $fd: column);
-    padding-bottom: 48px;
+    padding-bottom: 56px;
 }

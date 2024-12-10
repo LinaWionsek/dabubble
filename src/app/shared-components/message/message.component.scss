@@ -6,6 +6,7 @@
 }
 
 .message-container{
+    position: relative;
     transition: all 125ms ease;
     padding: 8px 40px;
     width: 100%;
@@ -13,6 +14,10 @@
 
     &:hover{
         background-color: $bg-color-gray;
+    }
+
+    &:hover .message-options-div{
+        @include display-flex();
     }
    
 }
@@ -38,6 +43,7 @@
     width: 100%;
     @include display-flex($jc: flex-end);
     margin-bottom: 8px;
+    
 }
 
 .message-text-div{
@@ -64,6 +70,11 @@
 .name-span{
     font-size: 18px;
     font-weight: 700;
+
+    &:hover{
+        color: $primary-color-purple;
+        cursor: pointer;
+    }
 }
 
 
@@ -89,7 +100,6 @@
 }
 
 .add-reaction-icon-container{
-    margin-left: 4px;
     background-color: white;
     @include display-flex();
     height: 32px;
@@ -111,3 +121,22 @@
 }
 
 
+.message-options-div{
+    display: none;
+    position: absolute;
+    top: -25px;
+    left: 35px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    height: 46px;
+    padding: 3px 15px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+    background-color: white;
+    gap: 5px;
+
+}
+
+.emoji-div:hover img{
+    filter: none;
+}
