@@ -22,15 +22,31 @@
    
 }
 
+.received.message-container{
+    justify-content: flex-start;
+
+    &:hover .message-text-div{
+        background-color: white;
+    }
+}
+
 .message-div{
-    @include display-flex($fd: column);
+    @include display-flex($fd: column, $ai: flex-end);
+}
+
+.received.message-div{
+    align-items: flex-start;
 }
 
 .profile-img-div{
     @include display-flex($fd:column, $jc: flex-start);
     height: 100%;
     margin-left: 24px;
-    
+}
+
+.received.profile-img-div{
+    margin-right: 24px;
+    margin-left: 0;
 }
 
 .profile-img{
@@ -46,6 +62,14 @@
     
 }
 
+.received.message-div-header{
+    justify-self: flex-start;
+}
+
+.received.message-div-header{
+    justify-content: flex-start;
+}
+
 .message-text-div{
     padding: 15px;
     @include display-flex();
@@ -57,6 +81,15 @@
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
+    transition: all 125ms ease;
+}
+
+.received.message-text-div{
+    border-top-left-radius: 0px ;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background-color: $bg-color-gray;
+    color: black;
 }
 
 .time-span{
@@ -64,6 +97,10 @@
     color: rgba(104, 104, 104, 1);
     margin-right: 16px;
     
+}
+
+.received.time-span{
+    margin-left: 16px;
 }
 
 
@@ -83,6 +120,10 @@
     width: 100%;
     gap: 12px;
     margin-top: 8px;
+}
+
+.received.message-div-footer{
+    justify-content: flex-start;
 }
 
 .reaction-div{
@@ -137,6 +178,24 @@
 
 }
 
+.received.message-options-div{
+    left: unset;
+    right: 35px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 0;
+
+}
+
 .emoji-div:hover img{
     filter: none;
+}
+
+.answers-count{
+    font-size: 18px;
+    color: rgba(83, 90, 241, 1);
+}
+
+.last-answer-time{
+    font-size: 14px;
+    color: rgba(104, 104, 104, 1);
 }
