@@ -1,5 +1,5 @@
 <div class="chat-input">
-    <textarea placeholder="Nachricht an #{{sendMessagesTo}}"></textarea>
+    <textarea placeholder="Nachricht an #{{sendMessagesTo}}" [(ngModel)]="newMessage.messageText" (keydown.enter)="onEnter($event)"></textarea>
 
     <div class="chat-input-action-div">
         <div class="add-elements">
@@ -10,6 +10,6 @@
                 <img src="./../../../assets/img/at_reaction.png">
             </div>
         </div>
-        <img src="./../../../assets/img/send.png" class="send-icon">
+        <img src="./../../../assets/img/send.png" class="send-icon" (click)="sendMessage()">
     </div>
 </div>

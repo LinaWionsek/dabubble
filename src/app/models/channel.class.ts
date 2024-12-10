@@ -1,4 +1,5 @@
 import { channelData } from "../types/types";
+import { Message } from "./message.class";
 
 export class Channel {
     id: string;
@@ -18,4 +19,6 @@ export class Channel {
       this.messageIds = data?.messageIds ?? [];
       this.threadIds = data?.threadIds ?? [];
     }
+
+    
 }
