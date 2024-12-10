@@ -2,12 +2,18 @@
 
 :host{
     width: 100%;
-    padding: 32px;
+    
 }
 
 .message-container{
+    transition: all 125ms ease;
+    padding: 8px 40px;
     width: 100%;
     @include display-flex($jc: flex-end, $ai: flex-start);
+
+    &:hover{
+        background-color: $bg-color-gray;
+    }
    
 }
 
@@ -18,7 +24,7 @@
 .profile-img-div{
     @include display-flex($fd:column, $jc: flex-start);
     height: 100%;
-    margin-left: 16px;
+    margin-left: 24px;
     
 }
 
@@ -31,6 +37,7 @@
 .message-div-header{
     width: 100%;
     @include display-flex($jc: flex-end);
+    margin-bottom: 8px;
 }
 
 .message-text-div{
@@ -45,3 +52,62 @@
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
 }
+
+.time-span{
+    font-size: 14px;
+    color: rgba(104, 104, 104, 1);
+    margin-right: 16px;
+    
+}
+
+
+.name-span{
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+.message-div-footer{
+    @include display-flex($jc: flex-end);
+    width: 100%;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.reaction-div{
+    width: 63px;
+    height: 34px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    border-radius: 20px;
+    padding: 5px 10px;
+    @include display-flex();
+}
+
+.reaction-count-span{
+    font-size: 16px;
+    margin-left: 6px;
+}
+
+.add-reaction-icon-container{
+    margin-left: 4px;
+    background-color: white;
+    @include display-flex();
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    transition: all 125ms ease;
+
+    &:hover{
+        background-color: $bg-color-gray;
+    }
+
+    &:hover img{
+        filter: brightness(0) saturate(100%) invert(39%) sepia(81%) saturate(4856%) hue-rotate(229deg) brightness(97%) contrast(95%);
+    }
+
+    >.add-reaction-icon{
+        transition: all 125ms ease;
+    }
+}
+
+
