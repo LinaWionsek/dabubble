@@ -1,53 +1,98 @@
-<div class="message-container">
-    <div class="message-div">
-        <div class="message-div-header">
-            <span class="time-span">15:06 Uhr</span>
-            <span class="name-span">Frederik Beck</span>
+@if(message.senderId === currentUserId){
+    <div class="message-container">
+        <div class="message-div">
+            <div class="message-div-header">
+                <span class="time-span">15:06 Uhr</span>
+                <span class="name-span">Current User</span>
+            </div>
+            <div class="message-text-div">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolores nesciunt tempore veritatis a laboriosam rem praesentium sit porro. Ab molestiae quisquam corrupti. Impedit unde eos odio dolor, aut cumque maxime.</div>
+            <div class="message-div-footer">
+                <div class="reaction-div">
+                    <img src="./../../../assets/img/rocket_emoji.png">
+                    <span class="reaction-count-span">1</span>
+                </div>
+                <div class="reaction-div">
+                    <img src="./../../../assets/img/tick_emoji.png">
+                    <span class="reaction-count-span">1</span>
+                </div>
+                <div class="add-reaction-icon-container">
+                    <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
+                </div>
+               
+            </div>
+    
+    
         </div>
-        <div class="message-text-div">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolores nesciunt tempore veritatis a laboriosam rem praesentium sit porro. Ab molestiae quisquam corrupti. Impedit unde eos odio dolor, aut cumque maxime.</div>
-        <div class="message-div-footer">
-            <div class="reaction-div">
-                <img src="./../../../assets/img/rocket_emoji.png">
-                <span class="reaction-count-span">1</span>
-            </div>
-            <div class="reaction-div">
-                <img src="./../../../assets/img/tick_emoji.png">
-                <span class="reaction-count-span">1</span>
-            </div>
-            <div class="add-reaction-icon-container">
-                <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
-            </div>
-           
+    
+        <div class="profile-img-div">
+            <img src="./../../../assets/img/avatar_1_large.png" class="profile-img">
         </div>
+    
+    
+    
+    
+        <div class="message-options-div">
+            <div class="emoji-div icon-container">
+                <img src="./../../../assets/img/tick_emoji.png" alt="">
+            </div>
+            <div class="emoji-div icon-container">
+                <img src="./../../../assets/img/hands_up_emoji.png" alt="">
+            </div>
+            <div class="icon-container">
+                <img src="./../../../assets/img/add_reaction.png" alt="">
+            </div>
+            <div class="icon-container">
+                <img src="./../../../assets/img/comment.png" alt="">
+            </div>
+            <div class="icon-container">
+                <img src="./../../../assets/img/more_vert.png" alt="">
+            </div>
+        </div>
+    </div>
+    
+} @else {
 
-
+    <div class="received message-container">
+        <div class="received profile-img-div">
+            <img src="./../../../assets/img/avatar_1_large.png" class="profile-img">
+        </div>
+    
+        <div class="received message-div">
+            <div class="received message-div-header">
+                <span class="name-span">Anderer User</span>
+                <span class="received time-span">15:04 Uhr</span>
+            </div>
+            <div class="received message-text-div">Hallo.</div>
+            <div class="received message-div-footer">
+                <span class="answers-count">2 Antworten</span>
+                <span class="last-answer-time">Letzte Antwort 14:56</span>
+            </div>
+        </div>
+    
+        
+    
+    
+    
+        <div class="received message-options-div">
+            <div class="emoji-div icon-container">
+                <img src="./../../../assets/img/tick_emoji.png" alt="">
+            </div>
+            <div class="emoji-div icon-container">
+                <img src="./../../../assets/img/hands_up_emoji.png" alt="">
+            </div>
+            <div class="icon-container">
+                <img src="./../../../assets/img/add_reaction.png" alt="">
+            </div>
+            <div class="icon-container">
+                <img src="./../../../assets/img/comment.png" alt="">
+            </div>
+        </div>
     </div>
 
-    <div class="profile-img-div">
-        <img src="./../../../assets/img/avatar_1_large.png" class="profile-img">
-    </div>
 
 
+}
 
-
-    <div class="message-options-div">
-        <div class="emoji-div icon-container">
-            <img src="./../../../assets/img/tick_emoji.png" alt="">
-        </div>
-        <div class="emoji-div icon-container">
-            <img src="./../../../assets/img/hands_up_emoji.png" alt="">
-        </div>
-        <div class="icon-container">
-            <img src="./../../../assets/img/add_reaction.png" alt="">
-        </div>
-        <div class="icon-container">
-            <img src="./../../../assets/img/comment.png" alt="">
-        </div>
-        <div class="icon-container">
-            <img src="./../../../assets/img/more_vert.png" alt="">
-        </div>
-    </div>
-</div>
 
 
 
