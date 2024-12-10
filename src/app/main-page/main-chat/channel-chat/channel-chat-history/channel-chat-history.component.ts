@@ -20,7 +20,8 @@ export class ChannelChatHistoryComponent {
     "reactions": [],
     "timeStamp": new Date(),
     "messageText": "Hallo",
-    "senderId": "vp5SdrqdKfMteNnXuw5V2TAcWco1"
+    "senderId": "vp5SdrqdKfMteNnXuw5V2TAcWco1",
+    "receiverId": ""
   }
 
   
@@ -30,7 +31,9 @@ export class ChannelChatHistoryComponent {
     "reactions": [],
     "timeStamp": new Date(),
     "messageText": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam",
-    "senderId": "vp5SdrqdKfMteNnXuw5V2TAcWco2"
+    "senderId": "vp5SdrqdKfMteNnXuw5V2TAcWco2",
+    "receiverId": ""
   }
+
 
 }

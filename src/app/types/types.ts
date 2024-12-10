@@ -1,3 +1,5 @@
+import { Message } from "../models/message.class";
+
 export type userData = {
     id?: string;
     firstName: string;
@@ -28,6 +30,7 @@ export type threadData = {
 export type messageData = {
     id?: string;
     senderId: string;
+    receiverId: string;
     chatId: string;
     messageText: string;
     timeStamp?: Date;

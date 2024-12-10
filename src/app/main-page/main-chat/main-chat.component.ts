@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ChannelService } from '../../services/channel.service';
 import { ChannelChatComponent } from './channel-chat/channel-chat.component';
+import { AuthService } from '../../services/authentication.service';
+import { User } from '../../models/user.class';
 
 @Component({
   selector: 'app-main-chat',
@@ -12,15 +14,18 @@ import { ChannelChatComponent } from './channel-chat/channel-chat.component';
 export class MainChatComponent implements OnInit{
   activeChannel: string | null = null;
 
-  constructor(private channelService: ChannelService) {}
+  constructor(private channelService: ChannelService, private authSercive: AuthService) {}
 
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.channelService.activeChannel$.subscribe(channelId => {
       this.activeChannel = channelId;
-
     });
+
+    
   }
+
+  
     
 }
 

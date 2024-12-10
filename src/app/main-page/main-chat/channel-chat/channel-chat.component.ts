@@ -1,4 +1,4 @@
-import { Component, inject, ElementRef, ViewChild } from '@angular/core';
+import { Component, inject, ElementRef, ViewChild, Input } from '@angular/core';
 import { ChannelService } from '../../../services/channel.service';
 import { Observable } from 'rxjs';
 import { Channel } from './../../../models/channel.class';
@@ -21,6 +21,8 @@ import { ChatInputComponent } from "../../../shared-components/chat-input/chat-i
   styleUrl: './channel-chat.component.scss',
 })
 export class ChannelChatComponent {
+  
+
   editChannelDialogOpened = false;
   showMembersDialogOpened = false;
   addMembersDialogOpened = false;
