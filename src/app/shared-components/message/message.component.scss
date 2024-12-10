@@ -1,0 +1,47 @@
+@import "mixins", "styles";
+
+:host{
+    width: 100%;
+    padding: 32px;
+}
+
+.message-container{
+    width: 100%;
+    @include display-flex($jc: flex-end, $ai: flex-start);
+   
+}
+
+.message-div{
+    @include display-flex($fd: column);
+}
+
+.profile-img-div{
+    @include display-flex($fd:column, $jc: flex-start);
+    height: 100%;
+    margin-left: 16px;
+    
+}
+
+.profile-img{
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+}
+
+.message-div-header{
+    width: 100%;
+    @include display-flex($jc: flex-end);
+}
+
+.message-text-div{
+    padding: 15px;
+    @include display-flex();
+    max-width: 678px;
+    color: white;
+    font-size: 18px;
+    line-height: 24px;
+    background-color: rgba(121, 126, 243, 1);
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
