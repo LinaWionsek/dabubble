@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/authentication.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { AuthHeaderComponent } from '../auth-header/auth-header.component';
 import { PasswordVisibilityService } from '../../services/password-visibility.service';
 import { ToastService } from '../../services/toast.service';
 import { ToastComponent } from '../../shared-components/toast/toast.component';
+
 
 @Component({
   selector: 'app-log-in',
@@ -17,7 +18,8 @@ import { ToastComponent } from '../../shared-components/toast/toast.component';
     AuthHeaderComponent,
     FormsModule,
     CommonModule,
-    ToastComponent
+    ToastComponent,
+    RouterModule,
   ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss',
