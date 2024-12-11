@@ -7,8 +7,7 @@ export type userData = {
     email: string;
     avatar?: string;
     isOnline?: boolean;
-    channelIds?: string[];
-    chatIds?: string[];
+    
 }
 
 export type channelData = {
@@ -17,8 +16,7 @@ export type channelData = {
     creator: string;
     userIds: string[];
     description?: string;
-    messageIds?: string[];
-    threadIds?: string[];
+    
 }
 
 export type threadData = {
@@ -31,7 +29,6 @@ export type messageData = {
     id?: string;
     senderId: string;
     receiverId: string;
-    chatId: string;
     messageText: string;
     timeStamp?: Date;
     reactions?: string[];
