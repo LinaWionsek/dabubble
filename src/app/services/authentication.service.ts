@@ -80,8 +80,6 @@ export class AuthService {
         lastName: userFirestoreData?.lastName ?? '',
         avatar: userFirestoreData?.avatar ?? '',
         isOnline: userFirestoreData?.isOnline ?? false,
-        channelIds: userFirestoreData?.channelIds ?? [],
-        chatIds: userFirestoreData?.chatIds ?? [],
       };
 
       return new User(userData);
@@ -99,8 +97,6 @@ export class AuthService {
       email: '',
       avatar: './../../../assets/img/avatar_empty.png',
       isOnline: false,
-      channelIds: [],
-      chatIds: [],
     });
   }
 }
