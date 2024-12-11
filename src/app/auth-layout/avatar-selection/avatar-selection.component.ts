@@ -94,8 +94,6 @@ export class AvatarSelectionComponent {
         email: registrationData.email,
         avatar: this.selectedAvatar,
         isOnline: true,
-        channelIds: [],
-        chatIds: [],
       });
 
 
