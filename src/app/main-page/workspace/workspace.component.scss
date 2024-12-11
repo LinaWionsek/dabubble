@@ -22,6 +22,7 @@
     @include display-flex($fd: column, $jc: flex-start);
     padding: 32px 30px;
     
+    
 }
 
 .workspace-header{
@@ -108,7 +109,7 @@
     font-weight: 500;
     font-size: 20px;
     box-shadow: -4px 4px 7px 0px rgba(0, 0, 0, 0.2);
-
+    z-index: 100;
     transform: rotate(-90deg); 
     transform-origin: top left;
 

@@ -18,7 +18,7 @@
 
 
 <div class="workspace-navigation-bar" (click)="toggleWorkspaceMenu()">
-    <span>Workspace-Menü schließen</span>
+    <span>Workspace-Menü @if(workspaceMenuOpened){schließen}@else {öffnen} </span>
     @if(workspaceMenuOpened){
         <img src="./../../../assets/img/Show menu1.png" class="workspace-opened-img">
     } @else {

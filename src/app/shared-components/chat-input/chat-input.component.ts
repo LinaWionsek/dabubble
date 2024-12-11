@@ -53,10 +53,10 @@ export class ChatInputComponent {
 
   async sendMessage(){
     if(this.usedFor === 'channel'){
-      const messageCollection = collection(this.firestore, 'messages');
+      const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
+      const channelMessagesSubcollection = collection(channelDocRef, 'messages');
       try {
-        const docRef = await addDoc(messageCollection, {...this.newMessage});
-        this.updateChannelDataWithNewMessageId(docRef.id);
+        await addDoc(channelMessagesSubcollection, {...this.newMessage});
       } catch (error) {
         console.error(error)
       }
@@ -68,16 +68,16 @@ export class ChatInputComponent {
 
 
 
-  async updateChannelDataWithNewMessageId(newMessageId: string){
-    this.channelData?.messageIds.push(newMessageId);
-    const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
+  // async updateChannelDataWithNewMessageId(newMessageId: string){
+  //   this.channelData?.messageIds.push(newMessageId);
+  //   const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
 
-    try {
-      await updateDoc(channelDocRef, {...this.channelData});
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  //   try {
+  //     await updateDoc(channelDocRef, {...this.channelData});
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
 
   initializeNewMessage(){
