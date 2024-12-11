@@ -4,11 +4,12 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
+import { HeaderUserDialogComponent } from './header-user-dialog/header-user-dialog.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, HeaderUserDialogComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -18,6 +19,7 @@ export class HeaderComponent implements OnInit {
   showUserProfile: boolean = false;
   user: User | null = null;
   private authSubscription: Subscription | null = null;
+  showUserMenu: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -65,5 +67,11 @@ export class HeaderComponent implements OnInit {
       return './../../../assets/img/avatar_empty.png';
     }
     return avatarPath.replace('_large', '');
+  openUserMenu() {
+    this.showUserMenu = true;
+  }
+
+  closeUserMenu() {
+    this.showUserMenu = false;
   }
 }
