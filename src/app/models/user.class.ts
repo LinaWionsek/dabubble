@@ -7,8 +7,7 @@ export class User {
   email: string;
   avatar: string;
   isOnline: boolean;
-  channelIds: string[];
-  chatIds: string[];
+  
 
   constructor(data?: userData) {
     this.id = data?.id ?? '';
@@ -17,8 +16,7 @@ export class User {
     this.email = data?.email ?? '';
     this.avatar = data?.avatar ?? '';
     this.isOnline = data?.isOnline ?? false;
-    this.channelIds = data?.channelIds ?? [];
-    this.chatIds = data?.chatIds ?? [];
+    
   }
 
   toPlainObject() {
@@ -29,8 +27,7 @@ export class User {
       email: this.email,
       avatar: this.avatar,
       isOnline: this.isOnline,
-      channelIds: this.channelIds,
-      chatIds: this.chatIds,
+      
     };
   }
 }
