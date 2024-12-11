@@ -10,7 +10,10 @@
         </div>
             
         <div class="workspace-content">
-            <app-workspace-channels (dialogStateChange)="handleDialogStateChange($event)"></app-workspace-channels>
+            <app-workspace-channels 
+                [currentUser]="currentUser"
+                (dialogStateChange)="handleDialogStateChange($event)">
+            </app-workspace-channels>
             <app-workspace-direct-messages></app-workspace-direct-messages>
         </div>
     </div>
