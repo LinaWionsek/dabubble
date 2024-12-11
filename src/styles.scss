@@ -66,6 +66,10 @@ html {
   align-items: flex-end !important;
 }
 
+.align-self-flex-end {
+  align-self: flex-end;
+}
+
 .primary-button {
   @include button-style($primary-color-purple);
   @include font-style(18px, 700, $primary-color-white);
@@ -116,6 +120,7 @@ html {
 .form-header {
   @include display-flex($fd: column, $gap: 16px);
   @include size(100%);
+  text-align: center;
   > .header-title {
     display: grid;
     grid-template-columns: auto 1fr;

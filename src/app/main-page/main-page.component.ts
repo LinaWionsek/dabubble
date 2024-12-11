@@ -32,6 +32,10 @@ export class MainPageComponent {
 
   signOut() {
     this.authService.signOut();
-    this.router.navigate(['/login']);
+
+    //Timeout because of the AuthGuard, u need to press Logout twice otherwise ?!
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 1);
   }
 }
