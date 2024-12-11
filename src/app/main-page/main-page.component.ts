@@ -29,13 +29,4 @@ export class MainPageComponent {
   handleDialogStateChange(dialogState: boolean) {
     this.addChannelDialogOpened = dialogState;
   }
-
-  signOut() {
-    this.authService.signOut();
-
-    //Timeout because of the AuthGuard, u need to press Logout twice otherwise ?!
-    setTimeout(() => {
-      this.router.navigate(['/login']);
-    }, 1);
-  }
 }
