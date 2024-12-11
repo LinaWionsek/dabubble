@@ -27,9 +27,11 @@ export type threadData = {
 
 export type messageData = {
     id?: string;
+    senderName: string;
+    senderAvatar: string;
     senderId: string;
     receiverId: string;
     messageText: string;
-    timeStamp?: Date;
+    timeStamp?: string;
     reactions?: string[];
 }

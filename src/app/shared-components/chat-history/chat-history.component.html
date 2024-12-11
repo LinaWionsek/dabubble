@@ -1,7 +1,16 @@
 <div class="history-container">
 
-    <app-seperator></app-seperator>
-    <app-message></app-message>
-    <app-message></app-message>
+    @for (dateKey of sortedDateKeys(); track $index) {
+        
+        @for (message of groupedMessages[dateKey]; track $index) {
+            <app-message 
+                [currentUser]="currentUser"
+                [message]="message">
+            </app-message>
+        }
+
+        <app-seperator [date]="dateKey"></app-seperator>
+    }
+
 
 </div>

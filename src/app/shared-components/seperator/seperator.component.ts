@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-seperator',
@@ -8,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './seperator.component.scss'
 })
 export class SeperatorComponent {
+  @Input() date: any;
 
 }
