@@ -39,6 +39,7 @@ export class ChatInputComponent {
   async setCurrentUser(){
     this.currentUser = await this.authService.getFullUser();
     this.initializeNewMessage();
+    
   }
 
 
@@ -83,6 +84,7 @@ export class ChatInputComponent {
   initializeNewMessage(){
     this.newMessage = new Message();
     this.newMessage.senderId = this.currentUser?.id ?? '';
+    this.newMessage.senderName = this.currentUser?.firstName + ' ' + this.currentUser?.lastName;
   }
 
 

@@ -5,6 +5,8 @@ import { Channel } from '../../models/channel.class';
 import { Firestore, doc, collection, collectionData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Message } from '../../models/message.class';
+import { User } from '../../models/user.class';
+import { AuthService } from '../../services/authentication.service';
 
 
 @Component({
@@ -20,15 +22,26 @@ export class ChatHistoryComponent {
 
   channelMessages$!: Observable<Message[]>;
   allChannelMessages: Message[] = [];
+  groupedMessages: { [date: string]: Message[] } = {};
+  currentUser!: User | null ;
 
 
   firestore: Firestore = inject(Firestore);
 
 
+  constructor(private authService: AuthService){}
+
+
   ngOnChanges(changes: SimpleChanges){
     if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='channel') {
       this.getChannelMessages();
+      this.getCurrentUser();
     }
+  }
+
+
+  async getCurrentUser(){
+    this.currentUser = await this.authService.getFullUser();
   }
 
 
@@ -38,9 +51,57 @@ export class ChatHistoryComponent {
 
     this.channelMessages$ = collectionData(channelMessagesSubcollection, { idField: 'id'}) as Observable<Message[]>;
 
-    this.channelMessages$.subscribe((changes) => {
-      this.allChannelMessages = changes;
-      console.log(this.allChannelMessages);
+    this.channelMessages$.subscribe((messages) => {
+      this.allChannelMessages = messages;
+      this.sortChannelMessages();
     })
   }
+
+
+  sortChannelMessages(){
+    this.groupedMessages = {};
+
+    this.allChannelMessages.forEach((message) => {
+      const date = new Date(message.timeStamp);
+      const dateKey = this.formatDate(date);
+
+      if (!this.groupedMessages[dateKey]) {
+        this.groupedMessages[dateKey] = [];
+      }
+      this.groupedMessages[dateKey].push(message);
+    });
+
+    // this.reverseMessageOrderInSubarrays();
+  }
+
+
+  // reverseMessageOrderInSubarrays(){
+  //   Object.keys(this.groupedMessages).forEach((dateKey) => {
+  //     this.groupedMessages[dateKey] = this.groupedMessages[dateKey].reverse();
+  //   });
+  // }
+
+
+
+
+  formatDate(date: Date){
+    const formatter = new Intl.DateTimeFormat('de-DE', {
+      weekday: 'long',  
+      day: '2-digit',  
+      month: 'long',  
+    });
+
+    return formatter.format(date);
+  }
+
+
+  sortedDateKeys(): string[] {
+    return Object.keys(this.groupedMessages).sort((a, b) => {
+      const dateA = new Date(a);
+      const dateB = new Date(b);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
+
+
 }

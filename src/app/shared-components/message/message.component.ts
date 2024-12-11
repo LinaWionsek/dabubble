@@ -1,16 +1,27 @@
 import { Component, Input } from '@angular/core';
 import { Message } from './../../models/message.class'
+import { CommonModule } from '@angular/common';
+import { User } from '../../models/user.class';
+
 
 @Component({
   selector: 'app-message',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './message.component.html',
-  styleUrl: './message.component.scss'
+  styleUrl: './message.component.scss',
 })
 export class MessageComponent {
-  @Input() message: Message = new Message();
+  @Input() currentUser!: User | null;
+  @Input() message!: Message;
+  messageClockTimer = '';
 
-  currentUserId = "vp5SdrqdKfMteNnXuw5V2TAcWco2";
 
+
+  
+  formatMessageTime(timeStamp:string){
+    const time = timeStamp.split('T')[1].split('Z')[0]; 
+    const [hours, minutes] = time.split(':'); 
+    return `${hours}:${minutes}`;
+  }
 }

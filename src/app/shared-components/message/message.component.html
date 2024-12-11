@@ -1,11 +1,11 @@
-@if(message.senderId === currentUserId){
+@if(message.senderId === currentUser?.id){
     <div class="message-container">
         <div class="message-div">
             <div class="message-div-header">
-                <span class="time-span">15:06 Uhr</span>
-                <span class="name-span">Current User</span>
+                <span class="time-span">{{ formatMessageTime(message.timeStamp) }} Uhr</span>
+                <span class="name-span">{{ message.senderName }}</span>
             </div>
-            <div class="message-text-div">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolores nesciunt tempore veritatis a laboriosam rem praesentium sit porro. Ab molestiae quisquam corrupti. Impedit unde eos odio dolor, aut cumque maxime.</div>
+            <div class="message-text-div">{{ message.messageText }}</div>
             <div class="message-div-footer">
                 <div class="reaction-div">
                     <img src="./../../../assets/img/rocket_emoji.png">
@@ -25,7 +25,7 @@
         </div>
     
         <div class="profile-img-div">
-            <img src="./../../../assets/img/avatar_1_large.png" class="profile-img">
+            <img src="./../../../assets/img/avatar_2_large.png" class="profile-img">
         </div>
     
     
@@ -59,10 +59,10 @@
     
         <div class="received message-div">
             <div class="received message-div-header">
-                <span class="name-span">Anderer User</span>
-                <span class="received time-span">15:04 Uhr</span>
+                <span class="name-span">{{ message.senderName }}</span>
+                <span class="received time-span">{{ formatMessageTime(message.timeStamp) }} Uhr</span>
             </div>
-            <div class="received message-text-div">Hallo.</div>
+            <div class="received message-text-div">{{ message.messageText }}</div>
             <div class="received message-div-footer">
                 <span class="answers-count">2 Antworten</span>
                 <span class="last-answer-time">Letzte Antwort 14:56</span>
@@ -70,8 +70,6 @@
         </div>
     
         
-    
-    
     
         <div class="received message-options-div">
             <div class="emoji-div icon-container">
