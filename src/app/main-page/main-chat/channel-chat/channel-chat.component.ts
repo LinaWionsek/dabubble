@@ -52,11 +52,12 @@ export class ChannelChatComponent {
       }
     });
 
-    this.getUserChannels();
+    this.getAllChannels();
     this.getAllUsers();
   }
+  
 
-  getUserChannels() {
+  getAllChannels() {
     const userChannelsCollection = collection(this.firestore, 'channels');
     this.channels$ = collectionData(userChannelsCollection, {
       idField: 'id',

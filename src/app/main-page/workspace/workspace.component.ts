@@ -2,6 +2,8 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { WorkspaceChannelsComponent } from "./workspace-channels/workspace-channels.component";
 import { WorkspaceDirectMessagesComponent } from "./workspace-direct-messages/workspace-direct-messages.component";
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { User } from '../../models/user.class';
+import { AuthService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-workspace',
@@ -26,11 +28,23 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   ],
 })
 export class WorkspaceComponent {
-
   @Output() dialogStateChange = new EventEmitter<boolean>();
-  
 
+  currentUser?: User | null ;
   workspaceMenuOpened = true;
+
+
+  constructor(private authService: AuthService){}
+
+  ngOnInit(){
+    this.getCurrentUser();
+  }
+
+
+  async getCurrentUser(){
+    this.currentUser = await this.authService.getFullUser();
+  }
+
 
   handleDialogStateChange(newState: boolean) {
     this.dialogStateChange.emit(newState); 
