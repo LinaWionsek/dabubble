@@ -10,13 +10,13 @@ import { ShowMembersDialogComponent } from './show-members-dialog/show-members-d
 import { AddMembersDialogComponent } from './add-members-dialog/add-members-dialog.component';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { ChannelChatHeaderComponent } from "./channel-chat-header/channel-chat-header.component";
-import { ChannelChatHistoryComponent } from "./channel-chat-history/channel-chat-history.component";
 import { ChatInputComponent } from "../../../shared-components/chat-input/chat-input.component";
+import { ChatHistoryComponent } from "../../../shared-components/chat-history/chat-history.component";
 
 @Component({
   selector: 'app-channel-chat',
   standalone: true,
-  imports: [EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent, ChannelChatHeaderComponent, ChannelChatHistoryComponent, ChatInputComponent],
+  imports: [EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent, ChannelChatHeaderComponent, ChatInputComponent, ChatHistoryComponent],
   templateUrl: './channel-chat.component.html',
   styleUrl: './channel-chat.component.scss',
 })
