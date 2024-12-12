@@ -133,6 +133,10 @@
     border-radius: 20px;
     padding: 5px 10px;
     @include display-flex();
+
+    &:hover{
+        cursor: pointer;
+    }
 }
 
 .reaction-count-span{
@@ -209,14 +213,15 @@
     position: absolute;
     left: 40px;
     top: 32px;
-    height: 67px;
     width: 269px;
-    @include display-flex();
+    @include display-flex($fd: column);
     box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
     border-top-right-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
     background-color: white;
+    padding: 16px;
+    gap: 8px;
 }
 
 .edit-msg-btn{

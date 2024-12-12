@@ -22,14 +22,13 @@
             } @else {
                 <div class="message-text-div">{{ message.messageText }}</div>
                 <div class="message-div-footer">
-                    <div class="reaction-div">
-                        <img src="./../../../assets/img/rocket_emoji.png">
-                        <span class="reaction-count-span">1</span>
-                    </div>
-                    <div class="reaction-div">
-                        <img src="./../../../assets/img/tick_emoji.png">
-                        <span class="reaction-count-span">1</span>
-                    </div>
+                    @for (reactionType of groupedReactions | keyvalue; track $index) {
+                        <div class="reaction-div" (click)="addReaction(reactionType.key)">
+                            <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
+                            <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
+                        </div>
+
+                    }
                     <div class="add-reaction-icon-container">
                         <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
                     </div>
@@ -46,23 +45,26 @@
     
         @if(!editingMessage){
             <div class="message-options-div">
-                <div class="emoji-div icon-container">
-                    <img src="./../../../assets/img/tick_emoji.png" alt="">
+                <div class="emoji-div icon-container" (click)="addReaction('tick')">
+                    <img src="./../../../assets/img/emojis/tick.png">
                 </div>
-                <div class="emoji-div icon-container">
-                    <img src="./../../../assets/img/hands_up_emoji.png" alt="">
-                </div>
-                <div class="icon-container">
-                    <img src="./../../../assets/img/add_reaction.png" alt="">
+                <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
+                    <img src="./../../../assets/img/emojis/hands_up.png">
                 </div>
                 <div class="icon-container">
-                    <img src="./../../../assets/img/comment.png" alt="">
+                    <img src="./../../../assets/img/add_reaction.png">
+                </div>
+                <div class="icon-container">
+                    <img src="./../../../assets/img/comment.png">
                 </div>
                 <div class="icon-container more" (click)="showEditMessageBtn()">
                     <img src="./../../../assets/img/more_vert.png" alt="">
     
                     @if(editMessageBtnVisible){
-                        <div class="edit-msg-btn-div"><button class="edit-msg-btn" (click)="editMessage()">Nachricht bearbeiten</button></div>
+                        <div class="edit-msg-btn-div">
+                            <button class="edit-msg-btn" (click)="editMessage()">Nachricht bearbeiten</button>
+                            <button class="edit-msg-btn" (click)="deleteMessage()">Nachricht löschen</button>
+                        </div>
                     }
                 </div>
             </div>
@@ -85,6 +87,16 @@
             </div>
             <div class="received message-text-div">{{ message.messageText }}</div>
             <div class="received message-div-footer">
+                @for (reactionType of groupedReactions | keyvalue; track $index) {
+                    <div class="reaction-div" (click)="addReaction(reactionType.key)">
+                        <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
+                        <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
+                    </div>
+
+                }
+                <div class="add-reaction-icon-container">
+                    <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
+                </div>
                 <span class="answers-count">2 Antworten</span>
                 <span class="last-answer-time">Letzte Antwort 14:56</span>
             </div>
@@ -94,10 +106,10 @@
     
         <div class="received message-options-div">
             <div class="emoji-div icon-container">
-                <img src="./../../../assets/img/tick_emoji.png" alt="">
+                <img src="./../../../assets/img/emojis/tick.png" alt="">
             </div>
             <div class="emoji-div icon-container">
-                <img src="./../../../assets/img/hands_up_emoji.png" alt="">
+                <img src="./../../../assets/img/emojis/hands_up.png" alt="">
             </div>
             <div class="icon-container">
                 <img src="./../../../assets/img/add_reaction.png" alt="">
