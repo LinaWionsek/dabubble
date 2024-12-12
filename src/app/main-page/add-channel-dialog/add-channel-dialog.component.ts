@@ -7,6 +7,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
 import { channelData } from '../../types/types';
 import { User } from '../../models/user.class';
+import { AuthService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-add-channel-dialog',
@@ -29,7 +30,7 @@ export class AddChannelDialogComponent {
   allUsers$!: Observable<User[]>;
   allUserChannels: Channel[] = [];
   users: User[] = [];
-
+  currentUser?: User | null;
   userSearchQuery: string = '';
   foundUsers?: User[] = [];
   displaySearchResultContainer = false;
@@ -38,7 +39,7 @@ export class AddChannelDialogComponent {
 
   firestore: Firestore = inject(Firestore);
 
-  constructor(private channelService: ChannelService) {}
+  constructor(private channelService: ChannelService, private authService: AuthService) {}
 
 
 
@@ -48,9 +49,23 @@ export class AddChannelDialogComponent {
       this.updateActiveChannelData();
     });
 
+    this.setCurrentUser();
+
     this.getUserChannels();
     this.getAllUsers();
   }
+
+
+  async setCurrentUser(){
+    this.currentUser = await this.authService.getFullUser();
+    console.log('currentUser:',this.currentUser);
+
+    this.channel.creator = this.currentUser!.firstName + ' ' + this.currentUser!.lastName;
+    this.channel.userIds.push(this.currentUser!.id);
+    console.log('channel:',this.channel);
+  }
+
+
 
 
   getUserChannels(){

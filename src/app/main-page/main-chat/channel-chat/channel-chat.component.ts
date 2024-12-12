@@ -48,10 +48,8 @@ export class ChannelChatComponent {
       if(this.activeChannel !==channelId){
         this.activeChannel = channelId;
         this.updateActiveChannelData();
-        this.getActiveChannelUsers();
       }
     });
-
     this.getAllChannels();
     this.getAllUsers();
   }
@@ -65,11 +63,11 @@ export class ChannelChatComponent {
 
     this.channels$.subscribe((changes) => {
       this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+      this.updateActiveChannelUsers();
       
       const updatedChannel = this.allUserChannels.find(channel => channel.id === this.activeChannel);
       if (updatedChannel) {
         this.activeChannelData = updatedChannel;
-        this.getActiveChannelUsers();
       }
     })
   }
@@ -82,19 +80,16 @@ export class ChannelChatComponent {
 
   getAllUsers(){
     const userCollection = collection(this.firestore, 'users');
-    this.allUsers$ = collectionData(userCollection, {
-      idField: 'id',
-    }) as Observable<User[]>;
+    this.allUsers$ = collectionData(userCollection, { idField: 'id', }) as Observable<User[]>;
 
-    this.allUsers$.subscribe((changes) => {
-      this.users = Array.from(
-        new Map(changes.map((user) => [user.id, user])).values()
-      );
+    this.allUsers$.subscribe((changes) => { 
+      this.users = Array.from(new Map(changes.map((user) => [user.id, user])).values());
+      this.updateActiveChannelUsers();
     });
   }
 
 
-  getActiveChannelUsers(){
+  updateActiveChannelUsers(){
     this.activeChannelUsers = this.users.filter(user => this.activeChannelData?.userIds.includes(user.id));
   }
 
@@ -113,6 +108,7 @@ export class ChannelChatComponent {
       this.showMembersDialogPosition = position;
     }
   }
+
 
   openEditChannelDialog() {
     
