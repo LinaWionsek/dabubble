@@ -53,12 +53,12 @@ export class ChatHistoryComponent {
 
     this.channelMessages$.subscribe((messages) => {
       this.allChannelMessages = messages;
-      this.sortChannelMessages();
+      this.sortChannelMessagesIntoGroups();
     })
   }
 
 
-  sortChannelMessages(){
+  sortChannelMessagesIntoGroups(){
     this.groupedMessages = {};
 
     this.allChannelMessages.forEach((message) => {
@@ -71,15 +71,20 @@ export class ChatHistoryComponent {
       this.groupedMessages[dateKey].push(message);
     });
 
-    // this.reverseMessageOrderInSubarrays();
+    this.sortGroupedMessages();
+  }
+  
+
+  sortGroupedMessages(){
+    Object.keys(this.groupedMessages).forEach((dateKey) => {
+      this.groupedMessages[dateKey].sort((a, b) => {
+        const timeA = new Date(a.timeStamp).getTime();
+        const timeB = new Date(b.timeStamp).getTime();
+        return timeB - timeA; 
+      });
+    });
   }
 
-
-  // reverseMessageOrderInSubarrays(){
-  //   Object.keys(this.groupedMessages).forEach((dateKey) => {
-  //     this.groupedMessages[dateKey] = this.groupedMessages[dateKey].reverse();
-  //   });
-  // }
 
 
 
