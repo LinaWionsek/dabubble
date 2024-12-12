@@ -84,6 +84,7 @@ export class ChatInputComponent {
   initializeNewMessage(){
     this.newMessage = new Message();
     this.newMessage.senderId = this.currentUser?.id ?? '';
+    this.newMessage.senderAvatar = this.currentUser?.avatar ?? '';
     this.newMessage.senderName = this.currentUser?.firstName + ' ' + this.currentUser?.lastName;
   }
 
