@@ -20,6 +20,9 @@ export class ChatHistoryComponent {
   @Input() channelData?: Channel | undefined;
   @Input() usedFor = '';
 
+  channelId?: string;
+  chatId?: string;
+
   channelMessages$!: Observable<Message[]>;
   allChannelMessages: Message[] = [];
   groupedMessages: { [date: string]: Message[] } = {};
@@ -36,7 +39,15 @@ export class ChatHistoryComponent {
     if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='channel') {
       this.getChannelMessages();
       this.getCurrentUser();
+      this.setChannelId();
+    } else if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='chat'){
+      // copy above for dm-chat
     }
+  }
+  
+
+  setChannelId(){
+    this.channelId = this.channelData?.id;
   }
 
 

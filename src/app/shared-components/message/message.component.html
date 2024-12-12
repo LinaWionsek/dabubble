@@ -1,27 +1,41 @@
 @if(message.senderId === currentUser?.id){
-    <div class="message-container">
+    <div class="message-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="message-div">
             <div class="message-div-header">
                 <span class="time-span">{{ formatMessageTime(message.timeStamp) }} Uhr</span>
                 <span class="name-span">{{ message.senderName }}</span>
             </div>
-            <div class="message-text-div">{{ message.messageText }}</div>
-            <div class="message-div-footer">
-                <div class="reaction-div">
-                    <img src="./../../../assets/img/rocket_emoji.png">
-                    <span class="reaction-count-span">1</span>
+
+            @if(editingMessage){
+                <div class="edit-msg-div">
+                    <textarea [(ngModel)]="message.messageText"></textarea>
+                    <div class="edit-msg-div-footer">
+                        <div class="action-icon-container">
+                            <img src="./../../../assets/img/emoji_reaction.png" class="emoji-img">
+                        </div>
+                        <div class="btn-container">
+                            <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
+                            <button class="save-btn" (click)="updateMessage()">Speichern</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="reaction-div">
-                    <img src="./../../../assets/img/tick_emoji.png">
-                    <span class="reaction-count-span">1</span>
+            } @else {
+                <div class="message-text-div">{{ message.messageText }}</div>
+                <div class="message-div-footer">
+                    <div class="reaction-div">
+                        <img src="./../../../assets/img/rocket_emoji.png">
+                        <span class="reaction-count-span">1</span>
+                    </div>
+                    <div class="reaction-div">
+                        <img src="./../../../assets/img/tick_emoji.png">
+                        <span class="reaction-count-span">1</span>
+                    </div>
+                    <div class="add-reaction-icon-container">
+                        <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
+                    </div>
                 </div>
-                <div class="add-reaction-icon-container">
-                    <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
-                </div>
-               
-            </div>
-    
-    
+            }
+            
         </div>
     
         <div class="profile-img-div">
@@ -30,24 +44,31 @@
     
     
     
+        @if(!editingMessage){
+            <div class="message-options-div">
+                <div class="emoji-div icon-container">
+                    <img src="./../../../assets/img/tick_emoji.png" alt="">
+                </div>
+                <div class="emoji-div icon-container">
+                    <img src="./../../../assets/img/hands_up_emoji.png" alt="">
+                </div>
+                <div class="icon-container">
+                    <img src="./../../../assets/img/add_reaction.png" alt="">
+                </div>
+                <div class="icon-container">
+                    <img src="./../../../assets/img/comment.png" alt="">
+                </div>
+                <div class="icon-container more" (click)="showEditMessageBtn()">
+                    <img src="./../../../assets/img/more_vert.png" alt="">
     
-        <div class="message-options-div">
-            <div class="emoji-div icon-container">
-                <img src="./../../../assets/img/tick_emoji.png" alt="">
+                    @if(editMessageBtnVisible){
+                        <div class="edit-msg-btn-div"><button class="edit-msg-btn" (click)="editMessage()">Nachricht bearbeiten</button></div>
+                    }
+                </div>
             </div>
-            <div class="emoji-div icon-container">
-                <img src="./../../../assets/img/hands_up_emoji.png" alt="">
-            </div>
-            <div class="icon-container">
-                <img src="./../../../assets/img/add_reaction.png" alt="">
-            </div>
-            <div class="icon-container">
-                <img src="./../../../assets/img/comment.png" alt="">
-            </div>
-            <div class="icon-container">
-                <img src="./../../../assets/img/more_vert.png" alt="">
-            </div>
-        </div>
+        }
+        
+
     </div>
     
 } @else {

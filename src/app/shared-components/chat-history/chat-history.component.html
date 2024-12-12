@@ -4,6 +4,8 @@
         
         @for (message of groupedMessages[dateKey]; track $index) {
             <app-message 
+                [channelId]="channelId"
+                [chatId]="chatId"
                 [currentUser]="currentUser"
                 [message]="message">
             </app-message>
