@@ -53,18 +53,21 @@ export class ChatInputComponent {
 
 
   async sendMessage(){
-    if(this.usedFor === 'channel'){
-      const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
-      const channelMessagesSubcollection = collection(channelDocRef, 'messages');
-      try {
-        await addDoc(channelMessagesSubcollection, {...this.newMessage});
-      } catch (error) {
-        console.error(error)
+    if(this.newMessage.messageText){
+      if(this.usedFor === 'channel'){
+        const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
+        const channelMessagesSubcollection = collection(channelDocRef, 'messages');
+        try {
+          await addDoc(channelMessagesSubcollection, {...this.newMessage});
+        } catch (error) {
+          console.error(error)
+        }
+      } else if(this.usedFor === 'directMessaging'){
+        // send new message to user
       }
-    } else if(this.usedFor === 'directMessaging'){
-      // send new message to user
+      this.initializeNewMessage();
+
     }
-    this.initializeNewMessage();
   }
 
 
