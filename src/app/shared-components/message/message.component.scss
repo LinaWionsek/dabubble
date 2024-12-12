@@ -175,8 +175,9 @@
     border-bottom-left-radius: 25px;
     background-color: white;
     gap: 5px;
-
+    z-index: 100;
 }
+
 
 .received.message-options-div{
     left: unset;

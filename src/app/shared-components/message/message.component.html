@@ -25,7 +25,7 @@
         </div>
     
         <div class="profile-img-div">
-            <img src="./../../../assets/img/avatar_2_large.png" class="profile-img">
+            <img [src]="message.senderAvatar" class="profile-img">
         </div>
     
     
@@ -54,7 +54,7 @@
 
     <div class="received message-container">
         <div class="received profile-img-div">
-            <img src="./../../../assets/img/avatar_1_large.png" class="profile-img">
+            <img [src]="message.senderAvatar" class="profile-img">
         </div>
     
         <div class="received message-div">
