@@ -38,6 +38,8 @@ export class ChannelChatHeaderComponent {
 
 
 
+
+
   openEditChannelDialog() {
     const rect = this.channelTitleDiv.nativeElement.getBoundingClientRect();
     this.editChannelDialogPosition = {

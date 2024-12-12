@@ -67,6 +67,7 @@ export class WorkspaceChannelsComponent {
     
     this.channels$.subscribe((changes) => {
       this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+      this.getAllChannelsForCurrentUser();
       
       if (!this.isInitialized && this.allChannels.length > 0) {
         this.activateChannel(0); 
