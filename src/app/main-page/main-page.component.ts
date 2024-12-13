@@ -6,6 +6,7 @@ import { AddChannelDialogComponent } from './add-channel-dialog/add-channel-dial
 import { HeaderComponent } from '../shared-components/header/header.component';
 import { AuthService } from '../services/authentication.service';
 import { Router } from '@angular/router';
+import { ThreadService } from '../services/thread.service';
 
 @Component({
   selector: 'app-main-page',
@@ -23,8 +24,17 @@ import { Router } from '@angular/router';
 export class MainPageComponent {
   addChannelDialogOpened = false;
   activeChannel: string = '';
+  threadActivated = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private threadService: ThreadService) {}
+
+
+  ngOnInit(){
+    this.threadService.threadActivated$.subscribe((activated) => {
+      this.threadActivated = activated;
+    });
+  }
+  
 
   handleDialogStateChange(dialogState: boolean) {
     this.addChannelDialogOpened = dialogState;

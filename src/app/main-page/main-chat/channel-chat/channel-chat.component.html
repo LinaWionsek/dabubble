@@ -1,18 +1,18 @@
 <app-channel-chat-header 
-    [activeChannelData]="activeChannelData" 
+    [activeChannelData]="activeChannel" 
     [activeChannelUsers]="activeChannelUsers"
     (dialogStateChange)="handleDialogStateChange($event)">
 </app-channel-chat-header>
 
 <app-chat-history
-    [channelData]="activeChannelData"
-    [usedFor]="usecase">
+    [channelData]="activeChannel"
+    [usedFor]="'channel'">
 </app-chat-history>
 
 <div class="chat-input-container">
     <app-chat-input
-      [channelData]="activeChannelData"
-      [usedFor]="usecase">
+      [channelData]="activeChannel"
+      [usedFor]="'channel'">
     </app-chat-input>
 </div>
 
@@ -21,9 +21,9 @@
 
 
 
-@if(editChannelDialogOpened && activeChannelData){
+@if(editChannelDialogOpened && activeChannel){
     <app-edit-channel-dialog
-        [channelData]="activeChannelData!"
+        [channelData]="activeChannel!"
         (dialogClosed)="closeEditDialog()"
         [position]="editChannelDialogPosition"
         >
@@ -31,9 +31,9 @@
 }
 
 
-@if(showMembersDialogOpened && activeChannelData){
+@if(showMembersDialogOpened && activeChannel){
     <app-show-members-dialog
-        [channelData]="activeChannelData" 
+        [channelData]="activeChannel" 
         (dialogClosed)="closeShowMembersDialog()" 
         [allUsers]="users"
         (openAddMembersDialog)="openAddMembersDialog()"
@@ -43,9 +43,9 @@
 }
 
 
-@if(addMembersDialogOpened && activeChannelData){
+@if(addMembersDialogOpened && activeChannel){
     <app-add-members-dialog
-        [channelData]="activeChannelData" 
+        [channelData]="activeChannel" 
         [allUsers]="users"
         (dialogClosed)="closeAddMembersDialog()" 
         (openAddMembersDialog)="openAddMembersDialog()"

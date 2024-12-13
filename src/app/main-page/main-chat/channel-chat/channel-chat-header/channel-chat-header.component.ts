@@ -25,7 +25,7 @@ export class ChannelChatHeaderComponent {
     position: { top: string; left: string };
   }>();
 
-  @Input() activeChannelData!: Channel | undefined;
+  @Input() activeChannelData!: Channel | null;
   @Input() activeChannelUsers: User[] = [];
 
   editChannelDialogOpened = false;

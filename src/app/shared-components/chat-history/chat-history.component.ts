@@ -17,7 +17,7 @@ import { AuthService } from '../../services/authentication.service';
   styleUrl: './chat-history.component.scss'
 })
 export class ChatHistoryComponent {
-  @Input() channelData?: Channel | undefined;
+  @Input() channelData?: Channel | null;
   @Input() usedFor = '';
 
   channelId?: string;

@@ -86,6 +86,7 @@ export class WorkspaceChannelsComponent {
   activateChannel(index:number) {
     this.activeIndex = index; 
     this.activeChannel = this.allChannels[index].id;
-    this.channelService.setActiveChannel(this.activeChannel);
+    const activeChannelObject = this.allChannels[index]
+    this.channelService.setActiveChannel(activeChannelObject);
   }
 }

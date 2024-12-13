@@ -24,8 +24,8 @@ export class AddChannelDialogComponent {
   addPeopleDialogOpened: boolean = false;
   channel = new Channel();
   selectedOption: string = 'option1';
-  activeChannel: string | null = null;
-  activeChannelData!: Channel | null;
+  activeChannel: Channel | null = null;
+  
   channels$!: Observable<Channel[]>;
   allUsers$!: Observable<User[]>;
   allUserChannels: Channel[] = [];
@@ -44,9 +44,8 @@ export class AddChannelDialogComponent {
 
 
   ngOnInit() {
-    this.channelService.activeChannel$.subscribe(channelId => {
-      this.activeChannel = channelId;
-      this.updateActiveChannelData();
+    this.channelService.activeChannel$.subscribe(channel => {
+      this.activeChannel = channel;
     });
 
     this.setCurrentUser();
@@ -58,11 +57,8 @@ export class AddChannelDialogComponent {
 
   async setCurrentUser(){
     this.currentUser = await this.authService.getFullUser();
-    console.log('currentUser:',this.currentUser);
-
     this.channel.creator = this.currentUser!.firstName + ' ' + this.currentUser!.lastName;
     this.channel.userIds.push(this.currentUser!.id);
-    console.log('channel:',this.channel);
   }
 
 
@@ -74,13 +70,7 @@ export class AddChannelDialogComponent {
     
     this.channels$.subscribe((changes) => {
       this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
-      this.updateActiveChannelData();
     })
-  }
-
-
-  updateActiveChannelData(){
-    this.activeChannelData = this.allUserChannels.find(channel => channel.id === this.activeChannel) ?? null;
   }
 
 
@@ -128,7 +118,9 @@ export class AddChannelDialogComponent {
       try {
         const channelCollection = collection(this.firestore, 'channels');
         const docRef = await addDoc(channelCollection, { ...this.channel});
-        this.channelService.setActiveChannel(docRef.id);
+        const newChannel = { ...this.channel, id: docRef.id }
+
+        this.channelService.setActiveChannel(newChannel);
         this.channel = new Channel();
         this.closeDialog();
       } catch (error) {
@@ -139,8 +131,8 @@ export class AddChannelDialogComponent {
 
 
     addMembersToChannel(){
-      if (this.selectedOption === 'option1' && this.activeChannelData){
-        this.channel.userIds = this.activeChannelData.userIds;
+      if (this.selectedOption === 'option1' && this.activeChannel){
+        this.channel.userIds = this.activeChannel.userIds;
       } else if (this.selectedOption === 'option2'){
         this.selectedUsers?.forEach(user => this.channel.userIds.push(user.id));
       }
