@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, inject, Input } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, inject, Input, SimpleChanges } from '@angular/core';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { Channel } from './../../../models/channel.class';
@@ -45,7 +45,13 @@ export class WorkspaceChannelsComponent {
 
   ngOnInit(){
     this.getAllChannels();
-    
+  }
+  
+
+  ngOnChanges(changes: SimpleChanges){
+    if (changes['currentUser'] && this.currentUser) {
+      this.getAllChannelsForCurrentUser(); 
+    }
   }
 
 
@@ -74,6 +80,7 @@ export class WorkspaceChannelsComponent {
 
   getAllChannelsForCurrentUser(){
     this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
+    console.log(this.allUserChannels);
   }
 
 
