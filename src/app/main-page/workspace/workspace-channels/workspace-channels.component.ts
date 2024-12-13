@@ -37,7 +37,7 @@ export class WorkspaceChannelsComponent {
   allChannels: Channel[] = [];
   allUserChannels: Channel[] = [];
   firestore: Firestore = inject(Firestore);
-  private isInitialized = false;
+  
 
   activeIndex: number | null = null;
   activeChannel:string = '';
@@ -68,11 +68,6 @@ export class WorkspaceChannelsComponent {
     this.channels$.subscribe((changes) => {
       this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
       this.getAllChannelsForCurrentUser();
-      
-      if (!this.isInitialized && this.allChannels.length > 0) {
-        this.activateChannel(0); 
-        this.isInitialized = true;
-      }
     })
   }
 

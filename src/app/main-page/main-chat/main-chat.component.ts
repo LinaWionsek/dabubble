@@ -11,7 +11,7 @@ import { User } from '../../models/user.class';
   templateUrl: './main-chat.component.html',
   styleUrl: './main-chat.component.scss'
 })
-export class MainChatComponent implements OnInit{
+export class MainChatComponent {
   activeChannel: string | null = null;
 
   constructor(private channelService: ChannelService, private authSercive: AuthService) {}
@@ -20,6 +20,7 @@ export class MainChatComponent implements OnInit{
   async ngOnInit() {
     this.channelService.activeChannel$.subscribe(channelId => {
       this.activeChannel = channelId;
+      
     });
 
     
