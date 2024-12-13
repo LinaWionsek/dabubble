@@ -6,7 +6,10 @@
         (dialogStateChange)="handleDialogStateChange($event)"
       ></app-workspace>
       <app-main-chat></app-main-chat>
-      <app-thread></app-thread>
+
+      @if(threadActivated){
+        <app-thread></app-thread>
+      }
     </div>
   </div>
 

@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './chat-input.component.scss'
 })
 export class ChatInputComponent {
-  @Input() channelData?: Channel | undefined;
+  @Input() channelData?: Channel | null;
   @Input() usedFor = '';
 
   sendMessagesTo: string  = '';

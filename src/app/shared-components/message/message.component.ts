@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData} from '@angular/fire/firestore';
 import { Reaction } from '../../models/reaction.class';
 import { Observable } from 'rxjs';
+import { ThreadService } from '../../services/thread.service';
 
 
 
@@ -37,6 +38,9 @@ export class MessageComponent {
 
   mainEmojiOptionsMenu = false;
   secondaryEmojiOptionsMenu = false;
+
+
+  constructor(private threadService: ThreadService) {}
 
 
   ngOnInit(){
@@ -210,6 +214,9 @@ export class MessageComponent {
   }
 
 
+  activateThread(message: Message) {
+    this.threadService.activateThread(message);
+  }
   
 
 
