@@ -31,10 +31,10 @@ export class MessageComponent {
   messageReactions?: Reaction[];
   messageReactions$?: Observable<Reaction[]>;
   groupedReactions: { [reactionType: string]: Reaction[] } = {};
-
-
+  hasJustReacted = false;
 
   firestore: Firestore = inject(Firestore);
+
 
 
   ngOnInit(){
@@ -76,6 +76,7 @@ export class MessageComponent {
   initializeNewReaction(){
     this.reaction = new Reaction();
     this.reaction.originatorName = this.currentUser?.firstName + ' ' + this.currentUser?.lastName;
+    this.reaction.originatorId = this.currentUser?.id ?? '';
   }
 
 
@@ -144,25 +145,43 @@ export class MessageComponent {
     }
   }
 
-  async addReaction(type:string){
-    this.reaction.reactionType = type;
 
-    if(this.channelId){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message.id}`);
-      const reactionsSubcollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
-
-      try {
-        await addDoc(reactionsSubcollection, { ...this.reaction });
-        console.log('reaction created:', this.reaction);
-        this.initializeNewReaction();
-      } catch (error) {
-        console.error(error)
-      }
-    } else if(this.chatId){
-      //copy above for chat
-    }
-    
-
+  formerReactionOfTheSameTypeExists(type:string){
+    return this.groupedReactions[type]?.some((reaction) => reaction.originatorId === this.currentUser?.id) || false;
   }
+
+
+  async addReaction(type:string){
+    if(!this.formerReactionOfTheSameTypeExists(type) && !this.hasJustReacted){
+      this.reaction.reactionType = type;
+      this.hasJustReacted = true; 
+
+      if(this.channelId){
+        const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message.id}`);
+        const reactionsSubcollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+  
+        try {
+          await addDoc(reactionsSubcollection, { ...this.reaction });
+          this.initializeNewReaction();
+        } catch (error) {
+          console.error(error)
+        } finally {
+          setTimeout(() => {
+            this.hasJustReacted = false;
+          }, 2000);
+        }
+      } else if(this.chatId){
+        //copy above for chat
+      }
+
+    }
+
+    
+  }
+
+
+
+  
+
 
 }

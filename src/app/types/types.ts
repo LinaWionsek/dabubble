@@ -27,6 +27,7 @@ export type threadData = {
 export type reactionData = {
     reactionType: string;
     originatorName: string;
+    originatorId: string;
 }
 
 
