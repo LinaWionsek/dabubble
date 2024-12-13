@@ -11,4 +11,8 @@ export class ChannelService {
   setActiveChannel(channelId: string) {
     this.activeChannelSource.next(channelId);
   }
+
+  clearActiveChannel() {
+    this.activeChannelSource.next(null);
+  }
 }

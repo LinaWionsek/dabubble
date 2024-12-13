@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../services/authentication.service';
 import { Router } from '@angular/router';
+import { ChannelService } from '../../../services/channel.service';
 
 @Component({
   selector: 'app-header-user-dialog',
@@ -11,9 +12,10 @@ import { Router } from '@angular/router';
 })
 export class HeaderUserDialogComponent {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private channelService: ChannelService) {}
   signOut() {
     this.authService.signOut();
+    this.channelService.clearActiveChannel();
 
     //Timeout because of the AuthGuard, u need to press Logout twice otherwise ?!
     setTimeout(() => {
