@@ -54,7 +54,6 @@ export class MessageComponent {
       this.messageReactions$.subscribe((reactions) => {
         this.messageReactions = reactions;
         this.sortReactionTypes();
-        console.log(this.groupedReactions);
       })
     } else if(this.chatId){
       //copy above for chat
@@ -83,9 +82,18 @@ export class MessageComponent {
 
 
   formatMessageTime(timeStamp:string){
-    const time = timeStamp.split('T')[1].split('Z')[0]; 
-    const [hours, minutes] = time.split(':'); 
-    return `${hours}:${minutes}`;
+    const date = new Date(timeStamp);
+    const localTime = date.toLocaleTimeString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+
+    return localTime;
+
+    // const time = timeStamp.split('T')[1].split('Z')[0]; 
+    // const [hours, minutes] = time.split(':'); 
+    // return `${hours}:${minutes}`;
   }
 
 
@@ -112,7 +120,11 @@ export class MessageComponent {
   }
 
   cancelEditing(){
-    this.editingMessage = false;
+    if(!this.message.messageText.trim()){
+      this.deleteMessage();
+    } else {
+      this.editingMessage = false;
+    }
   }
 
 

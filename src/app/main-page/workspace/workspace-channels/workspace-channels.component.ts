@@ -80,7 +80,6 @@ export class WorkspaceChannelsComponent {
 
   getAllChannelsForCurrentUser(){
     this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
-    console.log(this.allUserChannels);
   }
 
 

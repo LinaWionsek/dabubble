@@ -6,6 +6,7 @@
 }
 
 .message-container{
+    margin-bottom: 24px;
     position: relative;
     transition: all 125ms ease;
     padding: 8px 40px;
@@ -302,9 +303,14 @@
     color: white;
     background-color: rgba(68, 77, 242, 1);
     border: unset;
-    
 
+    &:disabled{
+        background-color: rgba(68, 77, 242, 0.61);
 
+        &:hover{
+            cursor: unset !important;
+        }
+    }
 }
 
 

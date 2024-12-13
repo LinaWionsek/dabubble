@@ -54,6 +54,8 @@ export class ChatInputComponent {
 
   async sendMessage(){
     if(this.newMessage.messageText){
+      this.newMessage.timeStamp = new Date().toISOString();
+      
       if(this.usedFor === 'channel'){
         const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
         const channelMessagesSubcollection = collection(channelDocRef, 'messages');

@@ -8,14 +8,14 @@
 
             @if(editingMessage){
                 <div class="edit-msg-div">
-                    <textarea [(ngModel)]="message.messageText"></textarea>
+                    <textarea [(ngModel)]="message.messageText" required></textarea>
                     <div class="edit-msg-div-footer">
                         <div class="action-icon-container">
                             <img src="./../../../assets/img/emoji_reaction.png" class="emoji-img">
                         </div>
                         <div class="btn-container">
                             <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
-                            <button class="save-btn" (click)="updateMessage()">Speichern</button>
+                            <button class="save-btn" (click)="updateMessage()" [disabled]="!message.messageText.trim()">Speichern</button>
                         </div>
                     </div>
                 </div>
