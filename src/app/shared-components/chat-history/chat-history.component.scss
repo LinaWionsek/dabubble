@@ -1,8 +1,7 @@
 @import "mixins", "styles";
 
 :host{
-    
-    max-height: 58vh;
+    max-height: 62vh;
     width: 100%;
     @include display-flex($fd: column, $jc: flex-end);
     flex: 1;

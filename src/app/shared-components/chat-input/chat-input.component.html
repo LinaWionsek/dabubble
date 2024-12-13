@@ -1,5 +1,9 @@
 <div class="chat-input">
-    <textarea placeholder="Nachricht an #{{sendMessagesTo}}" [(ngModel)]="newMessage.messageText" (keydown.enter)="onEnter($event)"></textarea>
+    <textarea  
+        [placeholder]="usedFor === 'channel' ? 'Nachricht an #' + sendMessagesTo : 'Antworten...'"
+        [(ngModel)]="newMessage.messageText" 
+        (keydown.enter)="onEnter($event)">
+    </textarea>
 
     <div class="chat-input-action-div">
         <div class="add-elements">

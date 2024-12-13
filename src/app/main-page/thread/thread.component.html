@@ -1,3 +1,20 @@
 <div class="thread-container">
-    Thread
+    <div class="thread-header">
+        <div class="title-div">
+            <span class="thread-title">Thread</span>
+            <span class="channel-title"># Entwicklerteam</span>
+        </div>
+        
+        <div class="icon-container">
+            <img src="./../../../assets/img/close.png" >
+        </div>
+    </div>
+
+    <app-chat-history [usedFor]="'thread'"></app-chat-history>
+
+
+    <div class="chat-input-container">
+        <app-chat-input [usedFor]="'thread'"></app-chat-input>
+    </div>
+   
 </div>
