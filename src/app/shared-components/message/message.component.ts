@@ -35,6 +35,8 @@ export class MessageComponent {
 
   firestore: Firestore = inject(Firestore);
 
+  mainEmojiOptionsMenu = false;
+  secondaryEmojiOptionsMenu = false;
 
 
   ngOnInit(){
@@ -179,6 +181,21 @@ export class MessageComponent {
     
   }
 
+  showMainReactionOptions(){
+    this.mainEmojiOptionsMenu = true;
+  }
+
+  hideMainEmojiOptions(){
+    this.mainEmojiOptionsMenu = false;
+  }
+
+  showSecondaryReactionOptions(){
+    this.secondaryEmojiOptionsMenu = true;
+  }
+
+  hideSecondaryEmojiOptions(){
+    this.secondaryEmojiOptionsMenu = false;
+  }
 
 
   

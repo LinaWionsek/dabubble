@@ -29,8 +29,26 @@
                         </div>
 
                     }
-                    <div class="add-reaction-icon-container">
+                    <div class="add-reaction-icon-container" (click)="showMainReactionOptions()">
                         <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
+                        
+                        @if(mainEmojiOptionsMenu){
+                            <div class="reaction-options" (mouseleave)="hideMainEmojiOptions()">
+                                <div class="emoji-div icon-container" (click)="addReaction('tick')">
+                                    <img src="./../../../assets/img/emojis/tick.png">
+                                </div>
+                                <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
+                                    <img src="./../../../assets/img/emojis/hands_up.png">
+                                </div>
+                                <div class="emoji-div icon-container" (click)="addReaction('nerd_face')">
+                                    <img src="./../../../assets/img/emojis/nerd_face.png">
+                                </div>
+                                <div class="emoji-div icon-container" (click)="addReaction('rocket')">
+                                    <img src="./../../../assets/img/emojis/rocket.png">
+                                </div>
+                            </div>
+                        }
+                        
                     </div>
                 </div>
             }
@@ -51,12 +69,30 @@
                 <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
                     <img src="./../../../assets/img/emojis/hands_up.png">
                 </div>
-                <div class="icon-container">
+                <div class="icon-container" (click)="showSecondaryReactionOptions()">
                     <img src="./../../../assets/img/add_reaction.png">
+
+                    @if(secondaryEmojiOptionsMenu){
+                        <div class="reaction-options" (mouseleave)="hideSecondaryEmojiOptions()">
+                            <div class="emoji-div icon-container" (click)="addReaction('tick')">
+                                <img src="./../../../assets/img/emojis/tick.png">
+                            </div>
+                            <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
+                                <img src="./../../../assets/img/emojis/hands_up.png">
+                            </div>
+                            <div class="emoji-div icon-container" (click)="addReaction('nerd_face')">
+                                <img src="./../../../assets/img/emojis/nerd_face.png">
+                            </div>
+                            <div class="emoji-div icon-container" (click)="addReaction('rocket')">
+                                <img src="./../../../assets/img/emojis/rocket.png">
+                            </div>
+                        </div>
+                    }
+
                 </div>
-                <div class="icon-container">
+                <!-- <div class="icon-container">
                     <img src="./../../../assets/img/comment.png">
-                </div>
+                </div> -->
                 <div class="icon-container more" (click)="showEditMessageBtn()">
                     <img src="./../../../assets/img/more_vert.png" alt="">
     
@@ -87,6 +123,26 @@
             </div>
             <div class="received message-text-div">{{ message.messageText }}</div>
             <div class="received message-div-footer">
+                <div class="add-reaction-icon-container" (click)="showMainReactionOptions()">
+                    <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
+
+                    @if(mainEmojiOptionsMenu){
+                        <div class="received-msg-reaction-options" (mouseleave)="hideMainEmojiOptions()">
+                            <div class="emoji-div icon-container" (click)="addReaction('tick')">
+                                <img src="./../../../assets/img/emojis/tick.png">
+                            </div>
+                            <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
+                                <img src="./../../../assets/img/emojis/hands_up.png">
+                            </div>
+                            <div class="emoji-div icon-container" (click)="addReaction('nerd_face')">
+                                <img src="./../../../assets/img/emojis/nerd_face.png">
+                            </div>
+                            <div class="emoji-div icon-container" (click)="addReaction('rocket')">
+                                <img src="./../../../assets/img/emojis/rocket.png">
+                            </div>
+                        </div>
+                    }
+                </div>
                 @for (reactionType of groupedReactions | keyvalue; track $index) {
                     <div class="reaction-div" (click)="addReaction(reactionType.key)">
                         <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
@@ -94,9 +150,7 @@
                     </div>
 
                 }
-                <div class="add-reaction-icon-container">
-                    <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
-                </div>
+                
                 <span class="answers-count">2 Antworten</span>
                 <span class="last-answer-time">Letzte Antwort 14:56</span>
             </div>
@@ -111,8 +165,25 @@
             <div class="emoji-div icon-container">
                 <img src="./../../../assets/img/emojis/hands_up.png" alt="">
             </div>
-            <div class="icon-container">
+            <div class="icon-container" (click)="showSecondaryReactionOptions()">
                 <img src="./../../../assets/img/add_reaction.png" alt="">
+
+                @if(secondaryEmojiOptionsMenu){
+                    <div class="received-msg-reaction-options-2" (mouseleave)="hideSecondaryEmojiOptions()">
+                        <div class="emoji-div icon-container" (click)="addReaction('tick')">
+                            <img src="./../../../assets/img/emojis/tick.png">
+                        </div>
+                        <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
+                            <img src="./../../../assets/img/emojis/hands_up.png">
+                        </div>
+                        <div class="emoji-div icon-container" (click)="addReaction('nerd_face')">
+                            <img src="./../../../assets/img/emojis/nerd_face.png">
+                        </div>
+                        <div class="emoji-div icon-container" (click)="addReaction('rocket')">
+                            <img src="./../../../assets/img/emojis/rocket.png">
+                        </div>
+                    </div>
+                }
             </div>
             <div class="icon-container">
                 <img src="./../../../assets/img/comment.png" alt="">
