@@ -18,7 +18,11 @@
 
 
     <div class="chat-input-container">
-        <app-chat-input [usedFor]="'thread'"></app-chat-input>
+        <app-chat-input 
+            [activeMessage]="activeMessage"
+            [channelData]="activeChannel"
+            [usedFor]="'thread'">
+        </app-chat-input>
     </div>
    
 </div>

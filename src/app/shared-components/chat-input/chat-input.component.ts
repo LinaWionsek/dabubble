@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './chat-input.component.scss'
 })
 export class ChatInputComponent {
+  @Input() activeMessage?: Message | null;
   @Input() channelData?: Channel | null;
   @Input() usedFor = '';
 
@@ -65,8 +66,19 @@ export class ChatInputComponent {
           console.error(error)
         }
       } else if(this.usedFor === 'directMessaging'){
+
         // send new message to user
+
+      } else if(this.usedFor === 'thread'){
+        const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
+        const answersSubcollection = collection (channelDocRef, `messages/${this.activeMessage?.id}/answers`);
+        try {
+          addDoc(answersSubcollection, {...this.newMessage});
+        } catch (error) {
+          console.error(error);
+        }
       }
+
       this.initializeNewMessage();
 
     }
