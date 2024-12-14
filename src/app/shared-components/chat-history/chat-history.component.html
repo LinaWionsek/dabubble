@@ -18,11 +18,16 @@
 } @else if (usedFor === 'thread') {
     <div class="history-container">
         <div class="answers-div">
-            
+            @for (answer of allMessageAnswers; track $index) {
+                <app-message
+                    [currentUser]="currentUser"
+                    [message]="answer"
+                ></app-message>
+            }
         </div>
         <div class="seperator-div">
             @if(allMessageAnswers){
-                <span class="answer-count">{{allMessageAnswers.length}} Antworten</span>
+                <span class="answer-count">{{allMessageAnswers.length}} @if(allMessageAnswers.length > 1){Antworten} @else {Antwort}</span>
             }
             <div class="seperator"></div>
         </div>
