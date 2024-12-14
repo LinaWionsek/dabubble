@@ -8,7 +8,7 @@ import { EditChannelDialogComponent } from './edit-channel-dialog/edit-channel-d
 import { CommonModule } from '@angular/common';
 import { ShowMembersDialogComponent } from './show-members-dialog/show-members-dialog.component';
 import { AddMembersDialogComponent } from './add-members-dialog/add-members-dialog.component';
-import { ComponentPortal } from '@angular/cdk/portal';
+// import { ComponentPortal } from '@angular/cdk/portal';
 import { ChannelChatHeaderComponent } from "./channel-chat-header/channel-chat-header.component";
 import { ChatInputComponent } from "../../../shared-components/chat-input/chat-input.component";
 import { ChatHistoryComponent } from "../../../shared-components/chat-history/chat-history.component";

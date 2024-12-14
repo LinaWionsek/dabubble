@@ -5,6 +5,10 @@ header {
   @include display-flex($jc: space-between);
 }
 
+.padding-left-34 {
+  padding-left: 34px;
+}
+
 .header-left {
   @include display-flex($gap: 16px);
   transition: 225ms ease-in-out;
