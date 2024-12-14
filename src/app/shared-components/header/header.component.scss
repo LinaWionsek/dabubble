@@ -24,6 +24,13 @@ header {
   }
 }
 
+.header-center {
+  display: flex;
+  align-items: center;
+  width: 1505px;
+  justify-content: space-between;
+}
+
 .search-bar {
   @include size(990px);
 }
