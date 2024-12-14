@@ -34,3 +34,27 @@
         background: transparent;
       }
 }
+
+
+.seperator-div{
+  width: 100%;
+  @include display-flex();
+  padding: 0 16px;
+}
+
+.answer-count{
+  font-size: 18px;
+  color: rgba(173, 176, 217, 1);
+  margin-right: 16px;
+}
+
+.seperator{
+  border: 1px solid rgba(173, 176, 217, 1);
+  height: 1px;
+  flex: 1;
+}
+
+.answers-div{
+  width: 100%;
+  flex: 1;
+}

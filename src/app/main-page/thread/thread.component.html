@@ -2,7 +2,7 @@
     <div class="thread-header">
         <div class="title-div">
             <span class="thread-title">Thread</span>
-            <span class="channel-title"># Entwicklerteam</span>
+            <span class="channel-title"># {{activeChannel?.name}}</span>
         </div>
         
         <div class="icon-container" (click)="closeThread()">
@@ -10,7 +10,11 @@
         </div>
     </div>
 
-    <app-chat-history [usedFor]="'thread'"></app-chat-history>
+    <app-chat-history 
+        [activeMessage]="activeMessage"
+        [channelData]="activeChannel"
+        [usedFor]="'thread'">
+    </app-chat-history>
 
 
     <div class="chat-input-container">

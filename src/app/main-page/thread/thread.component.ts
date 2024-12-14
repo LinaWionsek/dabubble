@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChatHistoryComponent } from "../../shared-components/chat-history/chat-history.component";
 import { ChatInputComponent } from "../../shared-components/chat-input/chat-input.component";
 import { ThreadService } from '../../services/thread.service';
 import { ChannelService } from '../../services/channel.service';
+import { Firestore, doc, collection, collectionData } from '@angular/fire/firestore';
+
 import { Channel } from '../../models/channel.class';
 import { Message } from '../../models/message.class';
+import { MessageComponent } from "../../shared-components/message/message.component";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-thread',
@@ -17,6 +21,10 @@ export class ThreadComponent {
 
   activeChannel: Channel | null = null;
   activeMessage: Message | null = null;
+  
+
+  firestore: Firestore = inject(Firestore);
+
 
   constructor(private threadService: ThreadService, private channelService: ChannelService){}
 
@@ -41,6 +49,8 @@ export class ThreadComponent {
       this.activeMessage = message;
     })
   }
+
+  
 
  
 
