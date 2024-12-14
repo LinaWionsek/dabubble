@@ -18,10 +18,14 @@ import { AuthService } from '../../services/authentication.service';
 })
 export class ChatHistoryComponent {
   @Input() channelData?: Channel | null;
+  @Input() activeMessage!: Message | null;
   @Input() usedFor = '';
 
   channelId?: string;
   chatId?: string;
+
+  activeMessageAnswers$!: Observable<Message[]>;
+  allMessageAnswers?: Message[];
 
   channelMessages$!: Observable<Message[]>;
   allChannelMessages: Message[] = [];
@@ -42,9 +46,23 @@ export class ChatHistoryComponent {
       this.setChannelId();
     } else if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='chat'){
       // copy above for dm-chat
+    } else if(changes['activeMessage'] && changes['activeMessage'].currentValue && this.usedFor ==='thread'){
+      this.loadActiveMessageAnswers();
     }
   }
   
+
+  loadActiveMessageAnswers(){
+    const activeMessageAnswersCol = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
+    this.activeMessageAnswers$ = collectionData(activeMessageAnswersCol, { idField: 'id'}) as Observable<Message[]>;
+
+    this.activeMessageAnswers$.subscribe((answers) => {
+      this.allMessageAnswers = answers;
+    })
+  }
+
+
+
 
   setChannelId(){
     this.channelId = this.channelData?.id;

@@ -1,26 +1,26 @@
-@if(message.senderId === currentUser?.id){
+@if(message!.senderId === currentUser?.id){
     <div class="message-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="message-div">
             <div class="message-div-header">
-                <span class="time-span">{{ formatMessageTime(message.timeStamp) }} Uhr</span>
-                <span class="name-span">{{ message.senderName }}</span>
+                <span class="time-span">{{ formatMessageTime(message!.timeStamp) }} Uhr</span>
+                <span class="name-span">{{ message!.senderName }}</span>
             </div>
 
             @if(editingMessage){
                 <div class="edit-msg-div">
-                    <textarea [(ngModel)]="message.messageText" required></textarea>
+                    <textarea [(ngModel)]="message!.messageText" required></textarea>
                     <div class="edit-msg-div-footer">
                         <div class="action-icon-container">
                             <img src="./../../../assets/img/emoji_reaction.png" class="emoji-img">
                         </div>
                         <div class="btn-container">
                             <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
-                            <button class="save-btn" (click)="updateMessage()" [disabled]="!message.messageText.trim()">Speichern</button>
+                            <button class="save-btn" (click)="updateMessage()" [disabled]="!message!.messageText.trim()">Speichern</button>
                         </div>
                     </div>
                 </div>
             } @else {
-                <div class="message-text-div">{{ message.messageText }}</div>
+                <div class="message-text-div">{{ message!.messageText }}</div>
                 <div class="message-div-footer">
                     @for (reactionType of groupedReactions | keyvalue; track $index) {
                         <div class="reaction-div" (click)="addReaction(reactionType.key)">
@@ -56,7 +56,7 @@
         </div>
     
         <div class="profile-img-div">
-            <img [src]="message.senderAvatar" class="profile-img">
+            <img [src]="message!.senderAvatar" class="profile-img">
         </div>
     
     
@@ -113,15 +113,15 @@
 
     <div class="received message-container">
         <div class="received profile-img-div">
-            <img [src]="message.senderAvatar" class="profile-img">
+            <img [src]="message!.senderAvatar" class="profile-img">
         </div>
     
         <div class="received message-div">
             <div class="received message-div-header">
-                <span class="name-span">{{ message.senderName }}</span>
-                <span class="received time-span">{{ formatMessageTime(message.timeStamp) }} Uhr</span>
+                <span class="name-span">{{ message!.senderName }}</span>
+                <span class="received time-span">{{ formatMessageTime(message!.timeStamp) }} Uhr</span>
             </div>
-            <div class="received message-text-div">{{ message.messageText }}</div>
+            <div class="received message-text-div">{{ message!.messageText }}</div>
             <div class="received message-div-footer">
                 <div class="add-reaction-icon-container" (click)="showMainReactionOptions()">
                     <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
@@ -185,7 +185,7 @@
                     </div>
                 }
             </div>
-            <div class="icon-container" (click)="activateThread(message)">
+            <div class="icon-container" (click)="activateThread(message!)">
                 <img src="./../../../assets/img/comment.png" alt="">
             </div>
         </div>

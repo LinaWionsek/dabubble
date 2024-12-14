@@ -1,18 +1,39 @@
-<div class="history-container">
+@if(usedFor === 'channel'){
+    <div class="history-container">
 
-    @for (dateKey of sortedDateKeys(); track $index) {
-        
-        @for (message of groupedMessages[dateKey]; track $index) {
-            <app-message 
-                [channelId]="channelId"
-                [chatId]="chatId"
-                [currentUser]="currentUser"
-                [message]="message">
-            </app-message>
+        @for (dateKey of sortedDateKeys(); track $index) {
+            
+            @for (message of groupedMessages[dateKey]; track $index) {
+                <app-message 
+                    [channelId]="channelId"
+                    [chatId]="chatId"
+                    [currentUser]="currentUser"
+                    [message]="message">
+                </app-message>
+            }
+    
+            <app-seperator [date]="dateKey"></app-seperator>
         }
+    </div>
+} @else if (usedFor === 'thread') {
+    <div class="history-container">
+        <div class="answers-div">
+            
+        </div>
+        <div class="seperator-div">
+            @if(allMessageAnswers){
+                <span class="answer-count">{{allMessageAnswers.length}} Antworten</span>
+            }
+            <div class="seperator"></div>
+        </div>
+        <div class="active-message-div">
+            <app-message [message]="activeMessage"></app-message>
+        </div>
+        
 
-        <app-seperator [date]="dateKey"></app-seperator>
-    }
+        
+    </div>
+    
 
+}
 
-</div>

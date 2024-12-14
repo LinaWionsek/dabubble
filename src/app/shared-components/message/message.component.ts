@@ -21,7 +21,7 @@ export class MessageComponent {
   @Input() channelId?: string;
   @Input() chatId?: string;
   @Input() currentUser!: User | null;
-  @Input() message!: Message;
+  @Input() message!: Message | null;
   messageClockTimer = '';
 
   editMessageBtnVisible = false;
@@ -51,7 +51,7 @@ export class MessageComponent {
 
   async getMessageReactions(){
     if(this.channelId){
-      const reactionsSubcollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message.id}/reactions`);
+      const reactionsSubcollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
 
       this.messageReactions$ = collectionData(reactionsSubcollection) as Observable<Reaction[]>;
 
@@ -124,7 +124,7 @@ export class MessageComponent {
   }
 
   cancelEditing(){
-    if(!this.message.messageText.trim()){
+    if(!this.message?.messageText.trim()){
       this.deleteMessage();
     } else {
       this.editingMessage = false;
@@ -134,7 +134,7 @@ export class MessageComponent {
 
   async updateMessage(){
     if(this.channelId){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message.id}`);
+      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
 
       try {
         await updateDoc (messageDocRef, { ... this.message });
@@ -150,7 +150,7 @@ export class MessageComponent {
 
   async deleteMessage(){
     if(this.channelId){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message.id}`);
+      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
 
       try {
         await deleteDoc (messageDocRef);
@@ -175,7 +175,7 @@ export class MessageComponent {
       this.hasJustReacted = true; 
 
       if(this.channelId){
-        const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message.id}`);
+        const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
         const reactionsSubcollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
   
         try {
