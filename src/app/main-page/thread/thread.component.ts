@@ -32,8 +32,6 @@ export class ThreadComponent {
   ngOnInit(){
     this.subscribeToChannelService();
     this.subscribeToThreadService();
-    console.log(this.activeChannel);
-    console.log(this.activeMessage);
   }
 
 

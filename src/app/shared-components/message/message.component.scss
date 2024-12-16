@@ -185,9 +185,20 @@
 .answers-count {
   font-size: 18px;
   color: rgba(83, 90, 241, 1);
+  transition: all 125ms ease;
+
+  &:hover{
+    cursor: pointer;
+    scale: 1.025;
+  }
 }
 
 .last-answer-time {
   font-size: 14px;
   color: rgba(104, 104, 104, 1);
+
+  &:hover{
+    cursor: pointer;
+    scale: 1.025;
+  }
 }

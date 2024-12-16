@@ -59,13 +59,11 @@ export class MessageComponent {
   loadMessageAnswers(){
     if(this.channelId){
       const messageAnswersCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/answers`);
-      
       this.messageAnswers$ = collectionData(messageAnswersCollection, { idField: 'id'}) as Observable<Message[]>;
 
       this.messageAnswers$.subscribe((answers) => {
         this.messageAnswers = answers;
         this.getLastAnswerTime();
-        console.log(this.message?.messageText, 'answers:', this.messageAnswers)
       })
     }
   }
