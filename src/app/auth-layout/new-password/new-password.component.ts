@@ -27,7 +27,7 @@ export class NewPasswordComponent implements OnInit {
     private afAuth: AngularFireAuth
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.oobCode = params['oobCode'];
     });
@@ -57,12 +57,16 @@ export class NewPasswordComponent implements OnInit {
 
   isResetFormValid() {
     return (
-      this.password &&
-      this.confirmPassword &&
-      this.password.length >= 8 &&
-      this.confirmPassword.length >= 8 &&
-      this.password === this.confirmPassword
+      !this.getPasswordError('password') &&
+      !this.getPasswordError('confirmPassword')
     );
+    // return (
+    //   this.password &&
+    //   this.confirmPassword &&
+    //   this.password.length >= 8 &&
+    //   this.confirmPassword.length >= 8 &&
+    //   this.password === this.confirmPassword
+    // );
   }
 
   setNewPassword(): void {
