@@ -8,7 +8,9 @@
                     [channelId]="channelId"
                     [chatId]="chatId"
                     [currentUser]="currentUser"
+                    [usedFor]="'channel'"
                     [message]="message">
+                    
                 </app-message>
             }
     
@@ -22,12 +24,14 @@
                 <app-message
                     [currentUser]="currentUser"
                     [message]="answer"
+                    [usedFor]="'thread'"
+                    [messageAnswers$]="activeMessageAnswers$"
                 ></app-message>
             }
         </div>
         <div class="seperator-div">
             @if(allMessageAnswers){
-                <span class="answer-count">{{allMessageAnswers.length}} @if(allMessageAnswers.length > 1){Antworten} @else {Antwort}</span>
+                <span class="answer-count">{{allMessageAnswers.length}} @if(allMessageAnswers.length > 1 || allMessageAnswers.length === 0){Antworten} @else {Antwort}</span>
             }
             <div class="seperator"></div>
         </div>

@@ -151,8 +151,11 @@
 
                 }
                 
-                <span class="answers-count">2 Antworten</span>
-                <span class="last-answer-time">Letzte Antwort 14:56</span>
+                @if(usedFor === 'channel' && messageAnswers && messageAnswers.length > 0){
+                    <span class="answers-count">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
+                    <span class="last-answer-time">Letzte Antwort {{lastAnswerTime}}</span>
+                }
+                
             </div>
         </div>
     

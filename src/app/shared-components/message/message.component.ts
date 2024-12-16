@@ -22,11 +22,17 @@ export class MessageComponent {
   @Input() chatId?: string;
   @Input() currentUser!: User | null;
   @Input() message!: Message | null;
+  @Input() usedFor = '';
+  @Input() messageAnswers$?: Observable<Message[]>;
+
+  messageAnswers?: Message[];
+  lastAnswerTime = '';
   messageClockTimer = '';
 
   editMessageBtnVisible = false;
   isHovered = false;
   editingMessage = false;
+  
 
   reaction: Reaction = new Reaction();
   messageReactions?: Reaction[];
@@ -44,8 +50,37 @@ export class MessageComponent {
 
 
   ngOnInit(){
+    this.loadMessageAnswers();
     this.getMessageReactions();
     this.initializeNewReaction();
+  }
+
+
+  loadMessageAnswers(){
+    if(this.channelId){
+      const messageAnswersCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/answers`);
+      
+      this.messageAnswers$ = collectionData(messageAnswersCollection, { idField: 'id'}) as Observable<Message[]>;
+
+      this.messageAnswers$.subscribe((answers) => {
+        this.messageAnswers = answers;
+        this.getLastAnswerTime();
+        console.log(this.message?.messageText, 'answers:', this.messageAnswers)
+      })
+    }
+  }
+
+
+  getLastAnswerTime(){
+    if(this.messageAnswers){
+      const latestAnswerTime = this.messageAnswers.reduce((latest, answer) => {
+        const currentTimestamp = new Date(answer.timeStamp).getTime();
+        const latestTimestamp = new Date(latest).getTime();
+        return currentTimestamp > latestTimestamp ? answer.timeStamp : latest;
+      }, "1970-01-01T00:00:00.000Z");
+
+      this.lastAnswerTime = this.formatMessageTime(latestAnswerTime);
+    }
   }
 
 
