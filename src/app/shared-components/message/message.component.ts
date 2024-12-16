@@ -51,7 +51,7 @@ export class MessageComponent {
 
   ngOnInit(){
     this.loadMessageAnswers();
-    this.getMessageReactions();
+    this.loadMessageReactions();
     this.initializeNewReaction();
   }
 
@@ -82,7 +82,7 @@ export class MessageComponent {
   }
 
 
-  async getMessageReactions(){
+  async loadMessageReactions(){
     if(this.channelId){
       const reactionsSubcollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
 
@@ -94,6 +94,7 @@ export class MessageComponent {
       })
     } else if(this.chatId){
       //copy above for chat
+
     }
 
   }
@@ -108,6 +109,8 @@ export class MessageComponent {
       }
       this.groupedReactions[reactionType].push(reaction);
     })
+
+    
   }
 
   
@@ -127,10 +130,6 @@ export class MessageComponent {
     })
 
     return localTime;
-
-    // const time = timeStamp.split('T')[1].split('Z')[0]; 
-    // const [hours, minutes] = time.split(':'); 
-    // return `${hours}:${minutes}`;
   }
 
 
@@ -223,12 +222,11 @@ export class MessageComponent {
         }
       } else if(this.chatId){
         //copy above for chat
+
       }
-
     }
-
-    
   }
+
 
   showMainReactionOptions(){
     this.mainEmojiOptionsMenu = true;
