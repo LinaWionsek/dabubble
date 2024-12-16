@@ -42,11 +42,13 @@ export class ChatHistoryComponent {
   ngOnChanges(changes: SimpleChanges){
     if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='channel') {
       this.getChannelMessages();
+      this.loadActiveMessageAnswers();
       this.getCurrentUser();
       this.setChannelId();
     } else if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='chat'){
       // copy above for dm-chat
     } else if(changes['activeMessage'] && changes['activeMessage'].currentValue && this.usedFor ==='thread'){
+      this.getCurrentUser();
       this.loadActiveMessageAnswers();
     }
   }
