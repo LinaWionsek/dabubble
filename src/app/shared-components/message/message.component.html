@@ -169,10 +169,10 @@
         
     
         <div class="received message-options-div">
-            <div class="emoji-div icon-container">
+            <div class="emoji-div icon-container" (click)="addReaction('tick')">
                 <img src="./../../../assets/img/emojis/tick.png" alt="">
             </div>
-            <div class="emoji-div icon-container">
+            <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
                 <img src="./../../../assets/img/emojis/hands_up.png" alt="">
             </div>
             <div class="icon-container" (click)="showSecondaryReactionOptions()">
