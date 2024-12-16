@@ -1,3 +1,28 @@
 <div class="thread-container">
-    Thread
+    <div class="thread-header">
+        <div class="title-div">
+            <span class="thread-title">Thread</span>
+            <span class="channel-title"># {{activeChannel?.name}}</span>
+        </div>
+        
+        <div class="icon-container" (click)="closeThread()">
+            <img src="./../../../assets/img/close.png" >
+        </div>
+    </div>
+
+    <app-chat-history 
+        [activeMessage]="activeMessage"
+        [channelData]="activeChannel"
+        [usedFor]="'thread'">
+    </app-chat-history>
+
+
+    <div class="chat-input-container">
+        <app-chat-input 
+            [activeMessage]="activeMessage"
+            [channelData]="activeChannel"
+            [usedFor]="'thread'">
+        </app-chat-input>
+    </div>
+   
 </div>

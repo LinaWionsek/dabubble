@@ -17,8 +17,15 @@ import { AuthService } from '../../services/authentication.service';
   styleUrl: './chat-history.component.scss'
 })
 export class ChatHistoryComponent {
-  @Input() channelData?: Channel | undefined;
+  @Input() channelData?: Channel | null;
+  @Input() activeMessage!: Message | null;
   @Input() usedFor = '';
+
+  channelId?: string;
+  chatId?: string;
+
+  activeMessageAnswers$!: Observable<Message[]>;
+  allMessageAnswers?: Message[];
 
   channelMessages$!: Observable<Message[]>;
   allChannelMessages: Message[] = [];
@@ -36,7 +43,29 @@ export class ChatHistoryComponent {
     if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='channel') {
       this.getChannelMessages();
       this.getCurrentUser();
+      this.setChannelId();
+    } else if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='chat'){
+      // copy above for dm-chat
+    } else if(changes['activeMessage'] && changes['activeMessage'].currentValue && this.usedFor ==='thread'){
+      this.loadActiveMessageAnswers();
     }
+  }
+  
+
+  loadActiveMessageAnswers(){
+    const activeMessageAnswersCol = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
+    this.activeMessageAnswers$ = collectionData(activeMessageAnswersCol, { idField: 'id'}) as Observable<Message[]>;
+
+    this.activeMessageAnswers$.subscribe((answers) => {
+      this.allMessageAnswers = answers;
+    })
+  }
+
+
+
+
+  setChannelId(){
+    this.channelId = this.channelData?.id;
   }
 
 
@@ -53,12 +82,12 @@ export class ChatHistoryComponent {
 
     this.channelMessages$.subscribe((messages) => {
       this.allChannelMessages = messages;
-      this.sortChannelMessages();
+      this.sortChannelMessagesIntoGroups();
     })
   }
 
 
-  sortChannelMessages(){
+  sortChannelMessagesIntoGroups(){
     this.groupedMessages = {};
 
     this.allChannelMessages.forEach((message) => {
@@ -71,15 +100,20 @@ export class ChatHistoryComponent {
       this.groupedMessages[dateKey].push(message);
     });
 
-    // this.reverseMessageOrderInSubarrays();
+    this.sortGroupedMessages();
+  }
+  
+
+  sortGroupedMessages(){
+    Object.keys(this.groupedMessages).forEach((dateKey) => {
+      this.groupedMessages[dateKey].sort((a, b) => {
+        const timeA = new Date(a.timeStamp).getTime();
+        const timeB = new Date(b.timeStamp).getTime();
+        return timeB - timeA; 
+      });
+    });
   }
 
-
-  // reverseMessageOrderInSubarrays(){
-  //   Object.keys(this.groupedMessages).forEach((dateKey) => {
-  //     this.groupedMessages[dateKey] = this.groupedMessages[dateKey].reverse();
-  //   });
-  // }
 
 
 

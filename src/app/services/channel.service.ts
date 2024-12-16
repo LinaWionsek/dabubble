@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Channel } from '../models/channel.class';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChannelService {
-  private activeChannelSource = new BehaviorSubject<string | null>(null);
-  activeChannel$ = this.activeChannelSource.asObservable();
+  private activeChannelSubject = new BehaviorSubject<Channel | null>(null);
+  activeChannel$ = this.activeChannelSubject.asObservable();
 
-  setActiveChannel(channelId: string) {
-    this.activeChannelSource.next(channelId);
+  setActiveChannel(channel: Channel) {
+    this.activeChannelSubject.next(channel);
+  }
+
+  clearActiveChannel() {
+    this.activeChannelSubject.next(null);
+  }
+
+  getActiveChannel(){
+    return this.activeChannelSubject.value;
   }
 }

@@ -15,7 +15,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './chat-input.component.scss'
 })
 export class ChatInputComponent {
-  @Input() channelData?: Channel | undefined;
+  @Input() activeMessage?: Message | null;
+  @Input() channelData?: Channel | null;
   @Input() usedFor = '';
 
   sendMessagesTo: string  = '';
@@ -53,18 +54,34 @@ export class ChatInputComponent {
 
 
   async sendMessage(){
-    if(this.usedFor === 'channel'){
-      const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
-      const channelMessagesSubcollection = collection(channelDocRef, 'messages');
-      try {
-        await addDoc(channelMessagesSubcollection, {...this.newMessage});
-      } catch (error) {
-        console.error(error)
+    if(this.newMessage.messageText){
+      this.newMessage.timeStamp = new Date().toISOString();
+      
+      if(this.usedFor === 'channel'){
+        const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
+        const channelMessagesSubcollection = collection(channelDocRef, 'messages');
+        try {
+          await addDoc(channelMessagesSubcollection, {...this.newMessage});
+        } catch (error) {
+          console.error(error)
+        }
+      } else if(this.usedFor === 'directMessaging'){
+
+        // send new message to user
+
+      } else if(this.usedFor === 'thread'){
+        const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
+        const answersSubcollection = collection (channelDocRef, `messages/${this.activeMessage?.id}/answers`);
+        try {
+          addDoc(answersSubcollection, {...this.newMessage});
+        } catch (error) {
+          console.error(error);
+        }
       }
-    } else if(this.usedFor === 'directMessaging'){
-      // send new message to user
+
+      this.initializeNewMessage();
+
     }
-    this.initializeNewMessage();
   }
 
 
@@ -84,6 +101,7 @@ export class ChatInputComponent {
   initializeNewMessage(){
     this.newMessage = new Message();
     this.newMessage.senderId = this.currentUser?.id ?? '';
+    this.newMessage.senderAvatar = this.currentUser?.avatar ?? '';
     this.newMessage.senderName = this.currentUser?.firstName + ' ' + this.currentUser?.lastName;
   }
 

@@ -1,5 +1,5 @@
 <header>
-  <section class="header-left" routerLink="/login">
+  <section [ngClass]="{'padding-left-34': showSearchBar}" class="header-left" routerLink="/login">
     <img
       class="logo"
       src="../../assets/img/da_bubble_logo.png"
@@ -8,41 +8,47 @@
     <span>DABubble</span>
   </section>
 
-  @if (showSearchBar) {
-  <section class="search-bar">
-    <div class="search-bar-input-container">
-      <input
-        class="search-bar-input"
-        placeholder="Devspace durchsuchen"
-        type="text"
-      />
-      <div class="search-bar-input-icon-container">
-        <img
-          class="search-bar-input-icon-hover"
-          src="./../../assets/img/search_icon.png"
-          alt="search_icon"
-        />
-      </div>
+  @if(showSearchBar){
+    <div class="header-center">
+      @if (showSearchBar) {
+        <section class="search-bar">
+          <div class="search-bar-input-container">
+            <input
+              class="search-bar-input"
+              placeholder="Devspace durchsuchen"
+              type="text"
+            />
+            <div class="search-bar-input-icon-container">
+              <img
+                class="search-bar-input-icon-hover"
+                src="./../../assets/img/search_icon.png"
+                alt="search_icon"
+              />
+            </div>
+          </div>
+        </section>
+      
+        } @if (showUserProfile) {
+        <section (click)="openUserMenu()" class="user-profile">
+          <span>{{ user?.firstName }} {{ user?.lastName }}</span>
+          <img
+            class="user-avatar"
+            [src]="getAvatarBaseName(user?.avatar)"
+            alt="user_avatar"
+          />
+      
+          <img
+            class="drop_down_arrow"
+            src="./../../../assets/img/drop_down_arrow.png"
+            alt=""
+          />
+        </section>
+      
+        }
     </div>
-  </section>
-
-  } @if (showUserProfile) {
-  <section (click)="openUserMenu()" class="user-profile">
-    <span>{{ user?.firstName }} {{ user?.lastName }}</span>
-    <img
-      class="user-avatar"
-      [src]="getAvatarBaseName(user?.avatar)"
-      alt="user_avatar"
-    />
-
-    <img
-      class="drop_down_arrow"
-      src="./../../../assets/img/drop_down_arrow.png"
-      alt=""
-    />
-  </section>
-
-  } @if (showRegistrationLink) {
+  }
+  
+ @if (showRegistrationLink) {
   <section class="header-right">
     <span>Neu bei DABubble ?</span>
     <a class="primary-href" routerLink="/registration">Konto erstellen</a>

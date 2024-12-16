@@ -1,4 +1,4 @@
-import { Component, inject, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { ChannelService } from '../../../services/channel.service';
 import { Observable } from 'rxjs';
 import { Channel } from './../../../models/channel.class';
@@ -21,8 +21,6 @@ import { ChatHistoryComponent } from "../../../shared-components/chat-history/ch
   styleUrl: './channel-chat.component.scss',
 })
 export class ChannelChatComponent {
-  
-
   editChannelDialogOpened = false;
   showMembersDialogOpened = false;
   addMembersDialogOpened = false;
@@ -31,54 +29,53 @@ export class ChannelChatComponent {
   showMembersDialogPosition = { top: '0px', left: '0px' };
   addMembersDialogPosition = { top: '0px', left: '0px' };
 
-  activeChannel: string | null = null;
-  activeChannelData!: Channel | undefined;
+  activeChannel: Channel | null = null;
+  
   channels$!: Observable<Channel[]>;
   allUsers$!: Observable<User[]>;
   allUserChannels: Channel[] = [];
   users: User[] = [];
   activeChannelUsers: User[] = [];
   firestore: Firestore = inject(Firestore);
-  inputUsecase = 'channel';
+  
  
   constructor(private channelService: ChannelService) {}
 
   ngOnInit() {
-    this.channelService.activeChannel$.subscribe(channelId => {
-      if(this.activeChannel !==channelId){
-        this.activeChannel = channelId;
-        this.updateActiveChannelData();
-      }
-    });
-    this.getAllChannels();
-    this.getAllUsers();
+    this.subscribeToActiveChannel();
+    this.loadUsers();
   }
-  
 
-  getAllChannels() {
-    const userChannelsCollection = collection(this.firestore, 'channels');
-    this.channels$ = collectionData(userChannelsCollection, {
-      idField: 'id',
-    }) as Observable<Channel[]>;
 
-    this.channels$.subscribe((changes) => {
-      this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+  subscribeToActiveChannel(){
+    this.channelService.activeChannel$.subscribe((channel) => {
+      this.activeChannel = channel;
       this.updateActiveChannelUsers();
-      
-      const updatedChannel = this.allUserChannels.find(channel => channel.id === this.activeChannel);
-      if (updatedChannel) {
-        this.activeChannelData = updatedChannel;
-      }
     })
   }
+  
+
+  // loadChannels() {
+  //   const userChannelsCollection = collection(this.firestore, 'channels');
+  //   this.channels$ = collectionData(userChannelsCollection, {
+  //     idField: 'id',
+  //   }) as Observable<Channel[]>;
+
+  //   this.channels$.subscribe((changes) => {
+  //     this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+  //     this.updateActiveChannelUsers();
+      
+  //     const updatedChannel = this.allUserChannels.find(channel => channel.id === this.activeChannel);
+  //     if (updatedChannel) {
+  //       this.activeChannelData = updatedChannel;
+  //     }
+  //   })
+  // }
 
   
-  updateActiveChannelData(){
-    this.activeChannelData = this.allUserChannels.find(channel => channel.id === this.activeChannel);
-  }
 
 
-  getAllUsers(){
+  loadUsers(){
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, { idField: 'id', }) as Observable<User[]>;
 
@@ -90,7 +87,7 @@ export class ChannelChatComponent {
 
 
   updateActiveChannelUsers(){
-    this.activeChannelUsers = this.users.filter(user => this.activeChannelData?.userIds.includes(user.id));
+    this.activeChannelUsers = this.users.filter(user => this.activeChannel?.userIds.includes(user.id));
   }
 
 

@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, inject, Input } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, inject, Input, SimpleChanges } from '@angular/core';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { Channel } from './../../../models/channel.class';
@@ -37,7 +37,7 @@ export class WorkspaceChannelsComponent {
   allChannels: Channel[] = [];
   allUserChannels: Channel[] = [];
   firestore: Firestore = inject(Firestore);
-  private isInitialized = false;
+  
 
   activeIndex: number | null = null;
   activeChannel:string = '';
@@ -45,7 +45,13 @@ export class WorkspaceChannelsComponent {
 
   ngOnInit(){
     this.getAllChannels();
-    
+  }
+  
+
+  ngOnChanges(changes: SimpleChanges){
+    if (changes['currentUser'] && this.currentUser) {
+      this.getAllChannelsForCurrentUser(); 
+    }
   }
 
 
@@ -68,11 +74,6 @@ export class WorkspaceChannelsComponent {
     this.channels$.subscribe((changes) => {
       this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
       this.getAllChannelsForCurrentUser();
-      
-      if (!this.isInitialized && this.allChannels.length > 0) {
-        this.activateChannel(0); 
-        this.isInitialized = true;
-      }
     })
   }
 
@@ -85,6 +86,7 @@ export class WorkspaceChannelsComponent {
   activateChannel(index:number) {
     this.activeIndex = index; 
     this.activeChannel = this.allChannels[index].id;
-    this.channelService.setActiveChannel(this.activeChannel);
+    const activeChannelObject = this.allChannels[index]
+    this.channelService.setActiveChannel(activeChannelObject);
   }
 }

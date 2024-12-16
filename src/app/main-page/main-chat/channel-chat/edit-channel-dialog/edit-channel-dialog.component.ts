@@ -1,21 +1,8 @@
-import {
-  Component,
-  OnInit,
-  inject,
-  Input,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component,  OnInit,  inject,  Input,  Output,  EventEmitter,} from '@angular/core';
 import { ChannelService } from '../../../../services/channel.service';
 import { Observable } from 'rxjs';
 import { Channel } from './../../../../models/channel.class';
-import {
-  Firestore,
-  collection,
-  collectionData,
-  doc,
-  updateDoc,
-} from '@angular/fire/firestore';
+import {  Firestore,  collection,  collectionData,  doc,  updateDoc,} from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 
@@ -50,10 +37,7 @@ export class EditChannelDialogComponent {
 
   async editChannel(form: NgForm) {
     if (form.valid) {
-      const channelDocRef = doc(
-        this.firestore,
-        `channels/${this.channelData.id}`
-      );
+      const channelDocRef = doc(this.firestore, `channels/${this.channelData.id}`);
       try {
         await updateDoc(channelDocRef, { ...this.channelData });
       } catch (error) {

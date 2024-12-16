@@ -1,4 +1,3 @@
-import { Message } from "../models/message.class";
 
 export type userData = {
     id?: string;
@@ -24,6 +23,13 @@ export type threadData = {
     userIds: string[];
     messageIds: string[];
 }
+
+export type reactionData = {
+    reactionType: string;
+    originatorName: string;
+    originatorId: string;
+}
+
 
 export type messageData = {
     id?: string;
