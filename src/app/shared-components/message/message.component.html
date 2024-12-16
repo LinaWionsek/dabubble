@@ -22,6 +22,12 @@
             } @else {
                 <div class="message-text-div">{{ message!.messageText }}</div>
                 <div class="message-div-footer">
+
+                    @if(usedFor === 'channel' && messageAnswers && messageAnswers.length > 0){
+                        <span class="answers-count" (click)="activateThread(message!)">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
+                        <span class="last-answer-time" (click)="activateThread(message!)">Letzte Antwort {{lastAnswerTime}}</span>
+                    }
+        
                     @for (reactionType of groupedReactions | keyvalue; track $index) {
                         <div class="reaction-div" (click)="addReaction(reactionType.key)">
                             <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
@@ -29,6 +35,7 @@
                         </div>
 
                     }
+
                     <div class="add-reaction-icon-container" (click)="showMainReactionOptions()">
                         <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
                         
@@ -152,8 +159,8 @@
                 }
                 
                 @if(usedFor === 'channel' && messageAnswers && messageAnswers.length > 0){
-                    <span class="answers-count">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
-                    <span class="last-answer-time">Letzte Antwort {{lastAnswerTime}}</span>
+                    <span class="answers-count" (click)="activateThread(message!)">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
+                    <span class="last-answer-time" (click)="activateThread(message!)">Letzte Antwort {{lastAnswerTime}}</span>
                 }
                 
             </div>
