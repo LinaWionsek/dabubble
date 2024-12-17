@@ -1,32 +1,29 @@
 @import "mixins", "styles";
 
 .dialog {
-    position: fixed;
-    top: 102px;
-    right: 16px;
-    gap: 15px;
-    height: 181px;
-    width: 282px;
-    background-color: white;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-    box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.2);
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
+  @include display-flex($fd: column, $gap: 15px);
+  @include position(fixed, 102px, $rig: 16px);
+  @include size(282px, 181px);
+  background: $primary-color-white;
+  border-radius: 30px 0 30px 30px;
+  box-shadow: $primary-box-shadow;
+  padding: 30px;
 }
 
 button {
-    @include size(222px, 53px);
-    border-radius: 100px;
-    border: none;
-    padding: 10px 45px;
-    @include font-style(24px, 600, $text-color-black);
-    background-color: white;
-    &:hover {
-        cursor: pointer;
-        @include font-style(24px, 700, $highlight-color-purple);
-        background-color: $bg-color-gray;
-    }
+  @include size(222px, 53px);
+  border-radius: 100px;
+  border: none;
+  padding: 10px 45px;
+  @include font-style($font-size-24, $font-weight-600, $text-color-black);
+  background: $primary-color-white;
+  &:hover {
+    cursor: pointer;
+    @include font-style(
+      $font-size-24,
+      $font-weight-700,
+      $highlight-color-purple
+    );
+    background-color: $bg-color-gray;
+  }
 }

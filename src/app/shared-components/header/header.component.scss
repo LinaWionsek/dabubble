@@ -25,10 +25,16 @@ header {
 }
 
 .header-center {
-  display: flex;
-  align-items: center;
-  width: 1505px;
-  justify-content: space-between;
+  @include display-flex($jc: space-between);
+  @include size(1505px);
+}
+
+.header-right {
+  @include display-flex($fd: column);
+  @include size(170px);
+  > span {
+    align-self: center;
+  }
 }
 
 .search-bar {
