@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { User } from '../../../models/user.class';
+import { Observable } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-workspace-direct-messages',
@@ -21,6 +26,26 @@ import { trigger, style, animate, transition } from '@angular/animations';
 })
 export class WorkspaceDirectMessagesComponent {
   showSubmenu = true;
+  firestore: Firestore = inject(Firestore);
+  @Input() currentUser?: User | null;
+  users$!: Observable<User[]>;
+  allUsers: User[] = [];
+
+
+  ngOnInit(){
+    this.loadAllUsers();
+  }
+
+
+  loadAllUsers(){
+    const usersCollection = collection(this.firestore, 'users')
+    this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
+
+    this.users$.subscribe((changes) => {
+      this.allUsers = Array.from(new Map(changes.map(user => [user.id, user])).values());
+      console.log(this.allUsers);
+    })
+  }
 
 
   toggleDropdown(){

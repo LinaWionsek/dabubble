@@ -14,8 +14,14 @@
     </div>
 
     @if(showSubmenu){
-        <div class="workspace-section-submenu" @submenuAnimation>
-            Test
+        <div class="workspace-section-submenu workspace-user-div" @submenuAnimation>
+            @for (user of allUsers; track $index) {
+                <div class="user-div">
+                    <img src="./../../../../assets/img/avatar_1_large.png" class="user-img">
+                    <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
+                </div>
+            }
+           
 
         </div>
     }
