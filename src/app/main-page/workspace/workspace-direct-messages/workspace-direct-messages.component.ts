@@ -3,6 +3,7 @@ import { trigger, style, animate, transition } from '@angular/animations';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { User } from '../../../models/user.class';
 import { Observable } from 'rxjs';
+import { ChatService } from '../../../services/dm-chat.service';
 
 
 
@@ -31,6 +32,12 @@ export class WorkspaceDirectMessagesComponent {
   users$!: Observable<User[]>;
   allUsers: User[] = [];
 
+  activeIndex: number | null = null;
+  activeChat: string = '';
+
+
+  constructor(private chatService: ChatService){}
+
 
   ngOnInit(){
     this.loadAllUsers();
@@ -43,12 +50,19 @@ export class WorkspaceDirectMessagesComponent {
 
     this.users$.subscribe((changes) => {
       this.allUsers = Array.from(new Map(changes.map(user => [user.id, user])).values());
-      console.log(this.allUsers);
     })
   }
 
 
   toggleDropdown(){
     this.showSubmenu = !this.showSubmenu;
+  }
+
+
+  activateChat(index:number){
+    this.activeIndex = index; 
+    this.activeChat = this.allUsers[index].id;
+    const activeUserObject = this.allUsers[index]
+    this.chatService.setActiveChat(activeUserObject);
   }
 }
