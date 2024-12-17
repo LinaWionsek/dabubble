@@ -1,1 +1,17 @@
-<p>dm-chat works!</p>
+<div class="dm-chat-header">
+    <img src="{{activeChatUser?.avatar}}" class="active-user-img">
+    <span class="active-user-name">{{activeChatUser?.firstName + ' ' + activeChatUser?.lastName}}</span>
+</div>
+
+<app-chat-history
+    [usedFor]="'dm-chat'"
+    [userData]="activeChatUser"
+></app-chat-history>
+
+
+<div class="chat-input-container">
+    <app-chat-input
+        [usedFor]="'dm-chat'"
+        [userData]="activeChatUser"
+    ></app-chat-input>
+</div>

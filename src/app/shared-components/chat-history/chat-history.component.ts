@@ -18,11 +18,14 @@ import { AuthService } from '../../services/authentication.service';
 })
 export class ChatHistoryComponent {
   @Input() channelData?: Channel | null;
+  @Input() userData?: User | null;
   @Input() activeMessage!: Message | null;
   @Input() usedFor = '';
 
   channelId?: string;
   chatId?: string;
+
+  chatMessages?: Message[];
 
   activeMessageAnswers$!: Observable<Message[]>;
   allMessageAnswers?: Message[];
@@ -47,6 +50,10 @@ export class ChatHistoryComponent {
       this.setChannelId();
     } else if (changes['channelData'] && changes['channelData'].currentValue && this.usedFor ==='chat'){
       // copy above for dm-chat
+
+
+
+
     } else if(changes['activeMessage'] && changes['activeMessage'].currentValue && this.usedFor ==='thread'){
       this.getCurrentUser();
       this.loadActiveMessageAnswers();
