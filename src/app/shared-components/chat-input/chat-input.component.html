@@ -1,6 +1,12 @@
 <div class="chat-input">
     <textarea  
-        [placeholder]="usedFor === 'channel' ? 'Nachricht an #' + sendMessagesTo : 'Antworten...'"
+        [placeholder]="
+            usedFor === 'channel'
+            ? 'Nachricht an #' + sendMessagesTo
+            : usedFor === 'default'
+            ? 'Starte eine neue Nachricht'
+            : 'Antworten...'
+          "
         [(ngModel)]="newMessage.messageText" 
         (keydown.enter)="onEnter($event)">
     </textarea>
