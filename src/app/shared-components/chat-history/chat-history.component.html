@@ -29,7 +29,7 @@
             }
         </div>
         <div class="seperator-div">
-            @if(allMessageAnswers){
+            @if(allMessageAnswers && allMessageAnswers.length > 0){
                 <span class="answer-count">{{allMessageAnswers.length}} @if(allMessageAnswers.length > 1 || allMessageAnswers.length === 0){Antworten} @else {Antwort}</span>
             }
             <div class="seperator"></div>
