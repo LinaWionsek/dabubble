@@ -7,7 +7,9 @@ import { AuthHeaderComponent } from '../auth-header/auth-header.component';
 import { PasswordVisibilityService } from '../../services/password-visibility.service';
 import { ToastService } from '../../services/toast.service';
 import { ToastComponent } from '../../shared-components/toast/toast.component';
-
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { GoogleAuthProvider } from 'firebase/auth';
+import { User } from '../../models/user.class';
 
 @Component({
   selector: 'app-log-in',
@@ -33,7 +35,8 @@ export class LogInComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     public passwordVisibilityService: PasswordVisibilityService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private afAuth: AngularFireAuth
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +60,7 @@ export class LogInComponent implements OnInit {
         this.toastService.showToast('Login erfolgreich!');
 
         setTimeout(() => {
-          this.router.navigate(['/main']);
+          this.navigateToMainPage();
         }, 2250);
       })
       .catch((error) => {
@@ -70,6 +73,41 @@ export class LogInComponent implements OnInit {
     this.loginFailed = true;
     setTimeout(() => {
       this.loginFailed = false;
-    }, 5000)
+    }, 5000);
+  }
+
+  async loginWithGoogle() {
+    let provider = new GoogleAuthProvider();
+
+    try {
+      let result = await this.afAuth.signInWithPopup(provider);
+      let user = result.user;
+
+      if (!user) {
+        throw new Error('Kein Benutzer-Datenobjekt gefunden.');
+      }
+
+      const fullName = user.displayName || '';
+      const [firstName, ...lastNameParts] = fullName.trim().split(' ');
+      const lastName = lastNameParts.join(' ');
+
+      const userData: User = new User({
+        id: user.uid,
+        firstName: firstName,
+        lastName: lastName,
+        email: user.email || '',
+        avatar: 'assets/img/avatar_empty.png',
+        isOnline: true,
+      });
+
+      this.toastService.showToast('Google Login erfolgreich!');
+      await this.authService.saveUserData(user.uid, userData.toPlainObject());
+
+      setTimeout(() => {
+        this.navigateToMainPage();
+      }, 2250);
+    } catch (error) {
+      console.error('Fehler beim Verarbeiten der Benutzerdaten:', error);
+    }
   }
 }

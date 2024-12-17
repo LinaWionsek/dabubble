@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../services/toast.service';
 import { ToastComponent } from '../../shared-components/toast/toast.component';
 import { PasswordVisibilityService } from '../../services/password-visibility.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
@@ -24,7 +24,8 @@ export class NewPasswordComponent implements OnInit {
     private toastService: ToastService,
     public passwordVisibilityService: PasswordVisibilityService,
     private route: ActivatedRoute,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +33,7 @@ export class NewPasswordComponent implements OnInit {
       this.oobCode = params['oobCode'];
     });
   }
+
   togglePassword(): void {
     this.passwordVisibilityService.togglePasswordInputType();
   }
@@ -77,6 +79,10 @@ export class NewPasswordComponent implements OnInit {
           this.toastService.showToast('Passwort erfoglreich geändert!');
           this.password = '';
           this.confirmPassword = '';
+
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2250);
         })
         .catch((error) => {
           console.error('Fehler beim Zurücksetzen des Passworts: ' + error);
