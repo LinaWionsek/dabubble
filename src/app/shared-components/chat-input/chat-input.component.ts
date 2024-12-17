@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 export class ChatInputComponent {
   @Input() activeMessage?: Message | null;
   @Input() channelData?: Channel | null;
+  @Input() userData?: User | null;
   @Input() usedFor = '';
 
   sendMessagesTo: string  = '';

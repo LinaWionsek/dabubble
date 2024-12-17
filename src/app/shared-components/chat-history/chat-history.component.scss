@@ -60,3 +60,43 @@
   width: 100%;
   flex: 1;
 }
+
+
+
+.default-dm-view{
+  @include display-flex($fd: column, $ai: flex-start);
+  margin-left: 40px;
+  margin-bottom: 48px;
+}
+
+.user-div{
+  @include display-flex($ai: flex-end);
+}
+
+.large-user-img{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.user-name-span{
+  font-size: 24px;
+  font-weight: 700;
+  margin-left: 24px;
+}
+
+.info-span{
+  margin-top: 24px;
+  font-size: 20px;
+  color: rgba(104, 104, 104, 1);
+}
+
+.blue{
+  color: rgba(83, 90, 241, 1);
+  transition: all 125ms ease;
+
+  &:hover{
+    cursor: pointer;
+    scale: 1.05;
+  }
+}
