@@ -1,1 +1,12 @@
-<p>default-chat works!</p>
+<div class="default-chat-header">
+    <span class="title">Neue Nachricht</span>
+    <input type="text" placeholder="An: #channel, oder @jemand oder E-Mail Adresse">
+</div>
+
+<app-chat-history></app-chat-history>
+
+<div class="chat-input-container">
+    <app-chat-input
+        [usedFor]="'default'"
+    ></app-chat-input>
+</div>
