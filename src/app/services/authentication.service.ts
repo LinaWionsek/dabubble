@@ -53,10 +53,6 @@ export class AuthService {
     return setDoc(userRef, userData, { merge: true });
   }
 
-  isLoggedIn(): boolean {
-    return !!this.auth.currentUser;
-  }
-
   getUserStatus() {
     return this.userStatus.asObservable();
   }
@@ -98,5 +94,36 @@ export class AuthService {
       avatar: './../../../assets/img/avatar_empty.png',
       isOnline: false,
     });
+  }
+
+  async setOnlineStatus(isOnline: boolean): Promise<void> {
+    const currentUser: FirebaseUser | null = this.auth.currentUser;
+
+    if (!currentUser) {
+      console.warn(
+        'Kein Benutzer eingeloggt. Onlinestatus kann nicht gesetzt werden.'
+      );
+      return;
+    }
+
+    try {
+      const userRef = doc(this.firestore, `users/${currentUser.uid}`);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        await setDoc(
+          userRef,
+          {
+            isOnline: isOnline,
+          },
+          { merge: true }
+        );
+        console.log(
+          `Onlinestatus für Benutzer ${currentUser.uid} auf ${isOnline} gesetzt.`
+        );
+      }
+    } catch (error) {
+      console.error('Fehler beim Setzen des Onlinestatus:', error);
+    }
   }
 }

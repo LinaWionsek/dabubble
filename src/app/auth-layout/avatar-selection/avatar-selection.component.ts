@@ -75,7 +75,6 @@ export class AvatarSelectionComponent {
 
     try {
       this.registrationDataService.setAvatar(this.selectedAvatar);
-
       const registrationData = this.registrationDataService.getUserData();
 
       if (!registrationData.email || !registrationData.password || !registrationData.firstName || !registrationData.lastName) {

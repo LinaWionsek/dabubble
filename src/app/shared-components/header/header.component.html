@@ -31,12 +31,16 @@
         } @if (showUserProfile) {
         <section (click)="openUserMenu()" class="user-profile">
           <span>{{ user?.firstName }} {{ user?.lastName }}</span>
-          <img
+          <div class="user-avatar-wrapper">
+            <img
             class="user-avatar"
             [src]="getAvatarBaseName(user?.avatar)"
             alt="user_avatar"
           />
-      
+            <span [ngClass]="{'online': user?.isOnline, 'offline': !user?.isOnline}" class="online-status"></span>
+          </div>
+
+          
           <img
             class="drop_down_arrow"
             src="./../../../assets/img/drop_down_arrow.png"

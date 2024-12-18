@@ -92,7 +92,7 @@
 
       <div class="auth-button-container">
         <button [disabled]="emailInput.value == '' || password.length < 8" (click)="signIn()" class="primary-button">Anmelden</button>
-        <button class="secondary-button">Gäste-Login</button>
+        <button (click)="loginAsGuest()" class="secondary-button">Gäste-Login</button>
       </div>
     </section>
   </form>

@@ -3,6 +3,7 @@ import { AuthService } from '../../../services/authentication.service';
 import { Router } from '@angular/router';
 import { ChannelService } from '../../../services/channel.service';
 
+
 @Component({
   selector: 'app-header-user-dialog',
   standalone: true,
@@ -12,12 +13,14 @@ import { ChannelService } from '../../../services/channel.service';
 })
 export class HeaderUserDialogComponent {
 
-  constructor(private authService: AuthService, private router: Router, private channelService: ChannelService) {}
+  constructor(private authService: AuthService, private router: Router, private channelService: ChannelService) {
+    
+  }
   signOut() {
     this.authService.signOut();
+    this.authService.setOnlineStatus(false);
     this.channelService.clearActiveChannel();
 
-    //Timeout because of the AuthGuard, u need to press Logout twice otherwise ?!
     setTimeout(() => {
       this.router.navigate(['/login']);
     }, 1);
