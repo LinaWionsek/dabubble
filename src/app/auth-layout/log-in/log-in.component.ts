@@ -58,6 +58,7 @@ export class LogInComponent implements OnInit {
       .then(() => {
         console.log('Successful login');
         this.toastService.showToast('Login erfolgreich!');
+        this.authService.setOnlineStatus(true);
 
         setTimeout(() => {
           this.navigateToMainPage();
@@ -76,7 +77,7 @@ export class LogInComponent implements OnInit {
     }, 5000);
   }
 
-  async loginWithGoogle() {
+  async loginWithGoogle(): Promise<void> {
     let provider = new GoogleAuthProvider();
 
     try {
@@ -102,12 +103,44 @@ export class LogInComponent implements OnInit {
 
       this.toastService.showToast('Google Login erfolgreich!');
       await this.authService.saveUserData(user.uid, userData.toPlainObject());
+      this.authService.setOnlineStatus(true);
 
       setTimeout(() => {
         this.navigateToMainPage();
       }, 2250);
     } catch (error) {
       console.error('Fehler beim Verarbeiten der Benutzerdaten:', error);
+    }
+  }
+
+  async loginAsGuest(): Promise<void> {
+    try {
+      const result = await this.afAuth.signInAnonymously();
+      const user = result.user;
+
+      if (user) {
+        const guestData: User = new User({
+          id: user.uid,
+          firstName: 'Guest',
+          lastName: '',
+          email: 'guest@example.com',
+          avatar: 'assets/img/avatar_empty.png',
+          isOnline: true,
+        });
+
+        this.toastService.showToast('Gäste Login erfolgreich!');
+        await this.authService.saveUserData(
+          user.uid,
+          guestData.toPlainObject()
+        );
+        this.authService.setOnlineStatus(true);
+
+        setTimeout(() => {
+          this.navigateToMainPage();
+        }, 2250);
+      }
+    } catch (error) {
+      console.error('Fehler beim Guest-Login:', error);
     }
   }
 }

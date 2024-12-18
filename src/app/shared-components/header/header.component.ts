@@ -69,8 +69,6 @@ export class HeaderComponent implements OnInit {
     return avatarPath.replace('_large', '');
   }
 
-
-
   openUserMenu() {
     this.showUserMenu = true;
   }
