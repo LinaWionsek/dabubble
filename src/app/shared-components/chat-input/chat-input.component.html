@@ -5,6 +5,8 @@
             ? 'Nachricht an #' + sendMessagesTo
             : usedFor === 'default'
             ? 'Starte eine neue Nachricht'
+            : usedFor === 'dm-chat'
+            ? 'Nachricht an ' + sendMessagesTo
             : 'Antworten...'
           "
         [(ngModel)]="newMessage.messageText" 
