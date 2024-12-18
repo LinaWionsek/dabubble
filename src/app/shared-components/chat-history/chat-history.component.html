@@ -1,9 +1,8 @@
 @if(usedFor === 'channel'){
     <div class="history-container">
+        @for (dateKey of sortedDateKeys(groupedChannelMessages); track $index) {
 
-        @for (dateKey of sortedDateKeys(); track $index) {
-            
-            @for (message of groupedMessages[dateKey]; track $index) {
+            @for (message of groupedChannelMessages[dateKey]; track $index) {
                 <app-message 
                     [channelId]="channelId"
                     [chatId]="chatId"
@@ -37,15 +36,12 @@
         <div class="active-message-div">
             <app-message [message]="activeMessage"></app-message>
         </div>
-        
-
-        
     </div>
     
 
 } @else if(usedFor === 'dm-chat'){
     <div class="history-container">
-        @if(!chatMessages){
+        @if(allChatMessages.length === 0){
             <div class="default-dm-view">
                 <div class="user-div">
                     <img src="{{userData?.avatar}}" class="large-user-img">
@@ -53,6 +49,24 @@
                 </div>
                 <span class="info-span">Diese Unterhaltung findet nur zwischen dir und <span class="blue">&#64;{{userData?.firstName + ' ' + userData?.lastName}}</span> statt.</span>
             </div>
+        } @else {
+            <div class="history-container">
+                @for (dateKey of sortedDateKeys(groupedChatMessages); track $index) {
+        
+                    @for (message of groupedChatMessages[dateKey]; track $index) {
+                        <app-message 
+                            [channelId]="channelId"
+                            [chatId]="chatId"
+                            [currentUser]="currentUser"
+                            [usedFor]="'chat'"
+                            [message]="message">
+                        </app-message>
+                    }
+            
+                    <app-seperator [date]="dateKey"></app-seperator>
+                }
+            </div>
+
         }
 
     </div>
