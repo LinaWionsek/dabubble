@@ -4,6 +4,7 @@ import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { User } from '../../../models/user.class';
 import { Observable } from 'rxjs';
 import { ChatService } from '../../../services/dm-chat.service';
+import { ChannelService } from '../../../services/channel.service';
 
 
 
@@ -36,7 +37,7 @@ export class WorkspaceDirectMessagesComponent {
   activeChat: string = '';
 
 
-  constructor(private chatService: ChatService){}
+  constructor(private chatService: ChatService, private channelService: ChannelService){}
 
 
   ngOnInit(){
@@ -60,6 +61,8 @@ export class WorkspaceDirectMessagesComponent {
 
 
   activateChat(index:number){
+    this.channelService.clearActiveChannel();
+
     this.activeIndex = index; 
     this.activeChat = this.allUsers[index].id;
     const activeUserObject = this.allUsers[index]
