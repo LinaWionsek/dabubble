@@ -250,3 +250,37 @@
     border-top-right-radius: 30px;
     border-bottom-left-radius: 30px;
 }
+
+
+.edit-msg-div{
+  position: absolute;
+  left: 180px;
+  top: 40px;
+  width: 269px;
+  @include display-flex($fd: column);
+  box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
+  border-top-right-radius: 30px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background-color: white;
+  padding: 8px;
+  gap: 8px;
+}
+
+.edit-msg-btn{
+  border: none;
+  width: 229px;
+  height: 47px;
+  @include display-flex();
+  font-size: 20px;
+  font-weight: 500;
+  background-color: white;
+  border-radius: 30px;
+  transition: all 125ms ease;
+
+
+  &:hover{
+      cursor: pointer;
+      background-color: $bg-color-gray;
+  }
+}
