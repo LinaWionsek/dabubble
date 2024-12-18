@@ -10,9 +10,11 @@
 
 .workspace-user-div{
     width: 100%;
-    flex: 1;
+    flex: 1 1 auto;
+    margin-bottom: 30px;
     overflow-y: scroll;
-    max-height: 45vh;
+    max-height: 44vh;
+    min-height: 100px;
 
     &::-webkit-scrollbar {
         width: 8px; 

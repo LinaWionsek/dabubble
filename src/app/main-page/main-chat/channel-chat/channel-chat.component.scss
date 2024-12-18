@@ -3,7 +3,7 @@
 :host{
     width: 100%;
     flex: 1;
-    @include display-flex($fd:column);
+    @include display-flex($fd:column, $jc: space-between);
 }
 
 .chat-input-container{
