@@ -7,6 +7,8 @@ import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collecti
 import { Reaction } from '../../models/reaction.class';
 import { Observable } from 'rxjs';
 import { ThreadService } from '../../services/thread.service';
+import { ChannelService } from '../../services/channel.service';
+import { Channel } from '../../models/channel.class';
 
 
 
@@ -25,6 +27,7 @@ export class MessageComponent {
   @Input() message!: Message | null;
   @Input() usedFor = '';
   @Input() messageAnswers$?: Observable<Message[]>;
+  @Input() activeMessage?: Message | null;
 
   messageAnswers?: Message[];
   lastAnswerTime = '';
@@ -33,6 +36,8 @@ export class MessageComponent {
   editMessageBtnVisible = false;
   isHovered = false;
   editingMessage = false;
+
+  activeChannel?: Channel | null;
   
 
   reaction: Reaction = new Reaction();
@@ -47,26 +52,42 @@ export class MessageComponent {
   secondaryEmojiOptionsMenu = false;
 
 
-  constructor(private threadService: ThreadService) {}
+  constructor(private threadService: ThreadService, private channelService: ChannelService) {}
 
 
   ngOnInit(){
+    this.subscribeToChannelService();
     this.loadMessageAnswers();
     this.loadMessageReactions();
     this.initializeNewReaction();
   }
 
 
-  loadMessageAnswers(){
-    if(this.channelId){
-      const messageAnswersCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/answers`);
-      this.messageAnswers$ = collectionData(messageAnswersCollection, { idField: 'id'}) as Observable<Message[]>;
+  subscribeToChannelService(){
+    this.channelService.activeChannel$.subscribe((channel) => {
+      this.activeChannel = channel;
+    })
+  }
 
-      this.messageAnswers$.subscribe((answers) => {
-        this.messageAnswers = answers;
-        this.getLastAnswerTime();
-      })
-    }
+
+  loadMessageAnswers(){
+    if(this.usedFor === 'channel'){
+      const answersCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/answers`);
+      this.subscribeToAnswersCollection(answersCollection);
+    } else if(this.usedFor === 'chat'){
+      const answersCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/answers`);
+      this.subscribeToAnswersCollection(answersCollection);
+    } 
+  }
+
+
+  subscribeToAnswersCollection(answersCollection: CollectionReference<DocumentData>){
+    this.messageAnswers$ = collectionData(answersCollection, { idField: 'id'}) as Observable<Message[]>;
+
+    this.messageAnswers$.subscribe((answers) => {
+      this.messageAnswers = answers;
+      this.getLastAnswerTime();
+    })
   }
 
 
@@ -90,9 +111,12 @@ export class MessageComponent {
     } else if(this.usedFor === 'dm-chat'){
       const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
-    } else if(this.usedFor === 'thread'){
-      //copy above for thread
-      //subscribe to channel service to check if it is used for thread + channel or thread + dm
+    } else if(this.usedFor === 'thread' && this.activeChannel){
+      const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
+      this.subscribeToMessageReactions(reactionsCollection);
+    } else if(this.usedFor === 'thread' && !this.activeChannel){
+      const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
+      this.subscribeToMessageReactions(reactionsCollection);
     }
   }
 
@@ -117,8 +141,6 @@ export class MessageComponent {
       }
       this.groupedReactions[reactionType].push(reaction);
     })
-
-    
   }
 
   
@@ -179,9 +201,12 @@ export class MessageComponent {
     } else if(this.usedFor === 'dm-chat'){
       const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
       this.updateMessageDoc(messageDocRef);
-    } else if(this.usedFor === 'thread'){
-      // subscribe to channelService and check if channel active...
-
+    } else if(this.usedFor === 'thread' && this.activeChannel){
+      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
+      this.updateMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'thread' && !this.activeChannel){
+      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+      this.updateMessageDoc(messageDocRef);
     }
   }
 
@@ -203,9 +228,12 @@ export class MessageComponent {
     } else if(this.usedFor === 'dm-chat'){
       const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
       this.deleteMessageDoc(messageDocRef);
-    } else if(this.usedFor === 'thread'){
-      // subscribe to channelService and check if channel active...
-
+    } else if(this.usedFor === 'thread' && this.activeChannel){
+      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
+      this.deleteMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'thread' && !this.activeChannel){
+      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+      this.deleteMessageDoc(messageDocRef);
     }
   }
 
@@ -233,15 +261,20 @@ async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
 
       if(this.usedFor === 'channel'){
         const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
-        const reactionsSubcollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
-        this.addReactionDoc(reactionsSubcollection);
+        const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+        this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'dm-chat'){
         const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
-        const reactionsSubcollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
-        this.addReactionDoc(reactionsSubcollection);
-      } else if(this.usedFor === 'thread'){
-        //copy above for thread
-        
+        const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+        this.addReactionDoc(reactionsCollection);
+      } else if(this.usedFor === 'thread' && this.activeChannel){
+        const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
+        const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+        this.addReactionDoc(reactionsCollection);
+      } else if(this.usedFor === 'thread' && !this.activeChannel){
+        const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+        const reactionsCollection = collection(this.firestore, `${messageDocRef}/reactions`);
+        this.addReactionDoc(reactionsCollection);
       }
     }
   }
