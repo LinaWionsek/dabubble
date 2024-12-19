@@ -41,7 +41,7 @@
 
 } @else if(usedFor === 'dm-chat'){
     <div class="history-container">
-        @if(allChatMessages.length === 0){
+        @if(chatMessagesLoaded && allChatMessages.length === 0){
             <div class="default-dm-view">
                 <div class="user-div">
                     <img src="{{userData?.avatar}}" class="large-user-img">

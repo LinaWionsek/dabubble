@@ -35,6 +35,7 @@ export class ChatHistoryComponent {
   chatMessages$!: Observable<Message[]>;
   allChatMessages: Message[] = [];
   groupedChatMessages: { [date: string]: Message[] } = {};
+  chatMessagesLoaded = false;
 
 
   currentUser!: User | null ;
@@ -68,8 +69,6 @@ export class ChatHistoryComponent {
   }
 
 
-
-
   setChannelId(){
     this.channelId = this.channelData?.id;
   }
@@ -80,18 +79,22 @@ export class ChatHistoryComponent {
   }
 
 
-  async loadChatMessages(){
+  loadChatMessages(){
     const messageCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
     this.chatMessages$ = collectionData(messageCollection, { idField: 'id'}) as Observable<Message[]>;
     
     this.chatMessages$.subscribe((messages) => {
       this.allChatMessages = messages;
       this.sortMessagesIntoGroups(this.allChatMessages, this.groupedChatMessages);
-    })
+    });
+    
+    setTimeout(() => {
+      this.chatMessagesLoaded = true;
+    }, 200);
   }
 
 
-  async loadChannelMessages(){
+  loadChannelMessages(){
     const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
     const channelMessagesSubcollection = collection(channelDocRef, 'messages');
     this.channelMessages$ = collectionData(channelMessagesSubcollection, { idField: 'id'}) as Observable<Message[]>;
