@@ -1,0 +1,6 @@
+@import "mixins", "styles";
+
+.student-list,
+.email-list {
+  @include size(100%);
+}

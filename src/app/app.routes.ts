@@ -7,6 +7,9 @@ import { AvatarSelectionComponent } from './auth-layout/avatar-selection/avatar-
 import { authGuard, reverseAuthGuard } from './guards/auth.guard';
 import { PasswordResetComponent } from './auth-layout/password-reset/password-reset.component';
 import { NewPasswordComponent } from './auth-layout/new-password/new-password.component';
+import { ImprintComponent } from './auth-layout/legal/imprint/imprint.component';
+import { PrivacyPolicyComponent } from './auth-layout/legal/privacy-policy/privacy-policy.component';
+
 
 export const routes: Routes = [
   {
@@ -39,6 +42,8 @@ export const routes: Routes = [
         component: NewPasswordComponent,
         // canActivate: [reverseAuthGuard],
       },
+      { path: 'imprint', component: ImprintComponent },
+      { path: 'privacy-policy', component: PrivacyPolicyComponent },
     ],
   },
   { path: 'main', component: MainPageComponent, canActivate: [authGuard] },

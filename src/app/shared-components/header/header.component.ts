@@ -60,6 +60,11 @@ export class HeaderComponent implements OnInit {
       this.showSearchBar = true;
       this.showUserProfile = true;
     }
+    if (url.includes('imprint') || url.includes('privacy-policy')) {
+      this.showSearchBar = false;
+      this.showUserProfile = false;
+      this.showRegistrationLink = false;
+    }
   }
 
   getAvatarBaseName(avatarPath: string | undefined): string {

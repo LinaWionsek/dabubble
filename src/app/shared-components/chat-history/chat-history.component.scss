@@ -1,42 +1,22 @@
 @import "mixins", "styles";
 
-:host{
-    max-height: 57vh;
-    width: 100%;
-    flex: 1;
-    margin-bottom: 40px;
+:host {
+  max-height: 57vh;
+  width: 100%;
+  flex: 1;
+  margin-bottom: 40px;
 }
 
-.history-container{
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column-reverse;
-    overflow: auto;
-    padding: 24px 0;
-
-
-    &::-webkit-scrollbar {
-        width: 8px; 
-        height: 8px; 
-      }
-    
-      &::-webkit-scrollbar-thumb {
-        background-color: #999; 
-        border-radius: 4px; 
-      }
-    
-      &::-webkit-scrollbar-thumb:hover {
-        background-color: #888; 
-      }
-    
-      &::-webkit-scrollbar-track {
-        background: transparent;
-      }
+.history-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: auto;
+  padding: 24px 0;
 }
 
-
-.seperator-div{
+.seperator-div {
   width: 100%;
   @include display-flex();
   padding: 0 16px;
@@ -44,58 +24,56 @@
   margin-bottom: 16px;
 }
 
-.answer-count{
+.answer-count {
   font-size: 18px;
   color: rgba(173, 176, 217, 1);
   margin-right: 16px;
 }
 
-.seperator{
+.seperator {
   border: 1px solid rgba(173, 176, 217, 1);
   height: 1px;
   flex: 1;
 }
 
-.answers-div{
+.answers-div {
   width: 100%;
   flex: 1;
 }
 
-
-
-.default-dm-view{
+.default-dm-view {
   @include display-flex($fd: column, $ai: flex-start);
   margin-left: 40px;
   margin-bottom: 48px;
 }
 
-.user-div{
+.user-div {
   @include display-flex($ai: flex-end);
 }
 
-.large-user-img{
+.large-user-img {
   width: 100px;
   height: 100px;
   border-radius: 50%;
 }
 
-.user-name-span{
+.user-name-span {
   font-size: 24px;
   font-weight: 700;
   margin-left: 24px;
 }
 
-.info-span{
+.info-span {
   margin-top: 24px;
   font-size: 20px;
   color: rgba(104, 104, 104, 1);
 }
 
-.blue{
+.blue {
   color: rgba(83, 90, 241, 1);
   transition: all 125ms ease;
 
-  &:hover{
+  &:hover {
     cursor: pointer;
     scale: 1.05;
   }
