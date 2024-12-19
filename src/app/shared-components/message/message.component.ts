@@ -3,7 +3,7 @@ import { Message } from './../../models/message.class'
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.class';
 import { FormsModule } from '@angular/forms';
-import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData} from '@angular/fire/firestore';
+import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData, DocumentReference, CollectionReference, DocumentData} from '@angular/fire/firestore';
 import { Reaction } from '../../models/reaction.class';
 import { Observable } from 'rxjs';
 import { ThreadService } from '../../services/thread.service';
@@ -20,6 +20,7 @@ import { ThreadService } from '../../services/thread.service';
 export class MessageComponent {
   @Input() channelId?: string;
   @Input() chatId?: string;
+  @Input() otherUser?: User | null;
   @Input() currentUser!: User | null;
   @Input() message!: Message | null;
   @Input() usedFor = '';
@@ -83,21 +84,28 @@ export class MessageComponent {
 
 
   async loadMessageReactions(){
-    if(this.channelId){
-      const reactionsSubcollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
-
-      this.messageReactions$ = collectionData(reactionsSubcollection) as Observable<Reaction[]>;
-
-      this.messageReactions$.subscribe((reactions) => {
-        this.messageReactions = reactions;
-        this.sortReactionTypes();
-      })
-    } else if(this.chatId){
-      //copy above for chat
-
+    if(this.usedFor === 'channel' && this.channelId){
+      const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
+      this.subscribeToMessageReactions(reactionsCollection);
+    } else if(this.usedFor === 'dm-chat'){
+      const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
+      this.subscribeToMessageReactions(reactionsCollection);
+    } else if(this.usedFor === 'thread'){
+      //copy above for thread
+      //subscribe to channel service to check if it is used for thread + channel or thread + dm
     }
-
   }
+
+
+  subscribeToMessageReactions(reactionsCollection: CollectionReference<DocumentData>){
+    this.messageReactions$ = collectionData(reactionsCollection) as Observable<Reaction[]>;
+
+    this.messageReactions$.subscribe((reactions) => {
+      this.messageReactions = reactions;
+      this.sortReactionTypes();
+    })
+  }
+  
 
   sortReactionTypes(){
     this.groupedReactions = {};
@@ -164,36 +172,53 @@ export class MessageComponent {
   }
 
 
-  async updateMessage(){
-    if(this.channelId){
+  updateMessage(){
+    if(this.usedFor === 'channel' && this.channelId){
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
+      this.updateMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'dm-chat'){
+      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+      this.updateMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'thread'){
+      // subscribe to channelService and check if channel active...
 
-      try {
-        await updateDoc (messageDocRef, { ... this.message });
-        this.editingMessage = false;
-      } catch (error) {
-        console.error(error);
-      }
-    } else if(this.chatId){
-      //copy above for chat
     }
   }
 
 
-  async deleteMessage(){
-    if(this.channelId){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
-
-      try {
-        await deleteDoc (messageDocRef);
-        this.editingMessage = false;
-      } catch (error) {
-        console.error(error);
-      }
-    } else if(this.chatId){
-      //copy above for chat
+  async updateMessageDoc(messageRef: DocumentReference<DocumentData>){
+    try {
+      await updateDoc (messageRef, { ... this.message });
+      this.editingMessage = false;
+    } catch (error) {
+      console.error(error);
     }
   }
+
+
+  deleteMessage(){
+    if(this.usedFor === 'channel' && this.channelId){
+      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
+      this.deleteMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'dm-chat'){
+      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+      this.deleteMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'thread'){
+      // subscribe to channelService and check if channel active...
+
+    }
+  }
+
+
+async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
+  try {
+    await deleteDoc (messageRef);
+    this.editingMessage = false;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
 
   formerReactionOfTheSameTypeExists(type:string){
@@ -206,26 +231,35 @@ export class MessageComponent {
       this.reaction.reactionType = type;
       this.hasJustReacted = true; 
 
-      if(this.channelId){
+      if(this.usedFor === 'channel'){
         const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
         const reactionsSubcollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
-  
-        try {
-          await addDoc(reactionsSubcollection, { ...this.reaction });
-          this.initializeNewReaction();
-        } catch (error) {
-          console.error(error)
-        } finally {
-          setTimeout(() => {
-            this.hasJustReacted = false;
-          }, 2000);
-        }
-      } else if(this.chatId){
-        //copy above for chat
-
+        this.addReactionDoc(reactionsSubcollection);
+      } else if(this.usedFor === 'dm-chat'){
+        const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+        const reactionsSubcollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+        this.addReactionDoc(reactionsSubcollection);
+      } else if(this.usedFor === 'thread'){
+        //copy above for thread
+        
       }
     }
   }
+
+
+  async addReactionDoc(reactionsCollection: CollectionReference<DocumentData>){
+    try {
+      await addDoc(reactionsCollection, { ...this.reaction });
+      this.initializeNewReaction();
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setTimeout(() => {
+        this.hasJustReacted = false;
+      }, 2000);
+    }
+  }
+
 
 
   showMainReactionOptions(){
