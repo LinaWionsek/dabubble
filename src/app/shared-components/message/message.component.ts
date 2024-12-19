@@ -200,13 +200,17 @@ export class MessageComponent {
       this.updateMessageDoc(messageDocRef);
     } else if(this.usedFor === 'dm-chat'){
       const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}`);
       this.updateMessageDoc(messageDocRef);
+      this.updateMessageDoc(messageDocRef2);
     } else if(this.usedFor === 'thread' && this.activeChannel){
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
       this.updateMessageDoc(messageDocRef);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
       const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
       this.updateMessageDoc(messageDocRef);
+      this.updateMessageDoc(messageDocRef2);
     }
   }
 
@@ -227,13 +231,17 @@ export class MessageComponent {
       this.deleteMessageDoc(messageDocRef);
     } else if(this.usedFor === 'dm-chat'){
       const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}`);
       this.deleteMessageDoc(messageDocRef);
+      this.deleteMessageDoc(messageDocRef2);
     } else if(this.usedFor === 'thread' && this.activeChannel){
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
       this.deleteMessageDoc(messageDocRef);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
       const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
       this.deleteMessageDoc(messageDocRef);
+      this.deleteMessageDoc(messageDocRef2);
     }
   }
 
@@ -264,17 +272,19 @@ async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
         const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
         this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'dm-chat'){
-        const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
-        const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+        const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
+        const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
         this.addReactionDoc(reactionsCollection);
+        this.addReactionDoc(reactionsCollection2);
       } else if(this.usedFor === 'thread' && this.activeChannel){
         const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
         const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
         this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
-        const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
-        const reactionsCollection = collection(this.firestore, `${messageDocRef}/reactions`);
+        const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
+        const reactionsCollection2 = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
         this.addReactionDoc(reactionsCollection);
+        this.addReactionDoc(reactionsCollection2);
       }
     }
   }
