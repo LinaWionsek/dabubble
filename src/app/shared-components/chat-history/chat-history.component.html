@@ -55,10 +55,9 @@
         
                     @for (message of groupedChatMessages[dateKey]; track $index) {
                         <app-message 
-                            [channelId]="channelId"
-                            [chatId]="chatId"
                             [currentUser]="currentUser"
-                            [usedFor]="'chat'"
+                            [otherUser]="userData"
+                            [usedFor]="'dm-chat'"
                             [message]="message">
                         </app-message>
                     }

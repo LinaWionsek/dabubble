@@ -3,10 +3,11 @@ import { Message } from './../../models/message.class'
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.class';
 import { FormsModule } from '@angular/forms';
-import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData} from '@angular/fire/firestore';
+import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData, DocumentReference} from '@angular/fire/firestore';
 import { Reaction } from '../../models/reaction.class';
 import { Observable } from 'rxjs';
 import { ThreadService } from '../../services/thread.service';
+import { DocumentData } from '@firebase/firestore-types';
 
 
 
@@ -20,6 +21,7 @@ import { ThreadService } from '../../services/thread.service';
 export class MessageComponent {
   @Input() channelId?: string;
   @Input() chatId?: string;
+  @Input() otherUser?: User | null;
   @Input() currentUser!: User | null;
   @Input() message!: Message | null;
   @Input() usedFor = '';
@@ -83,7 +85,7 @@ export class MessageComponent {
 
 
   async loadMessageReactions(){
-    if(this.channelId){
+    if(this.usedFor === 'channel' && this.channelId){
       const reactionsSubcollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
 
       this.messageReactions$ = collectionData(reactionsSubcollection) as Observable<Reaction[]>;
@@ -92,12 +94,14 @@ export class MessageComponent {
         this.messageReactions = reactions;
         this.sortReactionTypes();
       })
-    } else if(this.chatId){
+    } else if(this.usedFor === 'dm-chat'){
+
       //copy above for chat
 
     }
 
   }
+  
 
   sortReactionTypes(){
     this.groupedReactions = {};
@@ -164,36 +168,53 @@ export class MessageComponent {
   }
 
 
-  async updateMessage(){
-    if(this.channelId){
+  updateMessage(){
+    if(this.usedFor === 'channel' && this.channelId){
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
+      this.updateMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'dm-chat'){
+      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+      this.updateMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'thread'){
+      // subscribe to channelService and check if channel active...
 
-      try {
-        await updateDoc (messageDocRef, { ... this.message });
-        this.editingMessage = false;
-      } catch (error) {
-        console.error(error);
-      }
-    } else if(this.chatId){
-      //copy above for chat
     }
   }
 
 
-  async deleteMessage(){
-    if(this.channelId){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
-
-      try {
-        await deleteDoc (messageDocRef);
-        this.editingMessage = false;
-      } catch (error) {
-        console.error(error);
-      }
-    } else if(this.chatId){
-      //copy above for chat
+  async updateMessageDoc(messageRef: DocumentReference<DocumentData>){
+    try {
+      await updateDoc (messageRef, { ... this.message });
+      this.editingMessage = false;
+    } catch (error) {
+      console.error(error);
     }
   }
+
+
+  deleteMessage(){
+    if(this.usedFor === 'channel' && this.channelId){
+      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
+      this.deleteMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'dm-chat'){
+      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+      this.deleteMessageDoc(messageDocRef);
+    } else if(this.usedFor === 'thread'){
+      // subscribe to channelService and check if channel active...
+
+    }
+  }
+
+
+async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
+  try {
+    await deleteDoc (messageRef);
+    this.editingMessage = false;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
 
   formerReactionOfTheSameTypeExists(type:string){
