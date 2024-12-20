@@ -1,8 +1,8 @@
-@if(usedFor === 'channel'){
+@if(usedFor === 'channel' || usedFor === 'dm-chat'){
     <div class="history-container">
-        @for (dateKey of sortedDateKeys(groupedChannelMessages); track $index) {
+        @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
 
-            @for (message of groupedChannelMessages[dateKey]; track $index) {
+            @for (message of groupedMessages[dateKey]; track $index) {
                 <app-message 
                     [channelId]="channelId"
                     [chatId]="chatId"
@@ -18,15 +18,20 @@
 } @else if (usedFor === 'thread') {
     <div class="history-container">
         <div class="answers-div">
-            @for (answer of allMessageAnswers; track $index) {
-                <app-message
-                    [currentUser]="currentUser"
-                    [otherUser]="userData"
-                    [message]="answer"
-                    [usedFor]="'thread'"
-                    [activeMessage]="activeMessage"
-                    [messageAnswers$]="activeMessageAnswers$"
-                ></app-message>
+            @for (dateKey of sortedDateKeys(groupedMessageAnswers); track $index) {
+
+                <app-seperator [date]="dateKey"></app-seperator>
+
+                @for (answer of groupedMessageAnswers[dateKey]; track $index) {
+                    <app-message
+                        [currentUser]="currentUser"
+                        [otherUser]="userData"
+                        [message]="answer"
+                        [usedFor]="'thread'"
+                        [activeMessage]="activeMessage"
+                        [messageAnswers$]="activeMessageAnswers$"
+                     ></app-message>
+                }
             }
         </div>
         <div class="seperator-div">
@@ -41,37 +46,4 @@
     </div>
     
 
-} @else if(usedFor === 'dm-chat'){
-    <div class="history-container">
-        @if(chatMessagesLoaded && allChatMessages.length === 0){
-            <div class="default-dm-view">
-                <div class="user-div">
-                    <img src="{{userData?.avatar}}" class="large-user-img">
-                    <span class="user-name-span">{{userData?.firstName + ' ' + userData?.lastName}}</span>
-                </div>
-                <span class="info-span">Diese Unterhaltung findet nur zwischen dir und <span class="blue">&#64;{{userData?.firstName + ' ' + userData?.lastName}}</span> statt.</span>
-            </div>
-        } @else {
-            <div class="history-container">
-                @for (dateKey of sortedDateKeys(groupedChatMessages); track $index) {
-        
-                    @for (message of groupedChatMessages[dateKey]; track $index) {
-                        <app-message 
-                            [currentUser]="currentUser"
-                            [otherUser]="userData"
-                            [usedFor]="'dm-chat'"
-                            [message]="message"
-                            [activeMessage]="activeMessage"
-                            >
-                        </app-message>
-                    }
-            
-                    <app-seperator [date]="dateKey"></app-seperator>
-                }
-            </div>
-
-        }
-
-    </div>
-}
-
+} 
