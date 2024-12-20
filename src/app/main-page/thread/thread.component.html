@@ -2,7 +2,11 @@
     <div class="thread-header">
         <div class="title-div">
             <span class="thread-title">Thread</span>
-            <span class="channel-title"># {{activeChannel?.name}}</span>
+            @if(activeChannel){
+                <span class="channel-title">#{{activeChannel.name}}</span>
+            } @else {
+                <span class="channel-title">&#64;{{activeChatUser?.firstName + ' ' + activeChatUser?.lastName}}</span>
+            }
         </div>
         
         <div class="icon-container" (click)="closeThread()">
