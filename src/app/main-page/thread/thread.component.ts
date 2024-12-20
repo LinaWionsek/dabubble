@@ -9,6 +9,9 @@ import { Channel } from '../../models/channel.class';
 import { Message } from '../../models/message.class';
 import { MessageComponent } from "../../shared-components/message/message.component";
 import { Observable } from 'rxjs';
+import { AuthService } from '../../services/authentication.service';
+import { User } from '../../models/user.class';
+import { ChatService } from '../../services/dm-chat.service';
 
 @Component({
   selector: 'app-thread',
@@ -21,17 +24,20 @@ export class ThreadComponent {
 
   activeChannel: Channel | null = null;
   activeMessage: Message | null = null;
+  currentUser?: User | null;
+  activeChatUser?: User | null;
   
 
   firestore: Firestore = inject(Firestore);
 
 
-  constructor(private threadService: ThreadService, private channelService: ChannelService){}
+  constructor(private threadService: ThreadService, private channelService: ChannelService, private authService: AuthService, private chatService: ChatService){}
 
 
   ngOnInit(){
     this.subscribeToChannelService();
     this.subscribeToThreadService();
+    this.subscribeToActiveChatService();
   }
 
 
@@ -48,9 +54,14 @@ export class ThreadComponent {
     })
   }
 
-  
+  subscribeToActiveChatService(){
+    this.chatService.activeUserChat$.subscribe(user => {
+      this.activeChatUser = user
+    })
+  }
 
- 
+
+  
 
   closeThread(){
     this.threadService.deactivateThread();

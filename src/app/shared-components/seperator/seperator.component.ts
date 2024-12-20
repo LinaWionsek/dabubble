@@ -12,10 +12,9 @@ export class SeperatorComponent {
   formattedDate: string = '';
 
 
-
   ngOnInit(){
-    this.setDateInput()
-
+    console.log(this.date);
+    this.setDateInput();
   }
 
 
@@ -27,14 +26,23 @@ export class SeperatorComponent {
     const currentDateString = this.formatDate(currentDate); 
     const yesterdayDateString = this.formatDate(yesterdayDate); 
 
-    if (this.date === currentDateString) {
+    const inputDate = this.parseDate(this.date);
+    const inputDateString = this.formatDate(inputDate);
+
+    if (inputDateString === currentDateString) {
       this.formattedDate = 'Heute'; 
-    } else if (this.date === yesterdayDateString) {
+    } else if (inputDateString === yesterdayDateString) {
       this.formattedDate = 'Gestern'; 
     } else {
-      this.formattedDate = this.date; 
+      this.formattedDate = inputDateString; 
     }
 
+  }
+
+
+  parseDate(dateString: string): Date {
+    const [day, month, year] = dateString.split('.').map((part) => parseInt(part, 10));
+    return new Date(year, month - 1, day);
   }
 
 

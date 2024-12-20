@@ -2,11 +2,12 @@ import { Component, Input, inject, SimpleChanges } from '@angular/core';
 import { MessageComponent } from '../message/message.component';
 import { SeperatorComponent } from '../seperator/seperator.component';
 import { Channel } from '../../models/channel.class';
-import { Firestore, doc, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, doc, collection, collectionData, CollectionReference, DocumentData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Message } from '../../models/message.class';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
+import { ChannelService } from '../../services/channel.service';
 
 
 @Component({
@@ -24,47 +25,56 @@ export class ChatHistoryComponent {
 
   channelId?: string;
   chatId?: string;
+  activeChannel?: Channel | null;
 
   activeMessageAnswers$!: Observable<Message[]>;
   allMessageAnswers?: Message[];
+  groupedMessageAnswers: { [date: string]: Message[] } = {};
 
-  channelMessages$!: Observable<Message[]>;
-  allChannelMessages: Message[] = [];
-  groupedChannelMessages: { [date: string]: Message[] } = {};
+  messages$!: Observable<Message[]>;
+  allMessages: Message[] = [];
+  groupedMessages: { [date: string]: Message[] } = {};
 
-  chatMessages$!: Observable<Message[]>;
-  allChatMessages: Message[] = [];
-  groupedChatMessages: { [date: string]: Message[] } = {};
-  chatMessagesLoaded = false;
-
-
+ 
   currentUser!: User | null ;
   firestore: Firestore = inject(Firestore);
 
 
-  constructor(private authService: AuthService){}
+  constructor(private authService: AuthService, private channelService: ChannelService){}
+
+
+
+  ngOnInit(){
+    this.subscribeToChannelService();
+  }
 
 
   async ngOnChanges(changes: SimpleChanges){
     await this.getCurrentUser();
     if (this.usedFor ==='channel') {
-      this.loadChannelMessages();
-      this.loadActiveMessageAnswers();
+      const channelMessagesSubcollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
+      this.loadMessages(channelMessagesSubcollection);
+      // this.loadActiveMessageAnswers();
       this.setChannelId();
     } else if (this.usedFor ==='dm-chat'){
-      this.loadChatMessages();
-    } else if(this.usedFor ==='thread'){
-      this.loadActiveMessageAnswers();
+      const messagesCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
+      this.loadMessages(messagesCollection);
+    } else if(this.usedFor ==='thread' && this.activeChannel){
+      const answersCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
+      this.loadActiveMessageAnswers(answersCollection);
+    } else if(this.usedFor === 'thread' && !this.activeChannel){
+      const answersCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
+      this.loadActiveMessageAnswers(answersCollection);
     }
   }
   
 
-  loadActiveMessageAnswers(){
-    const activeMessageAnswersCol = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
-    this.activeMessageAnswers$ = collectionData(activeMessageAnswersCol, { idField: 'id'}) as Observable<Message[]>;
+  loadActiveMessageAnswers(collection: CollectionReference<DocumentData>){
+    this.activeMessageAnswers$ = collectionData(collection, { idField: 'id'}) as Observable<Message[]>;
 
     this.activeMessageAnswers$.subscribe((answers) => {
       this.allMessageAnswers = answers;
+      this.sortMessagesIntoGroups(this.allMessageAnswers, this.groupedMessageAnswers);
     })
   }
 
@@ -79,29 +89,18 @@ export class ChatHistoryComponent {
   }
 
 
-  loadChatMessages(){
-    const messageCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
-    this.chatMessages$ = collectionData(messageCollection, { idField: 'id'}) as Observable<Message[]>;
-    
-    this.chatMessages$.subscribe((messages) => {
-      this.allChatMessages = messages;
-      this.sortMessagesIntoGroups(this.allChatMessages, this.groupedChatMessages);
-    });
-    
-    setTimeout(() => {
-      this.chatMessagesLoaded = true;
-    }, 200);
+  subscribeToChannelService(){
+    this.channelService.activeChannel$.subscribe((channel) => {
+      this.activeChannel = channel;
+    })
   }
 
 
-  loadChannelMessages(){
-    const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
-    const channelMessagesSubcollection = collection(channelDocRef, 'messages');
-    this.channelMessages$ = collectionData(channelMessagesSubcollection, { idField: 'id'}) as Observable<Message[]>;
-    
-    this.channelMessages$.subscribe((messages) => {
-      this.allChannelMessages = messages;
-      this.sortMessagesIntoGroups(this.allChannelMessages, this.groupedChannelMessages);
+  loadMessages(collection: CollectionReference<DocumentData>){
+    this.messages$ = collectionData(collection, { idField: 'id'}) as Observable<Message[]>;
+    this.messages$.subscribe((messages) => {
+      this.allMessages = messages;
+      this.sortMessagesIntoGroups(this.allMessages, this.groupedMessages)
     })
   }
 
@@ -112,7 +111,7 @@ export class ChatHistoryComponent {
     messagesArray.forEach((message) => {
       const date = new Date(message.timeStamp);
       const dateKey = this.formatDate(date);
-
+     
       if (!messagesObject[dateKey]) {
         messagesObject[dateKey] = [];
       }
@@ -122,6 +121,16 @@ export class ChatHistoryComponent {
     this.sortGroupedMessages(messagesObject);
   }
   
+
+  formatDate(date: Date): string {
+    const formatter = new Intl.DateTimeFormat('de-DE', {
+      year: 'numeric', // Include year
+      month: '2-digit', // Include month
+      day: '2-digit',   // Include day
+    });
+    return formatter.format(date);
+  }
+
 
   sortGroupedMessages(messagesObject: { [key: string]: Message[] }){
     Object.keys(messagesObject).forEach((dateKey) => {
@@ -134,25 +143,16 @@ export class ChatHistoryComponent {
   }
 
 
-
-  formatDate(date: Date){
-    const formatter = new Intl.DateTimeFormat('de-DE', {
-      weekday: 'long',  
-      day: '2-digit',  
-      month: 'long',  
-    });
-
-    return formatter.format(date);
-  }
-
-
   sortedDateKeys(messagesObject: { [key: string]: Message[] }): string[] {
-    return Object.keys(messagesObject).sort((a, b) => {
-      const dateA = new Date(a);
-      const dateB = new Date(b);
-      return dateA.getTime() - dateB.getTime();
-    });
-  }
+  const keys = Object.keys(messagesObject);
+  const sortedKeys = keys.sort((a, b) => {
+    const dateA = new Date(a).getTime();
+    const dateB = new Date(b).getTime();
+    return dateB - dateA; // Descending order
+  });
+
+  return sortedKeys;
+}
 
 
 }
