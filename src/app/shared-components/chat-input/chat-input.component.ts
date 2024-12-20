@@ -71,18 +71,12 @@ export class ChatInputComponent {
         const channelMessagesCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
         this.addMessageToCollection(channelMessagesCollection);
       } else if(this.usedFor === 'dm-chat'){
-        const dmSubcollectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
-        const dmSubcollectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages`);
-        this.addMessageToCollection(dmSubcollectionCurrentUser);
-        this.addMessageToCollection(dmSubcollectionOtherUser);
+        this.sendDmMessage();
       } else if(this.usedFor === 'thread' && this.activeChannel){
         const answersSubcollection = collection (this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
         this.addMessageToCollection(answersSubcollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
-        const collectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
-        const collectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages${this.activeMessage?.id}/answers`);
-        this.addMessageToCollection(collectionCurrentUser);
-        this.addMessageToCollection(collectionOtherUser);
+        this.sendDmThreadMessage();
       }
       
       this.initializeNewMessage();
@@ -96,6 +90,22 @@ export class ChatInputComponent {
     } catch (error) {
       console.error(error);
     }
+  }
+
+
+  sendDmMessage(){
+    const dmSubcollectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
+    const dmSubcollectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages`);
+    this.addMessageToCollection(dmSubcollectionCurrentUser);
+    this.addMessageToCollection(dmSubcollectionOtherUser);
+  }
+
+
+  sendDmThreadMessage(){
+    const collectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
+    const collectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages${this.activeMessage?.id}/answers`);
+    this.addMessageToCollection(collectionCurrentUser);
+    this.addMessageToCollection(collectionOtherUser);
   }
 
 

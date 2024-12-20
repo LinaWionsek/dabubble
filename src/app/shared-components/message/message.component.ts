@@ -199,18 +199,12 @@ export class MessageComponent {
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
       this.updateMessageDoc(messageDocRef);
     } else if(this.usedFor === 'dm-chat'){
-      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
-      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}`);
-      this.updateMessageDoc(messageDocRef);
-      this.updateMessageDoc(messageDocRef2);
+      this.updateDmChatMessage();
     } else if(this.usedFor === 'thread' && this.activeChannel){
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
       this.updateMessageDoc(messageDocRef);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
-      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
-      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
-      this.updateMessageDoc(messageDocRef);
-      this.updateMessageDoc(messageDocRef2);
+      this.updateDmThreadMesssage();
     }
   }
 
@@ -225,23 +219,33 @@ export class MessageComponent {
   }
 
 
+  updateDmChatMessage(){
+    const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+    const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}`);
+    this.updateMessageDoc(messageDocRef);
+    this.updateMessageDoc(messageDocRef2);
+  }
+
+
+  updateDmThreadMesssage(){
+    const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+    const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+    this.updateMessageDoc(messageDocRef);
+    this.updateMessageDoc(messageDocRef2);
+  }
+
+
   deleteMessage(){
     if(this.usedFor === 'channel' && this.channelId){
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
       this.deleteMessageDoc(messageDocRef);
     } else if(this.usedFor === 'dm-chat'){
-      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
-      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}`);
-      this.deleteMessageDoc(messageDocRef);
-      this.deleteMessageDoc(messageDocRef2);
+      this.deleteDmChatMessage();
     } else if(this.usedFor === 'thread' && this.activeChannel){
       const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
       this.deleteMessageDoc(messageDocRef);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
-      const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
-      const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
-      this.deleteMessageDoc(messageDocRef);
-      this.deleteMessageDoc(messageDocRef2);
+      this.deleteDmThreadMessage();
     }
   }
 
@@ -256,6 +260,21 @@ async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
 }
 
 
+deleteDmChatMessage(){
+  const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}`);
+  const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}`);
+  this.deleteMessageDoc(messageDocRef);
+  this.deleteMessageDoc(messageDocRef2);
+}
+
+
+deleteDmThreadMessage(){
+  const messageDocRef = doc(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+  const messageDocRef2 = doc(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}`);
+  this.deleteMessageDoc(messageDocRef);
+  this.deleteMessageDoc(messageDocRef2);
+}
+
 
   formerReactionOfTheSameTypeExists(type:string){
     return this.groupedReactions[type]?.some((reaction) => reaction.originatorId === this.currentUser?.id) || false;
@@ -268,23 +287,15 @@ async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
       this.hasJustReacted = true; 
 
       if(this.usedFor === 'channel'){
-        const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
-        const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+        const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
         this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'dm-chat'){
-        const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
-        const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
-        this.addReactionDoc(reactionsCollection);
-        this.addReactionDoc(reactionsCollection2);
+        this.addReactionForDmMessage();
       } else if(this.usedFor === 'thread' && this.activeChannel){
-        const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
-        const reactionsCollection = collection(this.firestore, `${messageDocRef.path}/reactions`);
+        const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
         this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
-        const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
-        const reactionsCollection2 = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
-        this.addReactionDoc(reactionsCollection);
-        this.addReactionDoc(reactionsCollection2);
+        this.addReactionForDmThreadMessage();
       }
     }
   }
@@ -304,6 +315,21 @@ async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
   }
 
 
+
+  addReactionForDmMessage(){
+    const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
+    const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
+    this.addReactionDoc(reactionsCollection);
+    this.addReactionDoc(reactionsCollection2);
+  }
+
+  addReactionForDmThreadMessage(){
+    const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
+    const reactionsCollection2 = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
+    this.addReactionDoc(reactionsCollection);
+    this.addReactionDoc(reactionsCollection2);
+  }
+  
 
   showMainReactionOptions(){
     this.mainEmojiOptionsMenu = true;
