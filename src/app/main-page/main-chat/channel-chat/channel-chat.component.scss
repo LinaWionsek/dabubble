@@ -3,11 +3,12 @@
 :host{
     width: 100%;
     flex: 1;
-    @include display-flex($fd:column, $jc: space-between);
+    @include display-flex($fd:column, $jc: flex-start);
 }
 
 .chat-input-container{
     height: 145px;
     width: 100%;
     @include display-flex();
+    margin-top: 56px;
 }

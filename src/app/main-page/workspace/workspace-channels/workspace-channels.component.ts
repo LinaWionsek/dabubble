@@ -5,6 +5,7 @@ import { Channel } from './../../../models/channel.class';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { ChannelService } from '../../../services/channel.service';
 import { User } from '../../../models/user.class';
+import { ThreadService } from '../../../services/thread.service';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class WorkspaceChannelsComponent {
   @Input() currentUser?: User | null;
   @Output() dialogStateChange = new EventEmitter<boolean>();
   
-  constructor(private channelService: ChannelService) {}
+  constructor(private channelService: ChannelService, private threadService: ThreadService) {}
 
   showSubmenu = true;
   addChannelDialogOpened = false;
@@ -84,6 +85,7 @@ export class WorkspaceChannelsComponent {
 
 
   activateChannel(index:number) {
+    this.threadService.deactivateThread();
     this.activeIndex = index; 
     this.activeChannel = this.allChannels[index].id;
     const activeChannelObject = this.allChannels[index]

@@ -1,7 +1,7 @@
 @import "mixins", "styles";
 
 :host {
-  max-height: 57vh;
+  max-height: 55vh;
   width: 100%;
   flex: 1;
   margin-bottom: 40px;
@@ -37,6 +37,8 @@
 }
 
 .answers-div {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   flex: 1;
 }

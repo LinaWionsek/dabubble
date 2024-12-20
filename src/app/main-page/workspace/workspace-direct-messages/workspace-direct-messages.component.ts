@@ -5,6 +5,7 @@ import { User } from '../../../models/user.class';
 import { Observable } from 'rxjs';
 import { ChatService } from '../../../services/dm-chat.service';
 import { ChannelService } from '../../../services/channel.service';
+import { ThreadService } from '../../../services/thread.service';
 
 
 
@@ -37,7 +38,7 @@ export class WorkspaceDirectMessagesComponent {
   activeChat: string = '';
 
 
-  constructor(private chatService: ChatService, private channelService: ChannelService){}
+  constructor(private chatService: ChatService, private channelService: ChannelService, private threadService: ThreadService){}
 
 
   ngOnInit(){
@@ -62,6 +63,7 @@ export class WorkspaceDirectMessagesComponent {
 
   activateChat(index:number){
     this.channelService.clearActiveChannel();
+    this.threadService.deactivateThread();
 
     this.activeIndex = index; 
     this.activeChat = this.allUsers[index].id;
