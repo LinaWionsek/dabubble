@@ -46,19 +46,31 @@
     </div>
 } @else if(usedFor === 'dm-chat'){
     <div class="history-container">
-        @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
+        @if(chatMessagesLoaded && allMessages.length === 0){
+            <div class="default-dm-view">
+                <div class="user-div">
+                    <img src="{{userData?.avatar}}" class="large-user-img">
+                    <span class="user-name-span">{{userData?.firstName + ' ' + userData?.lastName}}</span>
+                </div>
+                <span class="info-span">Diese Unterhaltung findet nur zwischen dir und <span class="blue">&#64;{{userData?.firstName + ' ' + userData?.lastName}}</span> statt.</span>
+            </div>
+        } @else {
+            @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
 
-            @for (message of groupedMessages[dateKey]; track $index) {
-                <app-message 
-                    [otherUser]="userData"
-                    [chatId]="chatId"
-                    [currentUser]="currentUser"
-                    [usedFor]="'dm-chat'"
-                    [message]="message">
-                </app-message>
+                @for (message of groupedMessages[dateKey]; track $index) {
+                    <app-message 
+                        [otherUser]="userData"
+                        [chatId]="chatId"
+                        [currentUser]="currentUser"
+                        [usedFor]="'dm-chat'"
+                        [message]="message">
+                    </app-message>
+                }
+        
+                <app-seperator [date]="dateKey"></app-seperator>
             }
-    
-            <app-seperator [date]="dateKey"></app-seperator>
         }
+
+       
     </div>
 }

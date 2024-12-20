@@ -47,8 +47,8 @@
 
 .default-dm-view {
   @include display-flex($fd: column, $ai: flex-start);
-  margin-left: 40px;
-  margin-bottom: 48px;
+  margin-left: 48px;
+  margin-bottom: 8px;
 }
 
 .user-div {
