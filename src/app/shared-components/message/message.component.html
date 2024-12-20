@@ -23,7 +23,7 @@
                 <div class="message-text-div">{{ message!.messageText }}</div>
                 <div class="message-div-footer">
 
-                    @if(usedFor === 'channel' && messageAnswers && messageAnswers.length > 0){
+                    @if(messageAnswers && messageAnswers.length > 0){
                         <span class="answers-count" (click)="activateThread(message!)">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
                         <span class="last-answer-time" (click)="activateThread(message!)">Letzte Antwort {{lastAnswerTime}}</span>
                     }
@@ -158,7 +158,7 @@
 
                 }
                 
-                @if(usedFor === 'channel' && messageAnswers && messageAnswers.length > 0){
+                @if(messageAnswers && messageAnswers.length > 0){
                     <span class="answers-count" (click)="activateThread(message!)">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
                     <span class="last-answer-time" (click)="activateThread(message!)">Letzte Antwort {{lastAnswerTime}}</span>
                 }

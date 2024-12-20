@@ -74,7 +74,7 @@ export class MessageComponent {
     if(this.usedFor === 'channel'){
       const answersCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/answers`);
       this.subscribeToAnswersCollection(answersCollection);
-    } else if(this.usedFor === 'chat'){
+    } else if(this.usedFor === 'dm-chat'){
       const answersCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/answers`);
       this.subscribeToAnswersCollection(answersCollection);
     } 
@@ -310,26 +310,34 @@ deleteDmThreadMessage(){
     } catch (error) {
       console.error(error)
     } finally {
-      setTimeout(() => {
-        this.hasJustReacted = false;
-      }, 2000);
+      if (this.activeChannel){
+        this.resetHasJustReactedBoolean();
+      }
     }
   }
 
-
-
-  addReactionForDmMessage(){
-    const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
-    const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
-    this.addReactionDoc(reactionsCollection);
-    this.addReactionDoc(reactionsCollection2);
+  resetHasJustReactedBoolean(){
+    setTimeout(() => {
+      this.hasJustReacted = false;
+    }, 2000);
   }
 
-  addReactionForDmThreadMessage(){
+
+  async addReactionForDmMessage(){
     const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
-    const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
-    this.addReactionDoc(reactionsCollection);
-    this.addReactionDoc(reactionsCollection2);
+    const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
+    await this.addReactionDoc(reactionsCollection);
+    await this.addReactionDoc(reactionsCollection2);
+    this.resetHasJustReactedBoolean();
+  }
+
+
+  async addReactionForDmThreadMessage(){
+    const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
+    const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
+    await this.addReactionDoc(reactionsCollection);
+    await this.addReactionDoc(reactionsCollection2);
+    this.resetHasJustReactedBoolean();
   }
   
 

@@ -13,7 +13,6 @@ export class SeperatorComponent {
 
 
   ngOnInit(){
-    console.log(this.date);
     this.setDateInput();
   }
 
