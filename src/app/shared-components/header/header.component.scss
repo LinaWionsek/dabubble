@@ -3,6 +3,7 @@
 header {
   @include size(100%);
   @include display-flex($jc: space-between);
+  @include position(relative);
 }
 
 .padding-left-34 {
@@ -41,12 +42,12 @@ header {
   @include size(990px);
 }
 
-.user-profile-container {
-  @include size(500px);
-  @include display-flex($jc: flex-end);
-}
+// .user-profile-container {
+//   @include size(500px);
+//   @include display-flex($jc: flex-end);
+// }
 
-.user-profile {
+.user-header-menu {
   @include display-flex($gap: 16px);
   > .user-avatar-wrapper {
     @include position(relative);
@@ -83,7 +84,8 @@ header {
 }
 
 .dialog-bg {
-  @include position(fixed, 0, 0, $zi: 3);
+  @include position(fixed, 0, 0, $zi: 1000);
   @include size(100vw, 100dvh);
   background-color: rgba(0, 0, 0, 0.2);
 }
+

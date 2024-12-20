@@ -1,0 +1,94 @@
+@import "mixins", "styles";
+
+.user-profile {
+  @include size(500px, 600px);
+  @include display-flex($fd: column, $ai: inherit, $jc: inherit, $gap: 36px);
+  @include position(absolute, $top: 112px, $rig: 16px);
+  background: $primary-color-white;
+  padding: 45px 40px;
+  border-radius: 30px 0 30px 30px;
+  > header {
+    @include display-flex($jc: space-between);
+    > span {
+      @include font-style($font-size-24, $font-weight-700, $text-color-black);
+    }
+  }
+}
+
+.user-avatar,
+.user-info {
+  @include display-flex($jc: space-between);
+}
+
+.user-avatar {
+  align-self: center;
+}
+
+.user-info {
+  > .user-info-wrapper {
+    @include display-flex($fd: column, $gap: 15px);
+    > .user-name {
+      @include font-style($font-size-32, $font-weight-700, $text-color-black);
+    }
+  }
+}
+
+.edit-user {
+  @include font-style($font-size-16, $font-weight-600, $highlight-color-purple);
+  align-self: center;
+  transition: 225ms ease-in-out;
+  &:hover {
+    cursor: pointer;
+    color: $secondary-color-purple;
+  }
+}
+
+.user-online-status-wrapper {
+  @include display-flex($gap: 15px);
+  align-self: flex-start;
+  > .user-online-status-dot {
+    @include size(16px, 16px);
+    border-radius: 50%;
+
+    &.online {
+      background-color: $online-color-green;
+    }
+
+    &.offline {
+      background-color: $error-color-red;
+    }
+  }
+
+  > .user-online-status-text {
+    @include font-style($font-size-20, $font-weight-400);
+
+    &.online {
+      color: $online-color-green;
+    }
+
+    &.offline {
+      color: $error-color-red;
+    }
+  }
+}
+
+.user-email-address {
+  @include display-flex($fd: column, $ai: flex-start, $gap: 30px);
+  width: 70%;
+  > header {
+    @include display-flex($jc: flex-start, $gap: 15px);
+    > span {
+      @include font-style($font-size-20, $font-weight-700, $text-color-black);
+    }
+  }
+  > .user-email {
+    @include font-style($font-size-18, $font-weight-500, $highlight-color-cyan);
+    transition: 225ms ease-in-out;
+    text-decoration: none;
+    align-self: flex-end;
+    &:hover {
+      cursor: pointer;
+      color: $secondary-color-purple;
+    }
+  }
+}
