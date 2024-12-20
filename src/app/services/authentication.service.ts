@@ -57,6 +57,10 @@ export class AuthService {
     return this.userStatus.asObservable();
   }
 
+  getUserId(): string | null {
+    return this.auth.currentUser?.uid || null;
+  }
+
   async getFullUser(): Promise<User | null> {
     const currentUser: FirebaseUser | null = this.auth.currentUser;
 

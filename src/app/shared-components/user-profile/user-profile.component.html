@@ -1,0 +1,43 @@
+<section class="user-profile">
+  <header>
+    <span>Profil</span>
+    <div class="icon-container">
+      <img src="../../../assets/img/close.png" alt="close" />
+    </div>
+  </header>
+
+  <section class="user-avatar">
+    <img [src]="user?.avatar" alt="user-avatar" />
+  </section>
+
+  <section class="user-info">
+    <div class="user-info-wrapper">
+      <span class="user-name">
+        {{ user?.firstName }} {{ user?.lastName }}
+      </span>
+      <div class="user-online-status-wrapper">
+        <span
+          [ngClass]="user?.isOnline ? 'online' : 'offline'"
+          class="user-online-status-dot"
+        ></span>
+        <span
+          [ngClass]="user?.isOnline ? 'online' : 'offline'"
+          class="user-online-status-text"
+          >Aktiv</span
+        >
+      </div>
+    </div>
+
+    @if(isOwnProfile) {
+    <span class="edit-user"> Bearbeiten </span>
+    }
+  </section>
+
+  <section class="user-email-address">
+    <header>
+      <img src="../../../assets/img/mail_icon_bold.png" alt="mail_icon_bold" />
+      <span>E-Mail-Adresse</span>
+    </header>
+    <a [attr.href]="'mailto:' + user?.email" class="user-email">{{ user?.email }}</a>
+  </section>
+</section>

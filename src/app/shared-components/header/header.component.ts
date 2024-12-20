@@ -5,11 +5,17 @@ import { Subscription } from 'rxjs';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
 import { HeaderUserDialogComponent } from './header-user-dialog/header-user-dialog.component';
+import { UserProfileComponent } from '../user-profile/user-profile.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, CommonModule, HeaderUserDialogComponent],
+  imports: [
+    RouterModule,
+    CommonModule,
+    HeaderUserDialogComponent,
+    UserProfileComponent,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -18,8 +24,10 @@ export class HeaderComponent implements OnInit {
   showSearchBar: boolean = false;
   showUserProfile: boolean = false;
   user: User | null = null;
+  isUserMenuOpen: boolean = false;
+  isUserProfileOpen: boolean = false;
+  selectedUserId: string | null = null;
   private authSubscription: Subscription | null = null;
-  showUserMenu: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -41,6 +49,8 @@ export class HeaderComponent implements OnInit {
       },
       (error) => console.error('Fehler beim Überwachen des Auth-Status:', error)
     );
+
+   
   }
 
   ngOnDestroy(): void {
@@ -74,11 +84,23 @@ export class HeaderComponent implements OnInit {
     return avatarPath.replace('_large', '');
   }
 
-  openUserMenu() {
-    this.showUserMenu = true;
+  toggleUserMenu() {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
   }
 
-  closeUserMenu() {
-    this.showUserMenu = false;
+  openUserProfile(userId: string) {
+    this.selectedUserId = userId;
+    this.isUserProfileOpen = true;
+
+  }
+
+  closeUserProfile() {
+    this.isUserProfileOpen = false;
+    this.selectedUserId = null;
+  }
+
+  closeDialogs() {
+    this.isUserMenuOpen = false;
+    this.isUserProfileOpen = false;
   }
 }
