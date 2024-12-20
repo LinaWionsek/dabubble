@@ -1,4 +1,4 @@
-@if(usedFor === 'channel' || usedFor === 'dm-chat'){
+@if(usedFor === 'channel'){
     <div class="history-container">
         @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
 
@@ -44,6 +44,21 @@
             <app-message [message]="activeMessage"></app-message>
         </div>
     </div>
-    
+} @else if(usedFor === 'dm-chat'){
+    <div class="history-container">
+        @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
 
-} 
+            @for (message of groupedMessages[dateKey]; track $index) {
+                <app-message 
+                    [otherUser]="userData"
+                    [chatId]="chatId"
+                    [currentUser]="currentUser"
+                    [usedFor]="'dm-chat'"
+                    [message]="message">
+                </app-message>
+            }
+    
+            <app-seperator [date]="dateKey"></app-seperator>
+        }
+    </div>
+}
