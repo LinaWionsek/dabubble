@@ -7,6 +7,7 @@ import { Message } from '../../models/message.class';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../services/channel.service';
+import { ChatService } from '../../services/dm-chat.service';
 
 @Component({
   selector: 'app-chat-input',
@@ -26,7 +27,6 @@ export class ChatInputComponent {
   newMessage = new Message();
 
   activeChannel?: Channel | null;
-
   
 
   firestore: Firestore = inject(Firestore);
@@ -55,6 +55,7 @@ export class ChatInputComponent {
       this.sendMessagesTo = this.userData?.firstName + ' ' + this.userData?.lastName
     }
   }
+
 
   subscribeToChannelService(){
     this.channelService.activeChannel$.subscribe((channel) => {
@@ -103,7 +104,7 @@ export class ChatInputComponent {
 
   sendDmThreadMessage(){
     const collectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
-    const collectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages${this.activeMessage?.id}/answers`);
+    const collectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/answers`);
     this.addMessageToCollection(collectionCurrentUser);
     this.addMessageToCollection(collectionOtherUser);
   }

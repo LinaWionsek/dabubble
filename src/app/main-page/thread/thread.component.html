@@ -13,6 +13,7 @@
     <app-chat-history 
         [activeMessage]="activeMessage"
         [channelData]="activeChannel"
+        [userData]="activeChatUser"
         [usedFor]="'thread'">
     </app-chat-history>
 
@@ -21,6 +22,7 @@
         <app-chat-input 
             [activeMessage]="activeMessage"
             [channelData]="activeChannel"
+            [userData]="activeChatUser"
             [usedFor]="'thread'">
         </app-chat-input>
     </div>

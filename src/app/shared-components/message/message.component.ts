@@ -115,7 +115,7 @@ export class MessageComponent {
       const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
-      const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
+      const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     }
   }
@@ -324,8 +324,8 @@ deleteDmThreadMessage(){
   }
 
   addReactionForDmThreadMessage(){
-    const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
-    const reactionsCollection2 = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.activeMessage?.id}/${this.message?.id}/reactions`);
+    const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
+    const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
     this.addReactionDoc(reactionsCollection);
     this.addReactionDoc(reactionsCollection2);
   }
