@@ -177,6 +177,8 @@ export class MessageComponent {
 
     if (!this.isHovered) {
       this.editMessageBtnVisible = false;
+      this.secondaryEmojiOptionsMenu = false;
+      this.mainEmojiOptionsMenu = false;
     }
   }
 

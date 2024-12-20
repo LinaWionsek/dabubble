@@ -76,11 +76,11 @@
                 <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
                     <img src="./../../../assets/img/emojis/hands_up.png">
                 </div>
-                <div class="icon-container" (click)="showSecondaryReactionOptions()">
+                <div class="icon-container more" (click)="showSecondaryReactionOptions()">
                     <img src="./../../../assets/img/add_reaction.png">
 
                     @if(secondaryEmojiOptionsMenu){
-                        <div class="reaction-options" (mouseleave)="hideSecondaryEmojiOptions()">
+                        <div class="secondary-reaction-options" (mouseleave)="hideSecondaryEmojiOptions()">
                             <div class="emoji-div icon-container" (click)="addReaction('tick')">
                                 <img src="./../../../assets/img/emojis/tick.png">
                             </div>
