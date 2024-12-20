@@ -21,8 +21,10 @@
             @for (answer of allMessageAnswers; track $index) {
                 <app-message
                     [currentUser]="currentUser"
+                    [otherUser]="userData"
                     [message]="answer"
                     [usedFor]="'thread'"
+                    [activeMessage]="activeMessage"
                     [messageAnswers$]="activeMessageAnswers$"
                 ></app-message>
             }

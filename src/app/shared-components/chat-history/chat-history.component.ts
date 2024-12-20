@@ -2,11 +2,12 @@ import { Component, Input, inject, SimpleChanges } from '@angular/core';
 import { MessageComponent } from '../message/message.component';
 import { SeperatorComponent } from '../seperator/seperator.component';
 import { Channel } from '../../models/channel.class';
-import { Firestore, doc, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, doc, collection, collectionData, CollectionReference, DocumentData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Message } from '../../models/message.class';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
+import { ChannelService } from '../../services/channel.service';
 
 
 @Component({
@@ -24,6 +25,8 @@ export class ChatHistoryComponent {
 
   channelId?: string;
   chatId?: string;
+  activeChannel?: Channel | null;
+
 
   activeMessageAnswers$!: Observable<Message[]>;
   allMessageAnswers?: Message[];
@@ -42,26 +45,35 @@ export class ChatHistoryComponent {
   firestore: Firestore = inject(Firestore);
 
 
-  constructor(private authService: AuthService){}
+  constructor(private authService: AuthService, private channelService: ChannelService){}
+
+
+
+  ngOnInit(){
+    this.subscribeToChannelService();
+  }
 
 
   async ngOnChanges(changes: SimpleChanges){
     await this.getCurrentUser();
     if (this.usedFor ==='channel') {
       this.loadChannelMessages();
-      this.loadActiveMessageAnswers();
+      // this.loadActiveMessageAnswers();
       this.setChannelId();
     } else if (this.usedFor ==='dm-chat'){
       this.loadChatMessages();
-    } else if(this.usedFor ==='thread'){
-      this.loadActiveMessageAnswers();
+    } else if(this.usedFor ==='thread' && this.activeChannel){
+      const answersCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
+      this.loadActiveMessageAnswers(answersCollection);
+    } else if(this.usedFor === 'thread' && !this.activeChannel){
+      const answersCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
+      this.loadActiveMessageAnswers(answersCollection);
     }
   }
   
 
-  loadActiveMessageAnswers(){
-    const activeMessageAnswersCol = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
-    this.activeMessageAnswers$ = collectionData(activeMessageAnswersCol, { idField: 'id'}) as Observable<Message[]>;
+  loadActiveMessageAnswers(collection: CollectionReference<DocumentData>){
+    this.activeMessageAnswers$ = collectionData(collection, { idField: 'id'}) as Observable<Message[]>;
 
     this.activeMessageAnswers$.subscribe((answers) => {
       this.allMessageAnswers = answers;
@@ -76,6 +88,13 @@ export class ChatHistoryComponent {
 
   async getCurrentUser(){
     this.currentUser = await this.authService.getFullUser();
+  }
+
+
+  subscribeToChannelService(){
+    this.channelService.activeChannel$.subscribe((channel) => {
+      this.activeChannel = channel;
+    })
   }
 
 
