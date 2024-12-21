@@ -55,25 +55,6 @@ export class ChannelChatComponent {
   }
   
 
-  // loadChannels() {
-  //   const userChannelsCollection = collection(this.firestore, 'channels');
-  //   this.channels$ = collectionData(userChannelsCollection, {
-  //     idField: 'id',
-  //   }) as Observable<Channel[]>;
-
-  //   this.channels$.subscribe((changes) => {
-  //     this.allUserChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
-  //     this.updateActiveChannelUsers();
-      
-  //     const updatedChannel = this.allUserChannels.find(channel => channel.id === this.activeChannel);
-  //     if (updatedChannel) {
-  //       this.activeChannelData = updatedChannel;
-  //     }
-  //   })
-  // }
-
-  
-
 
   loadUsers(){
     const userCollection = collection(this.firestore, 'users');
@@ -115,6 +96,10 @@ export class ChannelChatComponent {
   openAddMembersDialog() {
     
     this.addMembersDialogOpened = true;
+  }
+
+  openAddMembersDialogThroughShowMembersDialog(){
+
   }
 
   openShowMembersDialog() {

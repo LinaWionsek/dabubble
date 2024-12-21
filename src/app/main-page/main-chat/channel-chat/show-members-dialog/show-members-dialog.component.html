@@ -9,20 +9,17 @@
             </div>
         </div>
     
-     <div class="dialog-content">
-        @for (user of channelUsers; track $index) {
-            <div class="member-div">
-                <img src="{{user.avatar}}" class="avatar-img-small">
-                <span class="name-span">{{user.firstName + ' ' + user.lastName}}</span>
-            </div>
-        }
-       
-         
-    
-     </div>
+        <div class="dialog-content">
+            @for (user of channelUsers; track $index) {
+                <div class="member-div">
+                    <img src="{{user.avatar}}" class="avatar-img-small">
+                    <span class="name-span">{{user.firstName + ' ' + user.lastName}}</span>
+                </div>
+            }
+        </div>
     
      <div class="dialog-footer">
-         <div class="add-member-div" (click)="openAddMemberDialog()">
+         <div class="add-member-div" (click)="openAddMembersDialog()">
              <div class="icon-div">
                  <img src="./../../../../../assets/img/person_add.png">
              </div>

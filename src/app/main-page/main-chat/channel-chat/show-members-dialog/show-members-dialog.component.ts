@@ -18,7 +18,7 @@ export class ShowMembersDialogComponent {
   @Input() secondPosition!: { top: string; left: string };
   @Input() allUsers!: User[];
   @Output() dialogClosed = new EventEmitter<void>();
-  @Output() openAddMembersDialog= new EventEmitter<void>();
+  @Output() addMembersDialogOpened = new EventEmitter<void>();
 
   channelUsers:User[] = [];
 
@@ -41,9 +41,9 @@ export class ShowMembersDialogComponent {
   }
 
 
-  openAddMemberDialog(){
+  openAddMembersDialog(){
     this.closeDialog();
-    this.openAddMembersDialog.emit();
+    this.addMembersDialogOpened.emit();
 
   }
 }

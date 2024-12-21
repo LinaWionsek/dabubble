@@ -67,8 +67,6 @@ export class WorkspaceDirectMessagesComponent {
         .filter(user => user.id !== this.currentUser?.id)
         .map(user => [user.id, user])
       ).values());
-      console.log(this.currentUser);
-      console.log(this.allUsers);
     })
   }
 
