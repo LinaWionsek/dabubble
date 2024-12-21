@@ -1,5 +1,5 @@
 @if(message!.senderId === currentUser?.id){
-    <div class="message-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    <div class="message-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [class.active]="activatedMessage?.id === message?.id">
         <div class="message-div">
             <div class="message-div-header">
                 <span class="time-span">{{ formatMessageTime(message!.timeStamp) }} Uhr</span>
@@ -117,8 +117,7 @@
     </div>
     
 } @else {
-
-    <div class="received message-container">
+    <div class="received message-container" [class.active]="activatedMessage?.id === message?.id" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="received profile-img-div">
             <img [src]="message!.senderAvatar" class="profile-img">
         </div>

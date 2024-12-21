@@ -20,6 +20,10 @@
   }
 }
 
+.active{
+  background-color: $bg-color-gray;
+}
+
 .received.message-container {
   justify-content: flex-start;
 

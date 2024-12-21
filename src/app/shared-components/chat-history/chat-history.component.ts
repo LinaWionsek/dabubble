@@ -56,7 +56,7 @@ export class ChatHistoryComponent {
       const channelMessagesSubcollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
       this.loadMessages(channelMessagesSubcollection);
       this.setMessagesLoaded();
-      // this.setChannelId();
+      this.setChannelId();
     } else if (this.usedFor ==='dm-chat'){
       const messagesCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
       this.loadMessages(messagesCollection);

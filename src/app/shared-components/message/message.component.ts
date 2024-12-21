@@ -38,6 +38,7 @@ export class MessageComponent {
   editingMessage = false;
 
   activeChannel?: Channel | null;
+  activatedMessage?: Message | null;
   
 
   reaction: Reaction = new Reaction();
@@ -57,6 +58,7 @@ export class MessageComponent {
 
   ngOnInit(){
     this.subscribeToChannelService();
+    this.subscribeToThreadService();
     this.loadMessageAnswers();
     this.loadMessageReactions();
     this.initializeNewReaction();
@@ -66,6 +68,12 @@ export class MessageComponent {
   subscribeToChannelService(){
     this.channelService.activeChannel$.subscribe((channel) => {
       this.activeChannel = channel;
+    })
+  }
+
+  subscribeToThreadService(){
+    this.threadService.activeMessage$.subscribe((message) => {
+      this.activatedMessage = message;
     })
   }
 
