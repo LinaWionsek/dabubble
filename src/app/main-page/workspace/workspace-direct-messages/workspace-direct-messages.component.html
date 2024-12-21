@@ -16,7 +16,7 @@
     @if(showSubmenu){
         <div class="workspace-section-submenu workspace-user-div" @submenuAnimation>
             @for (user of allUsers; track $index) {
-                <div class="user-div" [class.active]="activeIndex === $index" (click)="activateChat($index)">
+                <div class="user-div" [class.active]="activeUser === user" (click)="activateChat(user)">
                     <img src="{{user.avatar}}" class="user-img">
                     <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
                 </div>

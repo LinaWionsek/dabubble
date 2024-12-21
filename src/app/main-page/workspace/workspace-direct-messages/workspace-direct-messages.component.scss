@@ -15,10 +15,10 @@
     overflow-y: scroll;
     max-height: 42vh;
     min-height: 100px;
+    padding-right: 24px;
 }
 
 .user-div{
-    // width: 100%;
     @include display-flex($jc: flex-start);
     border-radius: 30px;
     transition: all 125ms ease;
@@ -30,7 +30,12 @@
         background-color: $bg-color-gray;
         cursor: pointer;
     }
+}
 
+.active{
+    background-color: $bg-color-gray;
+    color: $primary-color-purple;
+    font-weight: 700;
 }
 
 .user-img{

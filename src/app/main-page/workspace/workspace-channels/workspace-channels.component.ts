@@ -6,6 +6,7 @@ import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { ChannelService } from '../../../services/channel.service';
 import { User } from '../../../models/user.class';
 import { ThreadService } from '../../../services/thread.service';
+import { ChatService } from '../../../services/dm-chat.service';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class WorkspaceChannelsComponent {
   @Input() currentUser?: User | null;
   @Output() dialogStateChange = new EventEmitter<boolean>();
   
-  constructor(private channelService: ChannelService, private threadService: ThreadService) {}
+  constructor(private channelService: ChannelService, private threadService: ThreadService, private chatService: ChatService) {}
 
   showSubmenu = true;
   addChannelDialogOpened = false;
@@ -91,6 +92,7 @@ export class WorkspaceChannelsComponent {
 
 
   activateChannel(channel: Channel) {
+    this.chatService.clearActiveChat();
     this.threadService.deactivateThread();
     this.activeChannel = channel;
     this.channelService.setActiveChannel(channel);
