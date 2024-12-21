@@ -15,14 +15,26 @@
 
     @if(showSubmenu){
         <div class="workspace-section-submenu workspace-user-div" @submenuAnimation>
+            @if (currentUser) {
+                <div class="user-div">
+                    <div class="user-avatar-div">
+                        <img src="{{currentUser.avatar}}" class="user-img">
+                        <div class="online-marker" [ngClass]="{ online: currentUser.isOnline, offline: !currentUser.isOnline }"></div>
+                    </div>
+                    <span class="user-name">{{currentUser.firstName + ' ' + currentUser.lastName}} (Du)</span>
+                </div>
+            }
+            
             @for (user of allUsers; track $index) {
                 <div class="user-div" [class.active]="activeUser === user" (click)="activateChat(user)">
-                    <img src="{{user.avatar}}" class="user-img">
+                    <div class="user-avatar-div">
+                        <img src="{{user.avatar}}" class="user-img">
+                        <div class="online-marker" [ngClass]="{ online: user.isOnline, offline: !user.isOnline }"></div>
+                    </div>
                     <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
                 </div>
             }
-           
-
+        
         </div>
     }
 
