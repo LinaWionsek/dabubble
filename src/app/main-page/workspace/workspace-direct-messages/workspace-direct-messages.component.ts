@@ -34,8 +34,7 @@ export class WorkspaceDirectMessagesComponent {
   users$!: Observable<User[]>;
   allUsers: User[] = [];
 
-  activeIndex: number | null = null;
-  activeChat: string = '';
+  activeUser?: User | null;
 
 
   constructor(private chatService: ChatService, private channelService: ChannelService, private threadService: ThreadService){}
@@ -43,7 +42,16 @@ export class WorkspaceDirectMessagesComponent {
 
   ngOnInit(){
     this.loadAllUsers();
+    this.subscribeToChatService();
   }
+
+  subscribeToChatService(){ 
+    this.chatService.activeUserChat$.subscribe((user) => {
+      this.activeUser = user;
+    })
+  }
+
+ 
 
 
   loadAllUsers(){
@@ -61,13 +69,10 @@ export class WorkspaceDirectMessagesComponent {
   }
 
 
-  activateChat(index:number){
+  activateChat(user: User){
     this.channelService.clearActiveChannel();
     this.threadService.deactivateThread();
-
-    this.activeIndex = index; 
-    this.activeChat = this.allUsers[index].id;
-    const activeUserObject = this.allUsers[index]
-    this.chatService.setActiveChat(activeUserObject);
+    this.activeUser = user;
+    this.chatService.setActiveChat(user);
   }
 }
