@@ -6,13 +6,15 @@ import { Observable } from 'rxjs';
 import { ChatService } from '../../../services/dm-chat.service';
 import { ChannelService } from '../../../services/channel.service';
 import { ThreadService } from '../../../services/thread.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 
 
 @Component({
   selector: 'app-workspace-direct-messages',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, CommonModule],
   templateUrl: './workspace-direct-messages.component.html',
   styleUrl: './workspace-direct-messages.component.scss',
   animations: [
@@ -33,6 +35,7 @@ export class WorkspaceDirectMessagesComponent {
   @Input() currentUser?: User | null;
   users$!: Observable<User[]>;
   allUsers: User[] = [];
+  
 
   activeUser?: User | null;
 
@@ -59,7 +62,13 @@ export class WorkspaceDirectMessagesComponent {
     this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
 
     this.users$.subscribe((changes) => {
-      this.allUsers = Array.from(new Map(changes.map(user => [user.id, user])).values());
+      this.allUsers = Array.from(new Map(
+        changes
+        .filter(user => user.id !== this.currentUser?.id)
+        .map(user => [user.id, user])
+      ).values());
+      console.log(this.currentUser);
+      console.log(this.allUsers);
     })
   }
 
