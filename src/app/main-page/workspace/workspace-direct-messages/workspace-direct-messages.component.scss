@@ -3,17 +3,12 @@
 
 :host{
     width: 100%;
-    flex: 2;
-    
-    
+    flex: 1 1 auto;
 }
 
 .workspace-user-div {
     width: 100%;
-    flex: 1 1 auto;
     margin-bottom: 30px;
-    overflow-y: scroll;
-    max-height: 42vh;
     min-height: 100px;
     padding-right: 24px;
 }
