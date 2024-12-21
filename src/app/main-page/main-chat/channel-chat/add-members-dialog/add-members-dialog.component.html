@@ -1,6 +1,6 @@
-<div class="dialog-bg" (click)="closeDialog()">
+<div class="dialog-bg" (click)="closeDialog()"></div>
        
-    <div class="dialog" (click)="stopPropagation($event)" [style.top]="addMembersDialogPosition.top" [style.left]="addMembersDialogPosition.left">
+    <div class="dialog" (click)="stopPropagation($event)">
        <div class="dialog-header">
             <span class="dialog-title">Leute hinzufügen</span>
             <div class="icon-container" (click)="closeDialog()">
@@ -11,7 +11,7 @@
         <div class="dialog-content">
             <div class="channel-name-div">
                 <img src="./../../../../../assets/img/tag_purple.png">
-                <span class="channel-name">{{channelData.name}}</span>
+                <span class="channel-name">{{channelData?.name}}</span>
             </div>
 
             <div class="input-div add-members-input-div">
@@ -49,4 +49,3 @@
         </div>
 
     </div>
-</div>

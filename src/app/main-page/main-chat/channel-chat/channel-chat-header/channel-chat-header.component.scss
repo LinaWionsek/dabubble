@@ -105,3 +105,29 @@
     border-radius: 50%;
     border: 2px solid white;
 }
+
+
+.edit-channel-dialog-container{
+    position: absolute;
+    z-index: 1000;
+    top: 56px;
+    left: 0px;
+}
+
+.show-members-dialog-container{
+    position: absolute;
+    z-index: 1000;
+    top: 32px;
+    right: 415px;
+}
+
+.add-members-dialog-container{
+    position: absolute;
+    z-index: 1000;
+    top: 48px;
+    right: 514px;
+}
+
+.add-members-div{
+    position: relative;
+}

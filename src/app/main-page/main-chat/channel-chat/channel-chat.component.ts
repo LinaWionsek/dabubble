@@ -16,19 +16,11 @@ import { ChatHistoryComponent } from "../../../shared-components/chat-history/ch
 @Component({
   selector: 'app-channel-chat',
   standalone: true,
-  imports: [EditChannelDialogComponent, CommonModule, ShowMembersDialogComponent, AddMembersDialogComponent, ChannelChatHeaderComponent, ChatInputComponent, ChatHistoryComponent],
+  imports: [CommonModule, ChannelChatHeaderComponent, ChatInputComponent, ChatHistoryComponent],
   templateUrl: './channel-chat.component.html',
   styleUrl: './channel-chat.component.scss',
 })
 export class ChannelChatComponent {
-  editChannelDialogOpened = false;
-  showMembersDialogOpened = false;
-  addMembersDialogOpened = false;
-
-  editChannelDialogPosition = { top: '0px', left: '0px' };
-  showMembersDialogPosition = { top: '0px', left: '0px' };
-  addMembersDialogPosition = { top: '0px', left: '0px' };
-
   activeChannel: Channel | null = null;
   
   channels$!: Observable<Channel[]>;
@@ -66,57 +58,8 @@ export class ChannelChatComponent {
     });
   }
 
-
   updateActiveChannelUsers(){
     this.activeChannelUsers = this.users.filter(user => this.activeChannel?.userIds.includes(user.id));
-  }
-
-
-  handleDialogStateChange(event: { dialogType: string; opened: boolean; position: { top: string; left: string } }) {
-    const { dialogType, opened, position } = event;
-
-    if (dialogType === 'editChannel') {
-      this.editChannelDialogOpened = opened;
-      this.editChannelDialogPosition = position;
-    } else if (dialogType === 'addMembers') {
-      this.addMembersDialogOpened = opened;
-      this.addMembersDialogPosition = position;
-    } else if (dialogType === 'showMembers') {
-      this.showMembersDialogOpened = opened;
-      this.showMembersDialogPosition = position;
-    }
-  }
-
-
-  openEditChannelDialog() {
-    
-    this.editChannelDialogOpened = true;
-  }
-
-  openAddMembersDialog() {
-    
-    this.addMembersDialogOpened = true;
-  }
-
-  openAddMembersDialogThroughShowMembersDialog(){
-
-  }
-
-  openShowMembersDialog() {
-    
-    this.showMembersDialogOpened = true;
-  }
-
-  closeEditDialog() {
-    this.editChannelDialogOpened = false;
-  }
-
-  closeAddMembersDialog() {
-    this.addMembersDialogOpened = false;
-  }
-
-  closeShowMembersDialog() {
-    this.showMembersDialogOpened = false;
   }
 
 
