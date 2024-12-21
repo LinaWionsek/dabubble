@@ -35,7 +35,7 @@ export class ChatHistoryComponent {
   allMessages: Message[] = [];
   groupedMessages: { [date: string]: Message[] } = {};
 
-  chatMessagesLoaded = false;
+  messagesLoaded = false;
   currentUser!: User | null ;
   firestore: Firestore = inject(Firestore);
 
@@ -55,11 +55,12 @@ export class ChatHistoryComponent {
     if (this.usedFor ==='channel') {
       const channelMessagesSubcollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
       this.loadMessages(channelMessagesSubcollection);
-      this.setChannelId();
+      this.setMessagesLoaded();
+      // this.setChannelId();
     } else if (this.usedFor ==='dm-chat'){
       const messagesCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
       this.loadMessages(messagesCollection);
-      this.setChatMessagesLoaded();
+      this.setMessagesLoaded();
     } else if(this.usedFor ==='thread' && this.activeChannel){
       const answersCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
       this.loadActiveMessageAnswers(answersCollection);
@@ -70,9 +71,9 @@ export class ChatHistoryComponent {
   }
 
 
-  setChatMessagesLoaded(){
+  setMessagesLoaded(){
     setTimeout(() => {
-      this.chatMessagesLoaded = true;
+      this.messagesLoaded = true;
     }, 100);
   }
   

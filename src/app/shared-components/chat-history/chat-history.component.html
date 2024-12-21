@@ -1,5 +1,13 @@
 @if(usedFor === 'channel'){
     <div class="history-container">
+        @if(messagesLoaded && allMessages.length === 0){
+            <div class="default-dm-view">
+                <div class="channel-div">
+                    <span class="channel-name-span"># {{activeChannel?.name}}</span>
+                </div>
+                <span class="info-span">@if(currentUser?.firstName + ' ' + currentUser?.lastName === activeChannel?.creator){Du hast}@else { {{activeChannel?.creator}} hat } diesen Channel erstellt. Das ist der Anfang des Channels <span class="blue"># {{activeChannel?.name}}</span>. </span>
+            </div>
+        } @else {
         @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
 
             @for (message of groupedMessages[dateKey]; track $index) {
@@ -14,6 +22,7 @@
     
             <app-seperator [date]="dateKey"></app-seperator>
         }
+    }
     </div>
 } @else if (usedFor === 'thread') {
     <div class="history-container">
@@ -46,7 +55,7 @@
     </div>
 } @else if(usedFor === 'dm-chat'){
     <div class="history-container">
-        @if(chatMessagesLoaded && allMessages.length === 0){
+        @if(messagesLoaded && allMessages.length === 0){
             <div class="default-dm-view">
                 <div class="user-div">
                     <img src="{{userData?.avatar}}" class="large-user-img">
