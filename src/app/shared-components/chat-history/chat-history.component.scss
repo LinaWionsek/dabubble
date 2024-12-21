@@ -51,7 +51,7 @@
   margin-bottom: 8px;
 }
 
-.user-div {
+.user-div, .channel-div {
   @include display-flex($ai: flex-end);
 }
 
@@ -65,6 +65,12 @@
   font-size: 24px;
   font-weight: 700;
   margin-left: 24px;
+}
+
+.channel-name-span{
+  font-size: 24px;
+  font-weight: 700;
+  margin-left: 0px;
 }
 
 .info-span {
