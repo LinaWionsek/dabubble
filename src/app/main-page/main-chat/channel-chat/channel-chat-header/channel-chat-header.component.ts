@@ -5,88 +5,66 @@ import { Channel } from './../../../../models/channel.class';
 import { User } from './../../../../models/user.class';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
+import { EditChannelDialogComponent } from "../edit-channel-dialog/edit-channel-dialog.component";
+import { ShowMembersDialogComponent } from "../show-members-dialog/show-members-dialog.component";
+import { AddMembersDialogComponent } from "../add-members-dialog/add-members-dialog.component";
 
 
 @Component({
   selector: 'app-channel-chat-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, EditChannelDialogComponent, ShowMembersDialogComponent, AddMembersDialogComponent],
   templateUrl: './channel-chat-header.component.html',
   styleUrl: './channel-chat-header.component.scss'
 })
 export class ChannelChatHeaderComponent {
-  @ViewChild('channelTitleDiv', { static: false }) channelTitleDiv!: ElementRef;
-  @ViewChild('showMembersDiv', { static: false }) showMembersDiv!: ElementRef;
-  @ViewChild('addMembersDiv', { static: false }) addMembersDiv!: ElementRef;
-
-  @Output() dialogStateChange = new EventEmitter<{ 
-    dialogType: string; 
-    opened: boolean; 
-    position: { top: string; left: string };
-  }>();
-
-  @Input() activeChannelData!: Channel | null;
+  
+  @Input() activeChannelData?: Channel | null;
   @Input() activeChannelUsers: User[] = [];
 
   editChannelDialogOpened = false;
   showMembersDialogOpened = false;
   addMembersDialogOpened = false;
 
-  editChannelDialogPosition = { top: '0px', left: '0px' };
-  showMembersDialogPosition = { top: '0px', left: '0px' };
-  addMembersDialogPosition = { top: '0px', left: '0px' };
 
 
 
-
-
-  openEditChannelDialog() {
-    const rect = this.channelTitleDiv.nativeElement.getBoundingClientRect();
-    this.editChannelDialogPosition = {
-      top: `${rect.bottom + 10}px`,
-      left: `${rect.left}px`,
-    };
+  openEditChannelDialog(){
     this.editChannelDialogOpened = true;
-    this.emitDialogStateChange('editChannel', this.editChannelDialogOpened, this.editChannelDialogPosition);
   }
 
-  openAddMembersDialog() {
-    const rect = this.addMembersDiv.nativeElement.getBoundingClientRect();
-    this.addMembersDialogPosition = {
-      top: `${rect.bottom + 10}px`,
-      left: `${rect.left -470}px`,
-    };
+  closeEditChannelDialog(){
+    setTimeout(()=>{
+      this.editChannelDialogOpened = false;
+    }, 20)
+    
+  }
+
+  openAddMembersDialog(){
     this.addMembersDialogOpened = true;
-    this.emitDialogStateChange('addMembers', this.addMembersDialogOpened, this.addMembersDialogPosition);
-  }
-
-
-  openShowMembersDialog() {
-    const rect = this.showMembersDiv.nativeElement.getBoundingClientRect();
-    this.showMembersDialogPosition = {
-      top: `${rect.bottom + 10}px`,
-      left: `${rect.left -280}px`,
-    };
-    this.showMembersDialogOpened = true;
-    this.emitDialogStateChange('showMembers', this.showMembersDialogOpened, this.showMembersDialogPosition);
-  }
-
-
-  private emitDialogStateChange(dialogType: string, opened: boolean, position: { top: string; left: string }) {
-    this.dialogStateChange.emit({ dialogType, opened, position });
   }
 
   
-  closeEditDialog() {
-    this.editChannelDialogOpened = false;
+  openShowMembersDialog(){
+    this.showMembersDialogOpened = true;
   }
 
+
   closeAddMembersDialog(){
-    this.addMembersDialogOpened = false;
+    setTimeout(()=>{
+      this.addMembersDialogOpened = false;
+    }, 20)
   }
 
   closeShowMembersDialog(){
-    this.showMembersDialogOpened = false;
+    setTimeout(()=>{
+      this.showMembersDialogOpened = false;
+    }, 20)
   }
+  
 
 }
+
+
+  
+

@@ -13,14 +13,14 @@ import { User } from './../../../../models/user.class';
   styleUrl: './add-members-dialog.component.scss'
 })
 export class AddMembersDialogComponent {
-  @Input() channelData!: Channel;
+  @Input() channelData?: Channel | null;
   @Input() allUsers!: User[];
   @Input() addMembersDialogPosition!: { top: string; left: string };
   @Output() dialogClosed = new EventEmitter<void>();
 
   firestore: Firestore = inject(Firestore);
 
-  channelMembers: string[] = this.channelData?.userIds;;
+  channelMembers?: string[] = this.channelData?.userIds;;
  
 
   userSearchQuery: string = '';
@@ -41,7 +41,7 @@ export class AddMembersDialogComponent {
 
   addMember(){
     const newUserIds = this.selectedUsers?.map(user => user.id) || [];
-    this.channelData.userIds.push(...newUserIds);
+    this.channelData?.userIds.push(...newUserIds);
     this.updateChannel(); 
     this.selectedUsers = [];
     this.closeDialog();
@@ -49,7 +49,7 @@ export class AddMembersDialogComponent {
 
 
   async updateChannel(){
-    const channelDocRef = doc(this.firestore, `channels/${this.channelData.id}`);
+    const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
     try {
       await updateDoc(channelDocRef, { ...this.channelData });
     } catch (error) {
@@ -79,8 +79,8 @@ export class AddMembersDialogComponent {
   addFoundUserToChannel(id: string){
     const selectedUser = this.allUsers.find(user => user.id === id);
   
-    if (selectedUser && !this.channelData.userIds.includes(selectedUser.id)) {
-      this.channelData.userIds.push(selectedUser.id);
+    if (selectedUser && !this.channelData?.userIds.includes(selectedUser.id)) {
+      this.channelData?.userIds.push(selectedUser.id);
       if (!this.selectedUsers?.some(user => user.id === id)) {
         this.selectedUsers?.push(selectedUser);
       }
@@ -94,7 +94,7 @@ export class AddMembersDialogComponent {
 
 
   cancelUserAdding(id:string){
-    this.channelData.userIds = this.channelData.userIds.filter(userId => userId !== id);
+    this.channelData!.userIds = this.channelData!.userIds.filter(userId => userId !== id);
     this.selectedUsers = this.selectedUsers?.filter(user => user.id !== id);
   }
 

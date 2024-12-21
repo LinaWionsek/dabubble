@@ -1,21 +1,23 @@
 @import "mixins", "styles";
 
+*{
+    cursor: default;
+}
+
 .dialog-bg{
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    @include display-flex();
     background-color: rgba(0, 0, 0, 0.1);
-    z-index: 200;
+    z-index: 150;
+
 }
 
 .dialog{
-    position: absolute;
+    position: fixed;
     z-index: 500;
-    top: 190px;
-    left: 420px;
     width: 872px;
     background-color: white;
     border-radius: 30px;
@@ -23,6 +25,8 @@
     box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.2);
     @include display-flex($fd: column, $jc: flex-start);
     padding: 40px;
+
+    
 }
 
 
@@ -196,4 +200,8 @@ input.error::placeholder {
     font-size: 24px;
     display: block;
     margin-top: 16px;
+}
+
+.icon-container:hover, .icon-container img:hover{
+    cursor: pointer;
 }
