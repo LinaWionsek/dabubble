@@ -37,17 +37,23 @@ export class WorkspaceChannelsComponent {
   channels$!: Observable<Channel[]>;
   allChannels: Channel[] = [];
   allUserChannels: Channel[] = [];
+  activeChannel?: Channel | null;
   firestore: Firestore = inject(Firestore);
   
 
-  activeIndex: number | null = null;
-  activeChannel:string = '';
-
 
   ngOnInit(){
+    this.subscribeToChannelService();
     this.getAllChannels();
   }
   
+
+  subscribeToChannelService(){
+    this.channelService.activeChannel$.subscribe((channel) => {
+      this.activeChannel = channel;
+    })
+  }
+
 
   ngOnChanges(changes: SimpleChanges){
     if (changes['currentUser'] && this.currentUser) {
@@ -84,11 +90,9 @@ export class WorkspaceChannelsComponent {
   }
 
 
-  activateChannel(index:number) {
+  activateChannel(channel: Channel) {
     this.threadService.deactivateThread();
-    this.activeIndex = index; 
-    this.activeChannel = this.allChannels[index].id;
-    const activeChannelObject = this.allChannels[index]
-    this.channelService.setActiveChannel(activeChannelObject);
+    this.activeChannel = channel;
+    this.channelService.setActiveChannel(channel);
   }
 }
