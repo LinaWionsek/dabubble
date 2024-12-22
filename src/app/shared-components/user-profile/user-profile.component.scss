@@ -2,11 +2,13 @@
 
 .user-profile {
   @include size(500px, 600px);
+  min-height: fit-content;
   @include display-flex($fd: column, $ai: inherit, $jc: inherit, $gap: 36px);
   @include position(absolute, $top: 112px, $rig: 16px);
   background: $primary-color-white;
   padding: 45px 40px;
   border-radius: 30px 0 30px 30px;
+  box-shadow: $primary-box-shadow;
   > header {
     @include display-flex($jc: space-between);
     > span {
@@ -91,4 +93,24 @@
       color: $secondary-color-purple;
     }
   }
+}
+
+.user-edit-container {
+  // @include display-flex();
+  // @include size(100%);
+  > .user-edit-wrapper {
+    @include display-flex($fd: column, $ai: flex-start, $gap: 12px);
+    @include size(100%);
+  }
+}
+
+.user-edit-name-input-header {
+  @include display-flex($jc: flex-start, $gap: 20px);
+  > span {
+    @include font-style($font-size-20, $font-weight-700, $text-color-black);
+  }
+}
+
+.user-edit-button-container {
+  @include display-flex($gap: 40px);
 }

@@ -1,4 +1,4 @@
-<div class="dialog">
+<div class="dialog" (click)="$event.stopPropagation()">
   <button (click)="openUserProfile()">Profil</button>
   <button (click)="signOut()">Log out</button>
 </div>

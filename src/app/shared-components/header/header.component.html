@@ -74,6 +74,9 @@
 
 } @if(isUserProfileOpen){
 <div (click)="closeUserProfile()" class="dialog-bg">
-  <app-user-profile [userId]="selectedUserId"></app-user-profile>
+  <app-user-profile
+    (closeProfile)="closeUserProfile()"
+    [userId]="selectedUserId"
+  ></app-user-profile>
 </div>
 }
