@@ -19,8 +19,8 @@
         <div class="workspace-section-submenu" @submenuAnimation>
             @for (channel of allUserChannels; track $index) {
                 <div class="channel-title-div">
-                    <div class="channel-title-container" [class.active]="activeChannel === channel" (click)="activateChannel(channel)">
-                        <img [src]="activeChannel === channel ? './../../../../assets/img/tag.png' : './../../../../assets/img/tag2.png'"    >
+                    <div class="channel-title-container" [class.active]="activeChannel?.id === channel.id" (click)="activateChannel(channel)">
+                        <img [src]="activeChannel?.id === channel.id ? './../../../../assets/img/tag.png' : './../../../../assets/img/tag2.png'"    >
                         <span class="channel-title">{{channel.name}}</span>
                     </div>
                 </div>
