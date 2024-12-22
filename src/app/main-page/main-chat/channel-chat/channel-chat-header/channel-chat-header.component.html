@@ -33,7 +33,7 @@
                 <div class="show-members-dialog-container">
                     <app-show-members-dialog
                         [channelData]="activeChannelData"
-                        [allUsers]="activeChannelUsers"
+                        [channelUsers]="activeChannelUsers"
                         (dialogClosed)="closeShowMembersDialog()"
                         (addMembersDialogOpened)="openAddMembersDialog()"
                     ></app-show-members-dialog>
@@ -50,6 +50,7 @@
             @if(addMembersDialogOpened){
                 <div class="add-members-dialog-container">
                     <app-add-members-dialog
+                        [allUsers]="allUsers"
                         [channelData]="activeChannelData"
                         (dialogClosed)="closeAddMembersDialog()"
                     ></app-add-members-dialog>

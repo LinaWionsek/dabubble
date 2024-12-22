@@ -14,21 +14,21 @@ import { User } from '../../../../models/user.class';
 })
 export class ShowMembersDialogComponent {
   @Input() channelData?: Channel | null;
-  @Input() allUsers!: User[];
+  // @Input() allUsers!: User[];
   @Output() dialogClosed = new EventEmitter<void>();
   @Output() addMembersDialogOpened = new EventEmitter<void>();
 
-  channelUsers:User[] = [];
+  @Input() channelUsers:User[] = [];
 
 
-  ngOnInit(){
-    this.populateChannelUsersArray();
-  }
+  // ngOnInit(){
+  //   this.populateChannelUsersArray();
+  // }
 
 
-  populateChannelUsersArray(){
-    this.channelUsers = this.allUsers.filter(user => this.channelData?.userIds.includes(user.id));
-  }
+  // populateChannelUsersArray(){
+  //   this.channelUsers = this.allUsers.filter(user => this.channelData?.userIds.includes(user.id));
+  // }
   
 
   closeDialog(){
