@@ -18,7 +18,7 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
     CommonModule,
     HeaderUserDialogComponent,
     UserProfileComponent,
-  , FormsModule],
+   FormsModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
