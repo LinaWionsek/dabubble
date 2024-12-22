@@ -8,8 +8,9 @@ import {
   signInWithPopup,
   User as FirebaseUser,
   onAuthStateChanged,
+  UserCredential,
 } from '@angular/fire/auth';
-import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.class';
 import { userData } from '../types/types';
@@ -31,11 +32,11 @@ export class AuthService {
     });
   }
 
-  signUp(email: string, password: string) {
+  signUp(email: string, password: string): Promise<UserCredential> {
     return createUserWithEmailAndPassword(this.auth, email, password);
   }
 
-  signIn(email: string, password: string) {
+  signIn(email: string, password: string): Promise<UserCredential> {
     return signInWithEmailAndPassword(this.auth, email, password);
   }
 
@@ -48,9 +49,14 @@ export class AuthService {
     return signInWithPopup(this.auth, provider);
   }
 
-  async saveUserData(uid: string, userData: any) {
+  saveUserData(uid: string, userData: any) {
     const userRef = doc(this.firestore, `users/${uid}`);
     return setDoc(userRef, userData, { merge: true });
+  }
+
+  updateUserData(uid: string, updatedData: Partial<User>) {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    return updateDoc(userRef, updatedData);
   }
 
   getUserStatus() {

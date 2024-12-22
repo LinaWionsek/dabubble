@@ -2,15 +2,15 @@
   <header>
     <span>Profil</span>
     <div (click)="onClose()" class="icon-container">
-      <img  src="../../../assets/img/close.png" alt="close" />
+      <img src="../../../assets/img/close.png" alt="close" />
     </div>
   </header>
 
+  @if(!isEditing) {
   <section class="user-avatar">
-    <img [src]="user?.avatar" alt="user-avatar" />
+    <img [src]="user?.avatar" class="selected-avatar" alt="user-avatar" />
   </section>
 
-  @if(!isEditing) {
   <section class="user-info">
     <div class="user-info-wrapper">
       <span class="user-name">
@@ -45,87 +45,130 @@
   </section>
 
   } @if(isEditing) {
-  <section class="user-edit-container">
-    <div class="user-edit-wrapper">
-      <div class="user-edit-name-input-header">
-        <img
-          src="../../../assets/img/user_icon_bold.png"
-          alt="user_icon_bold"
-        />
-        <span>Vollständiger Name</span>
+  <form
+    class="user-edit-form"
+    id="user-edit-form"
+    (ngSubmit)="saveEditingChanges()"
+    #editUserForm="ngForm"
+  >
+    <div class="selected-avatar-container">
+      <img
+        [src]="selectedAvatar"
+        alt="selected_avatar"
+        class="selected-avatar user-edit-selected-avatar"
+        (mouseenter)="openAvatarList()"
+      />
+
+      @if(isAvatarListOpen) {
+      <section
+        class="user-edit-avatar-selection avatar-selection"
+        (mouseenter)="openAvatarList()"
+        (mouseleave)="closeAvatarList()"
+      >
+        <div class="user-edit-avatar-options avatar-options">
+          <img
+            *ngFor="let avatar of avatars"
+            [src]="avatar.thumb"
+            [alt]="avatar.name"
+            class="avatar-option"
+            (click)="selectAvatar(avatar.image)"
+          />
+        </div>
+      </section>
+      }
+    </div>
+
+    <section (mouseenter)="closeAvatarList()" class="user-edit-container">
+      <div class="user-edit-wrapper">
+        <div class="user-edit-name-input-header">
+          <img
+            src="../../../assets/img/user_icon_bold.png"
+            alt="user_icon_bold"
+          />
+          <span>Vollständiger Name</span>
+        </div>
+
+        <div class="auth-input-container">
+          <input
+            class="auth-input"
+            type="text"
+            [placeholder]="user ? user.firstName + ' ' + user.lastName : ''"
+            [(ngModel)]="userEditfullName"
+            name="fullName"
+            #userEditfullNameInput="ngModel"
+            required
+            pattern="[a-zA-ZÀ-ž\s\-]+"
+          />
+          <img
+            class="auth-input-icon"
+            src="./../../assets/img/user_icon.png"
+            alt="user_icon"
+          />
+          <span
+            class="invalid-input"
+            [class.is-invalid]="
+              userEditfullNameInput.invalid &&
+              userEditfullNameInput.touched &&
+              userEditfullNameInput.value != ''
+            "
+          >
+            Dieser Name ist leider ungültig.
+          </span>
+        </div>
       </div>
 
-      <div class="auth-input-container">
-        <input
-          class="auth-input"
-          type="text"
-          [placeholder]="user ? user.firstName + ' ' + user.lastName : ''"
-          [(ngModel)]="userEditfullName"
-          name="fullName"
-          #userEditfullNameInput="ngModel"
-          required
-          pattern="[a-zA-ZÀ-ž\s\-]+"
-        />
-        <img
-          class="auth-input-icon"
-          src="./../../assets/img/user_icon.png"
-          alt="user_icon"
-        />
-        <span
-          class="invalid-input"
-          [class.is-invalid]="
-            userEditfullNameInput.invalid &&
-            userEditfullNameInput.touched &&
-            userEditfullNameInput.value != ''
-          "
+      <div class="user-edit-wrapper">
+        <div class="user-edit-name-input-header">
+          <img
+            src="../../../assets/img/mail_icon_bold.png"
+            alt="user_icon_bold"
+          />
+          <span>E-Mail-Adresse</span>
+        </div>
+
+        <div class="auth-input-container">
+          <input
+            class="auth-input"
+            type="text"
+            [placeholder]="user ? user.email : ''"
+            [(ngModel)]="userEditEmail"
+            name="userEditEmail"
+            #userEditEmailInput="ngModel"
+            required
+            email
+          />
+          <img
+            class="auth-input-icon"
+            src="./../../assets/img/mail_icon.png"
+            alt="user_icon"
+          />
+          <span
+            class="invalid-input"
+            [class.is-invalid]="
+              userEditEmailInput.invalid &&
+              userEditEmailInput.touched &&
+              userEditEmailInput.value != ''
+            "
+          >
+            Diese E-Mail-Adresse ist leider ungültig.
+          </span>
+        </div>
+      </div>
+
+      <div class="user-edit-button-container">
+        <button (click)="toggleEdit()" class="secondary-button">
+          Abbrechen
+        </button>
+        <button
+          [disabled]="!editUserForm.valid"
+          type="submit"
+          class="primary-button"
         >
-          Dieser Name ist leider ungültig.
-        </span>
+          Speichern
+        </button>
       </div>
-    </div>
-
-    <div class="user-edit-wrapper">
-      <div class="user-edit-name-input-header">
-        <img
-          src="../../../assets/img/mail_icon_bold.png"
-          alt="user_icon_bold"
-        />
-        <span>E-Mail-Adresse</span>
-      </div>
-
-      <div class="auth-input-container">
-        <input
-          class="auth-input"
-          type="text"
-          [placeholder]="user ? user.email : ''"
-          [(ngModel)]="userEditEmail"
-          name="userEditEmail"
-          #userEditEmailInput="ngModel"
-          required
-          email
-        />
-        <img
-          class="auth-input-icon"
-          src="./../../assets/img/mail_icon.png"
-          alt="user_icon"
-        />
-        <span
-          class="invalid-input"
-          [class.is-invalid]="
-            userEditEmailInput.invalid &&
-            userEditEmailInput.touched &&
-            userEditEmailInput.value != ''
-          "
-        >
-          Diese E-Mail-Adresse ist leider ungültig.
-        </span>
-      </div>
-    </div>
-
-    <div class="user-edit-button-container">
-      <button (click)="toggleEdit()" class="secondary-button">Abbrechen</button>
-      <button (click)="saveEditingChanges()" class="primary-button">Speichern</button>
-    </div>
-  </section>
+    </section>
+  </form>
   }
 </section>
+<app-toast></app-toast>

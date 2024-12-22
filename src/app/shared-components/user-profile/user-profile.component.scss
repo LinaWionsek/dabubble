@@ -3,7 +3,7 @@
 .user-profile {
   @include size(500px, 600px);
   min-height: fit-content;
-  @include display-flex($fd: column, $ai: inherit, $jc: inherit, $gap: 36px);
+  @include display-flex($fd: column, $ai: inherit, $jc: inherit, $gap: 24px);
   @include position(absolute, $top: 112px, $rig: 16px);
   background: $primary-color-white;
   padding: 45px 40px;
@@ -95,13 +95,40 @@
   }
 }
 
+.user-edit-form {
+  @include display-flex($fd: column, $gap: 20px);
+}
+
 .user-edit-container {
-  // @include display-flex();
-  // @include size(100%);
+  @include display-flex($fd: column, $gap: 20px);
+  @include size(100%);
   > .user-edit-wrapper {
     @include display-flex($fd: column, $ai: flex-start, $gap: 12px);
     @include size(100%);
   }
+}
+
+.user-edit-selected-avatar {
+  transition: 225ms ease-in-out;
+  border-radius: 50%;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.user-edit-avatar-selection {
+  @include position(absolute, 30px, 16px, $zi: 4);
+  @include size(240px);
+  padding: 12px;
+  border-radius: 30px 30px 0 30px;
+  box-shadow: $primary-box-shadow;
+  background: $primary-color-white;
+  transition: 225ms ease-in-out;
+}
+
+.user-edit-avatar-options {
+  flex-wrap: wrap;
+  gap: 8px !important;
 }
 
 .user-edit-name-input-header {

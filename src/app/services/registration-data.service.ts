@@ -18,6 +18,10 @@ export class RegistrationDataService {
     return this.userData;
   }
 
+  getUserName() {
+    return this.userData.firstName + "" + this.userData.lastName;
+  }
+
   clearUserData() {
     this.userData = {};
   }
