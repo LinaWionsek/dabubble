@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/authentication.service';
@@ -7,69 +7,55 @@ import { User } from '../../models/user.class';
 import { RegistrationDataService } from '../../services/registration-data.service';
 import { ToastService } from '../../services/toast.service';
 import { ToastComponent } from '../../shared-components/toast/toast.component';
-import { AuthHeaderComponent } from "../auth-header/auth-header.component";
+import { AuthHeaderComponent } from '../auth-header/auth-header.component';
+import { Avatar, AvatarSelectionService } from '../../services/avatar-selection.service';
 
 @Component({
   selector: 'app-avatar-selection',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ToastComponent, AuthHeaderComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ToastComponent,
+    AuthHeaderComponent,
+  ],
   templateUrl: './avatar-selection.component.html',
   styleUrl: './avatar-selection.component.scss',
 })
-export class AvatarSelectionComponent {
-  avatars = [
-    {
-      name: 'avatar_1',
-      thumb: 'assets/img/avatar_1.png',
-      image: 'assets/img/avatar_1_large.png',
-    },
-    {
-      name: 'avatar_2',
-      thumb: 'assets/img/avatar_2.png',
-      image: 'assets/img/avatar_2_large.png',
-    },
-    {
-      name: 'avatar_3',
-      thumb: 'assets/img/avatar_3.png',
-      image: 'assets/img/avatar_3_large.png',
-    },
-    {
-      name: 'avatar_4',
-      thumb: 'assets/img/avatar_4.png',
-      image: 'assets/img/avatar_4_large.png',
-    },
-    {
-      name: 'avatar_5',
-      thumb: 'assets/img/avatar_5.png',
-      image: 'assets/img/avatar_5_large.png',
-    },
-    {
-      name: 'avatar_6',
-      thumb: 'assets/img/avatar_6.png',
-      image: 'assets/img/avatar_6_large.png',
-    },
-  ];
-
+export class AvatarSelectionComponent implements OnInit {
+  avatars: Avatar[] = [];
   selectedAvatar: string = 'assets/img/avatar_empty.png';
+  userName: string = '';
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private registrationDataService: RegistrationDataService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private avatarService: AvatarSelectionService
   ) {}
+
+  ngOnInit(): void {
+    this.avatars = this.avatarService.getAvatars();
+  }
 
   get isAvatarEmpty(): boolean {
     return this.selectedAvatar === 'assets/img/avatar_empty.png';
   }
 
   selectAvatar(avatarImageSource: string): void {
+    this.avatarService.setSelectedAvatar(avatarImageSource);
     this.selectedAvatar = avatarImageSource;
+  }
+
+  getUserName() {
+    this.userName = this.registrationDataService.getUserName();
+    return this.userName
   }
 
   async registerUser() {
     if (!this.selectedAvatar) {
-      console.error('Kein Avatar ausgewählt.');
       return;
     }
 
@@ -77,8 +63,12 @@ export class AvatarSelectionComponent {
       this.registrationDataService.setAvatar(this.selectedAvatar);
       const registrationData = this.registrationDataService.getUserData();
 
-      if (!registrationData.email || !registrationData.password || !registrationData.firstName || !registrationData.lastName) {
-        console.error('Registrierungsdaten fehlen.');
+      if (
+        !registrationData.email ||
+        !registrationData.password ||
+        !registrationData.firstName ||
+        !registrationData.lastName
+      ) {
         return;
       }
       const result = await this.authService.signUp(
@@ -95,9 +85,11 @@ export class AvatarSelectionComponent {
         isOnline: true,
       });
 
-
       this.toastService.showToast('Konto erfolgreich erstellt!');
-      await this.authService.saveUserData(result.user.uid, userData.toPlainObject());
+      await this.authService.saveUserData(
+        result.user.uid,
+        userData.toPlainObject()
+      );
       this.registrationDataService.clearUserData();
 
       setTimeout(() => {

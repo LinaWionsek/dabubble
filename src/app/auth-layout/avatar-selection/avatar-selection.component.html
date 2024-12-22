@@ -5,7 +5,7 @@
   ></app-auth-header>
 
   <main class="auth-inputs">
-    <div class="auth-input-container selected-avatar-container">
+    <div class=" selected-avatar-container">
       <img
         [src]="selectedAvatar"
         alt="selected_avatar"
@@ -13,7 +13,7 @@
       />
     </div>
 
-    <span class="user-name"> Placeholder </span>
+    <span class="user-name"> {{ getUserName() }} </span>
 
     <section class="avatar-selection">
       <span>Aus der Liste wählen</span>

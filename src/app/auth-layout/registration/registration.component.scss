@@ -59,7 +59,7 @@
     transition: 225ms ease-in-out;
     &::after {
       content: "";
-      @include position(absolute, 0, 4px);
+      @include position(absolute, 1px, 5px);
       @include size(0px, 0px);
       border: solid $primary-color-purple;
       border-width: 0 2px 2px 0;

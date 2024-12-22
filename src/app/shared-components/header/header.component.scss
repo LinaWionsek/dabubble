@@ -35,6 +35,7 @@ header {
   @include size(170px);
   > span {
     align-self: center;
+    @include font-style($font-size-18, $font-weight-400, $text-color-black);
   }
 }
 
