@@ -17,7 +17,7 @@
     @if (showSearchBar) {
     <section class="search-bar">
       <div class="search-bar-input-container">
-        <input
+        <input (keyup)="searchDevspace()" ngModel [(ngModel)]="inputData"
           class="search-bar-input"
           placeholder="Devspace durchsuchen"
           type="text"
