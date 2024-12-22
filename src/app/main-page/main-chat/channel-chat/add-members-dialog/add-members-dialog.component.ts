@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Channel } from './../../../../models/channel.class';
 import { Firestore, collection, collectionData, doc, updateDoc } from '@angular/fire/firestore';
@@ -15,18 +15,18 @@ import { User } from './../../../../models/user.class';
 export class AddMembersDialogComponent {
   @Input() channelData?: Channel | null;
   @Input() allUsers!: User[];
-  @Input() addMembersDialogPosition!: { top: string; left: string };
   @Output() dialogClosed = new EventEmitter<void>();
+
 
   firestore: Firestore = inject(Firestore);
 
   channelMembers?: string[] = this.channelData?.userIds;;
  
-
   userSearchQuery: string = '';
   foundUsers?: User[] = [];
   displaySearchResultContainer = false;
   selectedUsers?: User[] = [];
+
 
 
 
@@ -39,10 +39,10 @@ export class AddMembersDialogComponent {
   }
 
 
-  addMember(){
+  async addMember(){
     const newUserIds = this.selectedUsers?.map(user => user.id) || [];
     this.channelData?.userIds.push(...newUserIds);
-    this.updateChannel(); 
+    await this.updateChannel(); 
     this.selectedUsers = [];
     this.closeDialog();
   }
