@@ -18,7 +18,7 @@ import { AddMembersDialogComponent } from "../add-members-dialog/add-members-dia
   styleUrl: './channel-chat-header.component.scss'
 })
 export class ChannelChatHeaderComponent {
-  
+  @Input() allUsers!: User[];
   @Input() activeChannelData?: Channel | null;
   @Input() activeChannelUsers: User[] = [];
 

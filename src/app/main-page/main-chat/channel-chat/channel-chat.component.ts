@@ -57,6 +57,7 @@ export class ChannelChatComponent {
       this.updateActiveChannelUsers();
     });
   }
+  
 
   updateActiveChannelUsers(){
     this.activeChannelUsers = this.users.filter(user => this.activeChannel?.userIds.includes(user.id));
