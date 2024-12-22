@@ -15,7 +15,6 @@ import { FormsModule, NgForm, NgModel } from '@angular/forms';
 })
 export class EditChannelDialogComponent {
   @Input() channelData?: Channel | null;
-  @Input() position!: { top: string; left: string };
   @Output() dialogClosed = new EventEmitter<void>();
 
   firestore: Firestore = inject(Firestore);
@@ -46,6 +45,7 @@ export class EditChannelDialogComponent {
     }
   }
 
+
   saveChanges(form: NgForm) {
     if (form.valid) {
       this.editChannel(form);
@@ -55,6 +55,7 @@ export class EditChannelDialogComponent {
       this.resetInvalidFields(form);
     }
   }
+  
 
   getErrorMessage(errors: any): string {
     if (errors.required) {
