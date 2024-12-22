@@ -6,13 +6,15 @@ import { Observable } from 'rxjs';
 import { ChatService } from '../../../services/dm-chat.service';
 import { ChannelService } from '../../../services/channel.service';
 import { ThreadService } from '../../../services/thread.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 
 
 @Component({
   selector: 'app-workspace-direct-messages',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, CommonModule],
   templateUrl: './workspace-direct-messages.component.html',
   styleUrl: './workspace-direct-messages.component.scss',
   animations: [
@@ -33,9 +35,9 @@ export class WorkspaceDirectMessagesComponent {
   @Input() currentUser?: User | null;
   users$!: Observable<User[]>;
   allUsers: User[] = [];
+  
 
-  activeIndex: number | null = null;
-  activeChat: string = '';
+  activeUser?: User | null;
 
 
   constructor(private chatService: ChatService, private channelService: ChannelService, private threadService: ThreadService){}
@@ -43,7 +45,16 @@ export class WorkspaceDirectMessagesComponent {
 
   ngOnInit(){
     this.loadAllUsers();
+    this.subscribeToChatService();
   }
+
+  subscribeToChatService(){ 
+    this.chatService.activeUserChat$.subscribe((user) => {
+      this.activeUser = user;
+    })
+  }
+
+ 
 
 
   loadAllUsers(){
@@ -51,7 +62,11 @@ export class WorkspaceDirectMessagesComponent {
     this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
 
     this.users$.subscribe((changes) => {
-      this.allUsers = Array.from(new Map(changes.map(user => [user.id, user])).values());
+      this.allUsers = Array.from(new Map(
+        changes
+        .filter(user => user.id !== this.currentUser?.id)
+        .map(user => [user.id, user])
+      ).values());
     })
   }
 
@@ -61,13 +76,10 @@ export class WorkspaceDirectMessagesComponent {
   }
 
 
-  activateChat(index:number){
+  activateChat(user: User){
     this.channelService.clearActiveChannel();
     this.threadService.deactivateThread();
-
-    this.activeIndex = index; 
-    this.activeChat = this.allUsers[index].id;
-    const activeUserObject = this.allUsers[index]
-    this.chatService.setActiveChat(activeUserObject);
+    this.activeUser = user;
+    this.chatService.setActiveChat(user);
   }
 }

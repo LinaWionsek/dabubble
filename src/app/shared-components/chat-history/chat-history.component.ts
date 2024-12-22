@@ -35,7 +35,7 @@ export class ChatHistoryComponent {
   allMessages: Message[] = [];
   groupedMessages: { [date: string]: Message[] } = {};
 
- 
+  messagesLoaded = false;
   currentUser!: User | null ;
   firestore: Firestore = inject(Firestore);
 
@@ -45,6 +45,7 @@ export class ChatHistoryComponent {
 
 
   ngOnInit(){
+    
     this.subscribeToChannelService();
   }
 
@@ -54,11 +55,12 @@ export class ChatHistoryComponent {
     if (this.usedFor ==='channel') {
       const channelMessagesSubcollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
       this.loadMessages(channelMessagesSubcollection);
-      // this.loadActiveMessageAnswers();
+      this.setMessagesLoaded();
       this.setChannelId();
     } else if (this.usedFor ==='dm-chat'){
       const messagesCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
       this.loadMessages(messagesCollection);
+      this.setMessagesLoaded();
     } else if(this.usedFor ==='thread' && this.activeChannel){
       const answersCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
       this.loadActiveMessageAnswers(answersCollection);
@@ -66,6 +68,13 @@ export class ChatHistoryComponent {
       const answersCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
       this.loadActiveMessageAnswers(answersCollection);
     }
+  }
+
+
+  setMessagesLoaded(){
+    setTimeout(() => {
+      this.messagesLoaded = true;
+    }, 100);
   }
   
 

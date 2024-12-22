@@ -14,7 +14,7 @@ import { FormsModule, NgForm, NgModel } from '@angular/forms';
   styleUrl: './edit-channel-dialog.component.scss',
 })
 export class EditChannelDialogComponent {
-  @Input() channelData!: Channel;
+  @Input() channelData?: Channel | null;
   @Input() position!: { top: string; left: string };
   @Output() dialogClosed = new EventEmitter<void>();
 
@@ -26,7 +26,7 @@ export class EditChannelDialogComponent {
   constructor() {}
 
   closeDialog() {
-    if (this.channelData.name && this.channelData.name.length >= 4) {
+    if (this.channelData?.name && this.channelData.name.length >= 4) {
       this.dialogClosed.emit();
     }
   }
@@ -37,7 +37,7 @@ export class EditChannelDialogComponent {
 
   async editChannel(form: NgForm) {
     if (form.valid) {
-      const channelDocRef = doc(this.firestore, `channels/${this.channelData.id}`);
+      const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
       try {
         await updateDoc(channelDocRef, { ...this.channelData });
       } catch (error) {
@@ -70,7 +70,7 @@ export class EditChannelDialogComponent {
     const controls = form.controls;
 
     if (controls['channelName']?.invalid) {
-      this.channelData.name = '';
+      this.channelData!.name = '';
     }
   }
 

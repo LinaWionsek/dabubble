@@ -1,11 +1,11 @@
 
-<div class="dialog-bg" (click)="closeDialog()">
+<div class="dialog-bg" (click)="closeDialog()"></div>
        
-     <div class="dialog" (click)="stopPropagation($event)" [style.top]="position.top" [style.left]="position.left">
+     <div class="dialog" (click)="stopPropagation($event)">
          <div class="dialog-header">
             <div class="channel-title-div">
                 <img src="./../../../../assets/img/tag_large.png">
-                <span class="dialog-title">{{channelData.name}} </span>
+                <span class="dialog-title">{{channelData?.name}} </span>
             </div>
              
              <div class="icon-container" (click)="closeDialog()">
@@ -31,7 +31,7 @@
                     type="text" 
                     id="channel-name" 
                     name="channelName"
-                    [(ngModel)]="channelData.name" 
+                    [(ngModel)]="channelData!.name" 
                     #channelName="ngModel"
                     spellcheck="false" 
                     [placeholder]="channelName.invalid && (channelName.touched || editChannelForm.submitted) ? getErrorMessage(channelName.errors) : 'z.B. Kooperationsprojekte'"
@@ -60,7 +60,7 @@
                     type="text" 
                     id="channel-description" 
                     name="channelDescription"
-                    [(ngModel)]="channelData.description" 
+                    [(ngModel)]="channelData!.description" 
                     spellcheck="false" 
                     [disabled]="!editingChannelDescription"
                     [ngClass]="editingChannelDescription ? 'active-input' : 'inactive-input'" 
@@ -70,7 +70,7 @@
 
                     <div class="creator-div">
                        <span class="input-label">Erstellt von</span>
-                       <span class="creator-span">{{channelData.creator}}</span>
+                       <span class="creator-span">{{channelData!.creator}}</span>
                     </div>
                 
                 </div>
@@ -87,7 +87,7 @@
          </div>
      </div>
     
-</div>
+
     
      
 

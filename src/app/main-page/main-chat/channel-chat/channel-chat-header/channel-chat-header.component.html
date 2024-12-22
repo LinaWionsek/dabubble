@@ -3,6 +3,15 @@
         <img src="./../../../../assets/img/tag_large.png">
         <span class="channel-title">{{activeChannelData?.name}}</span>
         <img src="./../../../../assets/img/drop_down_arrow.png">
+
+        @if(editChannelDialogOpened){
+            <div class="edit-channel-dialog-container">
+                <app-edit-channel-dialog
+                    [channelData]="activeChannelData"
+                    (dialogClosed)="closeEditChannelDialog()"
+                ></app-edit-channel-dialog>
+            </div>
+        }
     </div>
 
     <div class="channel-members-div">
@@ -19,12 +28,35 @@
             @if(activeChannelUsers.length > 0){
                 <span class="member-number-span">{{activeChannelUsers.length}}</span>
             }
+
+            @if(showMembersDialogOpened){
+                <div class="show-members-dialog-container">
+                    <app-show-members-dialog
+                        [channelData]="activeChannelData"
+                        [allUsers]="activeChannelUsers"
+                        (dialogClosed)="closeShowMembersDialog()"
+                        (addMembersDialogOpened)="openAddMembersDialog()"
+                    ></app-show-members-dialog>
+                </div>
+            }
             
         </div>
         
-        <div class="icon-container" #addMembersDiv (click)="openAddMembersDialog()">
-            <img src="./../../../../assets/img/person_add.png">
+        <div class="add-members-div" #addMembersDiv>
+            <div class="icon-container"  (click)="openAddMembersDialog()">
+                <img src="./../../../../assets/img/person_add.png">
+            </div>
+
+            @if(addMembersDialogOpened){
+                <div class="add-members-dialog-container">
+                    <app-add-members-dialog
+                        [channelData]="activeChannelData"
+                        (dialogClosed)="closeAddMembersDialog()"
+                    ></app-add-members-dialog>
+                </div>
+            }
         </div>
+        
 
     </div>
 

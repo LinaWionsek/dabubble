@@ -1,7 +1,7 @@
 <app-channel-chat-header 
     [activeChannelData]="activeChannel" 
     [activeChannelUsers]="activeChannelUsers"
-    (dialogStateChange)="handleDialogStateChange($event)">
+    >
 </app-channel-chat-header>
 
 <app-chat-history
@@ -20,8 +20,7 @@
 
 
 
-
-@if(editChannelDialogOpened && activeChannel){
+<!-- @if(editChannelDialogOpened && activeChannel){
     <app-edit-channel-dialog
         [channelData]="activeChannel!"
         (dialogClosed)="closeEditDialog()"
@@ -36,7 +35,7 @@
         [channelData]="activeChannel" 
         (dialogClosed)="closeShowMembersDialog()" 
         [allUsers]="users"
-        (openAddMembersDialog)="openAddMembersDialog()"
+        (addMembersDialogOpened)="openAddMembersDialogThroughShowMembersDialog()"
         [showMembersDialogPosition]="showMembersDialogPosition"
         >
     </app-show-members-dialog>
@@ -52,4 +51,4 @@
         [addMembersDialogPosition]="addMembersDialogPosition"
         >
     </app-add-members-dialog>
-}
+} -->

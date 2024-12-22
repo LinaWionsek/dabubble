@@ -5,6 +5,7 @@
   width: 100%;
   flex: 1;
   margin-bottom: 40px;
+  overflow-x: visible;
 }
 
 .history-container {
@@ -12,7 +13,8 @@
   width: 100%;
   display: flex;
   flex-direction: column-reverse;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: visible;
   padding: 24px 0;
 }
 
@@ -45,11 +47,11 @@
 
 .default-dm-view {
   @include display-flex($fd: column, $ai: flex-start);
-  margin-left: 40px;
-  margin-bottom: 48px;
+  margin-left: 48px;
+  margin-bottom: 8px;
 }
 
-.user-div {
+.user-div, .channel-div {
   @include display-flex($ai: flex-end);
 }
 
@@ -63,6 +65,12 @@
   font-size: 24px;
   font-weight: 700;
   margin-left: 24px;
+}
+
+.channel-name-span{
+  font-size: 24px;
+  font-weight: 700;
+  margin-left: 0px;
 }
 
 .info-span {

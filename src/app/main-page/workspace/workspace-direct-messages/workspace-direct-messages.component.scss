@@ -3,22 +3,17 @@
 
 :host{
     width: 100%;
-    flex: 1;
-    
-    
+    flex: 1 1 auto;
 }
 
 .workspace-user-div {
     width: 100%;
-    flex: 1 1 auto;
     margin-bottom: 30px;
-    overflow-y: scroll;
-    max-height: 42vh;
     min-height: 100px;
+    padding-right: 24px;
 }
 
 .user-div{
-    // width: 100%;
     @include display-flex($jc: flex-start);
     border-radius: 30px;
     transition: all 125ms ease;
@@ -30,7 +25,12 @@
         background-color: $bg-color-gray;
         cursor: pointer;
     }
+}
 
+.active{
+    background-color: $bg-color-gray;
+    color: $primary-color-purple;
+    font-weight: 700;
 }
 
 .user-img{
@@ -43,4 +43,26 @@
 .user-name{
     font-size: 18px;
     margin-left: 16px;
+}
+
+
+.user-avatar-div{
+    position: relative;
+}
+
+.online-marker{
+    position: absolute;
+    bottom: 6px;
+    right: -2px;
+    border: 2px solid white;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+
+    &.online {
+        background-color: $online-color-green;
+    }
+    &.offline {
+        background-color: $error-color-red;
+    }
 }

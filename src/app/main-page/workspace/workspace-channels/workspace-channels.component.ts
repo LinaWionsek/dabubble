@@ -6,6 +6,7 @@ import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { ChannelService } from '../../../services/channel.service';
 import { User } from '../../../models/user.class';
 import { ThreadService } from '../../../services/thread.service';
+import { ChatService } from '../../../services/dm-chat.service';
 
 
 @Component({
@@ -30,24 +31,30 @@ export class WorkspaceChannelsComponent {
   @Input() currentUser?: User | null;
   @Output() dialogStateChange = new EventEmitter<boolean>();
   
-  constructor(private channelService: ChannelService, private threadService: ThreadService) {}
+  constructor(private channelService: ChannelService, private threadService: ThreadService, private chatService: ChatService) {}
 
   showSubmenu = true;
   addChannelDialogOpened = false;
   channels$!: Observable<Channel[]>;
   allChannels: Channel[] = [];
   allUserChannels: Channel[] = [];
+  activeChannel?: Channel | null;
   firestore: Firestore = inject(Firestore);
   
 
-  activeIndex: number | null = null;
-  activeChannel:string = '';
-
 
   ngOnInit(){
+    this.subscribeToChannelService();
     this.getAllChannels();
   }
   
+
+  subscribeToChannelService(){
+    this.channelService.activeChannel$.subscribe((channel) => {
+      this.activeChannel = channel;
+    })
+  }
+
 
   ngOnChanges(changes: SimpleChanges){
     if (changes['currentUser'] && this.currentUser) {
@@ -84,11 +91,10 @@ export class WorkspaceChannelsComponent {
   }
 
 
-  activateChannel(index:number) {
+  activateChannel(channel: Channel) {
+    this.chatService.clearActiveChat();
     this.threadService.deactivateThread();
-    this.activeIndex = index; 
-    this.activeChannel = this.allChannels[index].id;
-    const activeChannelObject = this.allChannels[index]
-    this.channelService.setActiveChannel(activeChannelObject);
+    this.activeChannel = channel;
+    this.channelService.setActiveChannel(channel);
   }
 }

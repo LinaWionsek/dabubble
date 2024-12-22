@@ -13,12 +13,10 @@ import { User } from '../../../../models/user.class';
   styleUrl: './show-members-dialog.component.scss'
 })
 export class ShowMembersDialogComponent {
-  @Input() channelData!: Channel;
-  @Input() showMembersDialogPosition!: { top: string; left: string };
-  @Input() secondPosition!: { top: string; left: string };
+  @Input() channelData?: Channel | null;
   @Input() allUsers!: User[];
   @Output() dialogClosed = new EventEmitter<void>();
-  @Output() openAddMembersDialog= new EventEmitter<void>();
+  @Output() addMembersDialogOpened = new EventEmitter<void>();
 
   channelUsers:User[] = [];
 
@@ -27,8 +25,9 @@ export class ShowMembersDialogComponent {
     this.populateChannelUsersArray();
   }
 
+
   populateChannelUsersArray(){
-    this.channelUsers = this.allUsers.filter(user => this.channelData.userIds.includes(user.id));
+    this.channelUsers = this.allUsers.filter(user => this.channelData?.userIds.includes(user.id));
   }
   
 
@@ -41,10 +40,11 @@ export class ShowMembersDialogComponent {
   }
 
 
-  openAddMemberDialog(){
+  openAddMembersDialog(){
     this.closeDialog();
-    this.openAddMembersDialog.emit();
-
+    setTimeout(()=>{
+      this.addMembersDialogOpened.emit();
+    }, 15)
   }
 }
 
