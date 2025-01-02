@@ -212,7 +212,7 @@ export class MessageComponent {
     } else if(this.usedFor === 'dm-chat'){
       this.updateDmChatMessage();
     } else if(this.usedFor === 'thread' && this.activeChannel){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
+      const messageDocRef = doc(this.firestore, `channels/${this.activeChannel.id}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
       this.updateMessageDoc(messageDocRef);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
       this.updateDmThreadMesssage();
@@ -253,7 +253,7 @@ export class MessageComponent {
     } else if(this.usedFor === 'dm-chat'){
       this.deleteDmChatMessage();
     } else if(this.usedFor === 'thread' && this.activeChannel){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
+      const messageDocRef = doc(this.firestore, `channels/${this.activeChannel.id}/messages/${this.activeMessage?.id}/answers/${this.message?.id}`)
       this.deleteMessageDoc(messageDocRef);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
       this.deleteDmThreadMessage();
