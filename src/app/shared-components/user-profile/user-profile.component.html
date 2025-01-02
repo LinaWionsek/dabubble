@@ -96,7 +96,6 @@
             [(ngModel)]="userEditfullName"
             name="fullName"
             #userEditfullNameInput="ngModel"
-            required
             pattern="[a-zA-ZÀ-ž\s\-]+"
           />
           <img
@@ -134,7 +133,6 @@
             [(ngModel)]="userEditEmail"
             name="userEditEmail"
             #userEditEmailInput="ngModel"
-            required
             email
           />
           <img
@@ -160,7 +158,7 @@
           Abbrechen
         </button>
         <button
-          [disabled]="!editUserForm.valid"
+          [disabled]="isSubmitDisabled() && (userEditfullNameInput.valid || userEditEmailInput.valid)"
           type="submit"
           class="primary-button"
         >

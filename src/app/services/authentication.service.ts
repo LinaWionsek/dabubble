@@ -67,6 +67,18 @@ export class AuthService {
     return this.auth.currentUser?.uid || null;
   }
 
+  async getPendingEmail(userId: string): Promise<string | null> {
+    let userDocRef = doc(this.firestore, `users/${userId}`);
+    let userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      let userData = userDoc.data();
+      return userData['pendingEmail'] || null;
+    } else {
+      return null;
+    }
+  }
+
   async getFullUser(): Promise<User | null> {
     const currentUser: FirebaseUser | null = this.auth.currentUser;
 
