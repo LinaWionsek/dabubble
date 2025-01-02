@@ -71,6 +71,7 @@ export class MessageComponent {
     })
   }
 
+  
   subscribeToThreadService(){
     this.threadService.activeMessage$.subscribe((message) => {
       this.activatedMessage = message;

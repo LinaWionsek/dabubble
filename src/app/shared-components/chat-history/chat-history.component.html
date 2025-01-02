@@ -29,8 +29,6 @@
         <div class="answers-div">
             @for (dateKey of sortedDateKeys(groupedMessageAnswers); track $index) {
 
-                <app-seperator [date]="dateKey"></app-seperator>
-
                 @for (answer of groupedMessageAnswers[dateKey]; track $index) {
                     <app-message
                         [currentUser]="currentUser"
@@ -41,6 +39,8 @@
                         [messageAnswers$]="activeMessageAnswers$"
                      ></app-message>
                 }
+
+                <app-seperator [date]="dateKey"></app-seperator>
             }
         </div>
         <div class="seperator-div">

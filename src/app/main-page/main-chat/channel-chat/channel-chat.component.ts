@@ -1,14 +1,10 @@
 import { Component, inject} from '@angular/core';
 import { ChannelService } from '../../../services/channel.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Channel } from './../../../models/channel.class';
 import { User } from './../../../models/user.class';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
-import { EditChannelDialogComponent } from './edit-channel-dialog/edit-channel-dialog.component';
+import { Firestore, collection, collectionData, doc, onSnapshot, Unsubscribe } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
-import { ShowMembersDialogComponent } from './show-members-dialog/show-members-dialog.component';
-import { AddMembersDialogComponent } from './add-members-dialog/add-members-dialog.component';
-import { ComponentPortal } from '@angular/cdk/portal';
 import { ChannelChatHeaderComponent } from "./channel-chat-header/channel-chat-header.component";
 import { ChatInputComponent } from "../../../shared-components/chat-input/chat-input.component";
 import { ChatHistoryComponent } from "../../../shared-components/chat-history/chat-history.component";
@@ -29,6 +25,9 @@ export class ChannelChatComponent {
   users: User[] = [];
   activeChannelUsers: User[] = [];
   firestore: Firestore = inject(Firestore);
+
+  // private activeChannelSubscription: Unsubscribe | null = null;
+
   
  
   constructor(private channelService: ChannelService) {}
@@ -36,6 +35,7 @@ export class ChannelChatComponent {
   ngOnInit() {
     this.subscribeToActiveChannel();
     this.loadUsers();
+    // this.listenToActiveChannelChanges();
   }
 
 
@@ -46,6 +46,15 @@ export class ChannelChatComponent {
     })
   }
   
+
+  // listenToActiveChannelChanges(){
+  //   const channelDoc = doc(this.firestore, `channels/${this.activeChannel!.id}`);
+  //   this.activeChannelSubscription = onSnapshot(channelDoc, (snapshot) => {
+  //     const updatedChannel = snapshot.data() as Channel;
+  //     this.activeChannel = updatedChannel;
+  //     this.updateActiveChannelUsers();
+  //   });
+  // }
 
 
   loadUsers(){
@@ -59,9 +68,9 @@ export class ChannelChatComponent {
   }
   
 
+
   updateActiveChannelUsers(){
     this.activeChannelUsers = this.users.filter(user => this.activeChannel?.userIds.includes(user.id));
   }
-
 
 }
