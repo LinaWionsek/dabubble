@@ -5,6 +5,7 @@ export class User {
   firstName: string;
   lastName: string;
   email: string;
+  pendingEmail: string;
   avatar: string;
   isOnline: boolean;
   
@@ -14,9 +15,9 @@ export class User {
     this.firstName = data?.firstName ?? '';
     this.lastName = data?.lastName ?? '';
     this.email = data?.email ?? '';
+    this.pendingEmail = data?.pendingEmail ?? '';
     this.avatar = data?.avatar ?? '';
     this.isOnline = data?.isOnline ?? false;
-    
   }
 
   toPlainObject() {
