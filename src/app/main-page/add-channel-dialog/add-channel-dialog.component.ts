@@ -62,8 +62,6 @@ export class AddChannelDialogComponent {
   }
 
 
-
-
   getUserChannels(){
     const userChannelsCollection = collection(this.firestore, 'channels' );
     this.channels$ = collectionData(userChannelsCollection, { idField: 'id'}) as Observable<Channel[]>;
