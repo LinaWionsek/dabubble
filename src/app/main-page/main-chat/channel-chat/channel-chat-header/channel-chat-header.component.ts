@@ -27,7 +27,7 @@ export class ChannelChatHeaderComponent {
   addMembersDialogOpened = false;
 
   firestore: Firestore = inject(Firestore);
-  private activeChannelSubscription: Unsubscribe | null = null;
+  activeChannelSubscription: Unsubscribe | null = null;
 
 
 
@@ -35,6 +35,12 @@ export class ChannelChatHeaderComponent {
   ngOnInit(){
     this.listenToActiveChannelChanges();
     // this.updateChannelUsers();
+  }
+
+  ngOnDestroy(){
+    if (this.activeChannelSubscription) {
+      this.activeChannelSubscription(); 
+    }
   }
   
 
