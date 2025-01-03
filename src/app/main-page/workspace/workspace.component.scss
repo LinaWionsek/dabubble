@@ -32,6 +32,7 @@
     width: 100%;
     @include display-flex($jc:flex-start);
     margin-bottom: 24px;
+    padding-right: 12px;
 }
 
 .workspace-logo{

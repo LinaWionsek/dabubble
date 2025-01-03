@@ -29,6 +29,11 @@
         padding: 15px 20px;
         margin-top: 20px;
         font-size: 18px;
+
+        &:focus{
+            outline: none;
+            border: 1px solid $highlight-color-purple;
+        }
     }
 }
 
