@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/dm-chat.service';
+import { ReceiverService } from '../../services/receiver.service';
 
 @Component({
   selector: 'app-chat-input',
@@ -27,12 +28,15 @@ export class ChatInputComponent {
   newMessage = new Message();
 
   activeChannel?: Channel | null;
+  activeReceiver?: Channel | User | null;
+  isActiveReceiverChannel = false;
+  isActiveReceiverUser = false;
   
 
   firestore: Firestore = inject(Firestore);
 
 
-  constructor(private authService: AuthService, private channelService: ChannelService){}
+  constructor(private authService: AuthService, private channelService: ChannelService, private receiverService: ReceiverService, private chatService: ChatService){}
 
 
   ngOnChanges(changes: SimpleChanges){
@@ -53,6 +57,8 @@ export class ChatInputComponent {
       this.sendMessagesTo = this.channelData?.name ?? '';
     } else if (this.usedFor === 'dm-chat') {
       this.sendMessagesTo = this.userData?.firstName + ' ' + this.userData?.lastName
+    } else if(this.usedFor === 'default'){
+      this.subscribeToReceiverService();
     }
   }
 
@@ -60,6 +66,20 @@ export class ChatInputComponent {
   subscribeToChannelService(){
     this.channelService.activeChannel$.subscribe((channel) => {
       this.activeChannel = channel;
+    })
+  }
+
+
+  subscribeToReceiverService(){
+    this.receiverService.activeReceiver$.subscribe((receiver) => {
+      this.activeReceiver = receiver;
+      if(this.receiverService.isChannel()){
+        this.isActiveReceiverUser = false;
+        this.isActiveReceiverChannel = true;
+      } else if(this.receiverService.isUser()){
+        this.isActiveReceiverUser = true;
+        this.isActiveReceiverChannel = false;
+      }
     })
   }
 
@@ -78,6 +98,8 @@ export class ChatInputComponent {
         this.addMessageToCollection(answersSubcollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
         this.sendDmThreadMessage();
+      } else if(this.usedFor === 'default'){
+        this.sendMessageWithDefaultChat();
       }
       
       this.initializeNewMessage();
@@ -90,6 +112,21 @@ export class ChatInputComponent {
       await addDoc(collection, { ...this.newMessage });
     } catch (error) {
       console.error(error);
+    }
+  }
+
+
+  sendMessageWithDefaultChat(){
+    if(this.isActiveReceiverChannel){
+      const channelMessagesCollection = collection(this.firestore, `channels/${this.activeReceiver?.id}/messages`);
+      this.addMessageToCollection(channelMessagesCollection);
+      this.channelService.setActiveChannel(this.activeReceiver as Channel);
+      this.receiverService.resetReceiver();
+    } else if(this.isActiveReceiverUser){
+      this.userData = this.activeReceiver as User;
+      this.sendDmMessage();
+      this.chatService.setActiveChat(this.activeReceiver as User);
+      this.receiverService.resetReceiver();
     }
   }
 

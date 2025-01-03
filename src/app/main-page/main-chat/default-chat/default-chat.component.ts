@@ -7,6 +7,7 @@ import { Channel } from '../../../models/channel.class';
 import { AuthService } from '../../../services/authentication.service';
 import { User } from '../../../models/user.class';
 import { FormsModule } from '@angular/forms';
+import { ReceiverService } from '../../../services/receiver.service';
 
 @Component({
   selector: 'app-default-chat',
@@ -31,11 +32,11 @@ export class DefaultChatComponent {
 
   firestore: Firestore = inject(Firestore);
 
-  constructor(private authService: AuthService){}
+  constructor(private authService: AuthService, private receiverService: ReceiverService){}
 
 
-  ngOnInit(){
-    this.getCurrentUser();
+  async ngOnInit(){
+    await this.getCurrentUser();
     this.getAllChannels();
     this.getAllUsers();
   }
@@ -88,8 +89,16 @@ export class DefaultChatComponent {
   }
 
 
-  setReceiver(receiver: object){
-
+  setReceiver(receiver: Channel | User){
+    if('creator' in receiver){
+      this.inputValue = "An: #" + receiver.name;
+      this.receiverService.setReceiver(receiver);
+      this.showChannelDropdown = false;
+    } else if('email' in receiver){
+      this.inputValue = "An: " + receiver.firstName + ' ' + receiver.lastName;
+      this.receiverService.setReceiver(receiver);
+      this.showUserDropdown = false;
+    }
   }
 
 
