@@ -5,7 +5,7 @@
     @if(showChannelDropdown){
         <div class="drop-down-div">
             <div class="scroll-div">
-                @for (channel of allUserChannels; track $index) {
+                @for (channel of filteredChannels; track $index) {
                     <div class="channel-title-div">
                         <div class="channel-title-container" (click)="setReceiver(channel)">
                             <img src= './../../../../assets/img/tag2.png'>
@@ -18,7 +18,7 @@
     }@else if(showUserDropdown){
         <div class="drop-down-div">
             <div class="scroll-div">
-                @for (user of allUsers; track $index) {
+                @for (user of filteredUsers; track $index) {
                     <div class="user-div" (click)="setReceiver(user)">
                         <div class="user-avatar-div">
                             <img src="{{user.avatar}}" class="user-img">

@@ -22,6 +22,9 @@ export class DefaultChatComponent {
   showChannelDropdown = false;
   showUserDropdown = false;
 
+  filteredChannels: Channel[] = [];
+  filteredUsers: User[] = [];
+  
   currentUser?: User | null ;
   channels$!: Observable<Channel[]>;
   allChannels: Channel[] = [];
@@ -76,16 +79,55 @@ export class DefaultChatComponent {
 
 
   checkInputValue(){
-    if(this.inputValue.includes('#')){
+    if(this.inputValue.startsWith('#')){
       this.showUserDropdown = false;
       this.showChannelDropdown = true;
-    } else if(this.inputValue.includes('@')){
+      this.setFilteredChannels();
+    } else if(this.inputValue.startsWith('@')){
       this.showChannelDropdown = false;
       this.showUserDropdown = true;
+      this.setFilteredUsers();
     } else {
       this.showChannelDropdown = false;
       this.showUserDropdown = false;
     }
+  }
+
+
+  setFilteredChannels(){
+    if(this.inputValue.length > 1){
+      this.filterChannels();
+    } else {
+      this.filteredChannels = [...this.allUserChannels];
+    }
+  }
+
+
+  setFilteredUsers(){
+    if(this.inputValue.length > 1){
+      this.filterUsers();
+    } else {
+      this.filteredUsers = [...this.allUsers];
+    }
+  }
+
+
+  filterChannels(){
+    const trimmedInput = this.inputValue.slice(1).toLowerCase();
+    this.filteredChannels = this.allUserChannels.filter((channel) => 
+      channel.name.toLowerCase().startsWith(trimmedInput)
+    );
+    this.showChannelDropdown = this.filteredChannels.length > 0;
+  }
+
+
+  filterUsers(){
+    const trimmedInput = this.inputValue.slice(1).toLowerCase();
+    this.filteredUsers = this.allUsers.filter((user) => 
+      user.firstName.toLowerCase().startsWith(trimmedInput) || 
+      user.lastName.toLowerCase().startsWith(trimmedInput)
+    );
+    this.showUserDropdown = this.filteredUsers.length > 0;
   }
 
 
