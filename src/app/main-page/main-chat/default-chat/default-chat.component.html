@@ -1,6 +1,9 @@
 <div class="default-chat-header">
     <span class="title">Neue Nachricht</span>
-    <input type="text" placeholder="An: #channel, oder @jemand oder E-Mail Adresse" [(ngModel)]="inputValue" (keyup)="checkInputValue()">
+    <div class="input-container">
+        <span class="input-prefix">An:</span>
+        <input type="text" placeholder="#channel, oder @jemand oder E-Mail Adresse" [(ngModel)]="inputValue" (keyup)="checkInputValue()">
+    </div>
 
     @if(showChannelDropdown){
         <div class="drop-down-div">

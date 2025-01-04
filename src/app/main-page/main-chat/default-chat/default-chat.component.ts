@@ -133,11 +133,11 @@ export class DefaultChatComponent {
 
   setReceiver(receiver: Channel | User){
     if('creator' in receiver){
-      this.inputValue = "An: #" + receiver.name;
+      this.inputValue = "#" + receiver.name;
       this.receiverService.setReceiver(receiver);
       this.showChannelDropdown = false;
     } else if('email' in receiver){
-      this.inputValue = "An: " + receiver.firstName + ' ' + receiver.lastName;
+      this.inputValue = receiver.firstName + ' ' + receiver.lastName;
       this.receiverService.setReceiver(receiver);
       this.showUserDropdown = false;
     }
