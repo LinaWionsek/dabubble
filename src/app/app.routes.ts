@@ -9,6 +9,8 @@ import { PasswordResetComponent } from './auth-layout/password-reset/password-re
 import { NewPasswordComponent } from './auth-layout/new-password/new-password.component';
 import { ImprintComponent } from './auth-layout/legal/imprint/imprint.component';
 import { PrivacyPolicyComponent } from './auth-layout/legal/privacy-policy/privacy-policy.component';
+import { EmailVerificationComponent } from './auth-layout/email-verification/email-verification.component';
+import { ActionHandlerComponent } from './action-handler/action-handler.component';
 
 
 export const routes: Routes = [
@@ -41,6 +43,14 @@ export const routes: Routes = [
         path: 'new-password',
         component: NewPasswordComponent,
         // canActivate: [reverseAuthGuard],
+      },
+      {
+        path: 'email-verification',
+        component: EmailVerificationComponent,
+      },
+      {
+        path: 'action-handler',
+        component: ActionHandlerComponent,
       },
       { path: 'imprint', component: ImprintComponent },
       { path: 'privacy-policy', component: PrivacyPolicyComponent },

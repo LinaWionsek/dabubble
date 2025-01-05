@@ -1,0 +1,21 @@
+<div class="auth-info">
+  @if(isLoading) {
+  <div class="auth-verification">
+    <p>Bitte warten, die Verifizierung wird verarbeitet...</p>
+  </div>
+
+  } @if (!isLoading && isVerified) {
+  <div class="auth-verification">
+    <p>
+      Die E-Mail-Adresse {{ verifiedEmail }} wurde erfolgreich verifiziert. Sie
+      können sich jetzt einloggen.
+    </p>
+    <button routerLink="/login" class="primary-button">Weiter zu Login</button>
+  </div>
+  } @if (!isLoading && isVerified === false) {
+  <div class="auth-verification">
+    <p>{{ errorMessage }}</p>
+  </div>
+  }
+</div>
+

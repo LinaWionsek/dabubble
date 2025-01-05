@@ -36,6 +36,7 @@ export class UserProfileComponent {
   selectedAvatar: string = '';
   isAvatarListOpen: boolean = false;
   @ViewChild('userEditEmailInput') userEditEmailInput!: NgModel;
+  isEmailVerified: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -52,6 +53,9 @@ export class UserProfileComponent {
     }
     this.avatars = this.avatarService.getAvatars();
     this.selectedAvatar = this.avatarService.getSelectedAvatar();
+    let currentUser = this.auth.currentUser;
+    this.isEmailVerified = currentUser!.emailVerified;
+    console.log('User is verified', currentUser?.emailVerified);
   }
 
   toggleEdit(): void {
@@ -105,16 +109,16 @@ export class UserProfileComponent {
   async saveEditingChanges(): Promise<void> {
     try {
       let user = this.auth.currentUser;
-  
+
       if (!user) {
         throw new Error('Kein Benutzer ist aktuell authentifiziert.');
       }
 
       console.log('Aktueller Benutzer:', user);
       console.log('E-Mail verifiziert:', user.emailVerified);
-  
+
       let updatedData: Partial<User> = {};
-  
+
       if (this.userEditfullName) {
         let [firstName, lastName] = this.userEditfullName.split(' ');
         updatedData.firstName =
@@ -122,66 +126,36 @@ export class UserProfileComponent {
         updatedData.lastName =
           lastName?.trim() || user.displayName?.split(' ')[1] || '';
       }
-  
 
       if (this.userEditEmail && this.userEditEmail.trim() !== user.email) {
         console.log('Verifizierungs-E-Mail wird gesendet...');
         await sendEmailVerification(user);
         console.log('Verifizierungs-E-Mail erfolgreich gesendet.');
-  
+
         updatedData.pendingEmail = this.userEditEmail.trim();
-  
+
         this.toastService.showToast(
           'Bitte überprüfen Sie Ihre neue E-Mail-Adresse. Die Änderung wird wirksam, sobald Sie die E-Mail bestätigen.'
         );
       }
-  
+
       if (this.selectedAvatar) {
         updatedData.avatar = this.selectedAvatar;
       }
-  
+
       if (Object.keys(updatedData).length > 0) {
         await this.authService.updateUserData(user.uid, updatedData);
         console.log('Benutzerdaten erfolgreich aktualisiert:', updatedData);
       } else {
         console.log('Keine Änderungen vorgenommen.');
       }
-  
+
       this.isEditing = false;
       this.toastService.showToast('Änderungen erfolgreich gespeichert!');
     } catch (error) {
       console.error('Fehler bei der Editierung:', error);
       this.toastService.showToast(
         'Fehler beim Speichern der Änderungen: ' + error
-      );
-    }
-  }
-
-
-  async completeEmailVerification(): Promise<void> {
-    try {
-      let user = this.auth.currentUser;
-  
-      if (!user) {
-        throw new Error('Kein Benutzer ist aktuell authentifiziert.');
-      }
-  
-      await user.reload();
-      if (user.emailVerified) {
-        let pendingEmail = await this.authService.getPendingEmail(user.uid);
-        if (pendingEmail) {
-          await this.authService.updateUserData(user.uid, { email: pendingEmail });
-          console.log('E-Mail erfolgreich bestätigt und aktualisiert.');
-          this.toastService.showToast('E-Mail erfolgreich bestätigt!');
-        }
-      } else {
-        console.log('E-Mail wurde noch nicht bestätigt.');
-        this.toastService.showToast('E-Mail wurde noch nicht bestätigt.');
-      }
-    } catch (error) {
-      console.error('Fehler bei der Überprüfung der Verifizierung:', error);
-      this.toastService.showToast(
-        'Fehler beim Abschluss der Verifizierung: ' + error
       );
     }
   }

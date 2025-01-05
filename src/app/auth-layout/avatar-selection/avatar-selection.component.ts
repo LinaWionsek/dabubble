@@ -8,7 +8,12 @@ import { RegistrationDataService } from '../../services/registration-data.servic
 import { ToastService } from '../../services/toast.service';
 import { ToastComponent } from '../../shared-components/toast/toast.component';
 import { AuthHeaderComponent } from '../auth-header/auth-header.component';
-import { Avatar, AvatarSelectionService } from '../../services/avatar-selection.service';
+import {
+  Avatar,
+  AvatarSelectionService,
+} from '../../services/avatar-selection.service';
+import { sendEmailVerification } from '@angular/fire/auth';
+import { StateService } from '../../services/state.service';
 
 @Component({
   selector: 'app-avatar-selection',
@@ -33,7 +38,8 @@ export class AvatarSelectionComponent implements OnInit {
     private router: Router,
     private registrationDataService: RegistrationDataService,
     private toastService: ToastService,
-    private avatarService: AvatarSelectionService
+    private avatarService: AvatarSelectionService,
+    private stateService: StateService,
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +57,7 @@ export class AvatarSelectionComponent implements OnInit {
 
   getUserName() {
     this.userName = this.registrationDataService.getUserName();
-    return this.userName
+    return this.userName;
   }
 
   async registerUser() {
@@ -90,10 +96,12 @@ export class AvatarSelectionComponent implements OnInit {
         result.user.uid,
         userData.toPlainObject()
       );
-      this.registrationDataService.clearUserData();
+      await sendEmailVerification(result.user);
 
       setTimeout(() => {
+        this.stateService.setState('message', 'Verifizierungs-E-Mail wurde gesendet');
         this.router.navigate(['/main']);
+        this.registrationDataService.clearUserData();
       }, 2250);
       console.log('Benutzer erfolgreich registriert:', userData);
     } catch (error) {
