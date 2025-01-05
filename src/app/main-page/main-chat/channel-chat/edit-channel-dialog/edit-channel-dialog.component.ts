@@ -5,6 +5,8 @@ import { Channel } from './../../../../models/channel.class';
 import {  Firestore,  collection,  collectionData,  doc,  updateDoc,} from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
+import { AuthService } from '../../../../services/authentication.service';
+import { User } from '../../../../models/user.class';
 
 @Component({
   selector: 'app-edit-channel-dialog',
@@ -18,11 +20,23 @@ export class EditChannelDialogComponent {
   @Output() dialogClosed = new EventEmitter<void>();
 
   firestore: Firestore = inject(Firestore);
+  currentUser?: User | null ;
 
   editingChannelName = false;
   editingChannelDescription = false;
 
-  constructor() {}
+  constructor(private authService: AuthService, private channelService: ChannelService) {}
+
+
+  ngOnInit(){
+    this.getCurrentUser();
+  }
+
+
+  async getCurrentUser(){
+    this.currentUser = await this.authService.getFullUser();
+  }
+
 
   closeDialog() {
     if (this.channelData?.name && this.channelData.name.length >= 4) {
@@ -30,20 +44,28 @@ export class EditChannelDialogComponent {
     }
   }
 
+
   stopPropagation(event: MouseEvent): void {
     event.stopPropagation();
   }
 
-  async editChannel(form: NgForm) {
+
+  editChannel(form: NgForm) {
     if (form.valid) {
-      const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
+      this.updateChannel()
+    }
+  }
+
+
+  async updateChannel(){ 
+    const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
       try {
         await updateDoc(channelDocRef, { ...this.channelData });
       } catch (error) {
         console.error(error);
       }
     }
-  }
+  
 
 
   saveChanges(form: NgForm) {
@@ -93,6 +115,7 @@ export class EditChannelDialogComponent {
     }
   }
 
+
   editChannelName(form: NgForm) {
     if (!this.editingChannelName) {
       this.editingChannelName = true;
@@ -101,6 +124,7 @@ export class EditChannelDialogComponent {
       this.editChannel(form);
     }
   }
+
 
   editChannelDescription(form: NgForm) {
     if (!this.editingChannelDescription) {
@@ -111,5 +135,16 @@ export class EditChannelDialogComponent {
     }
   }
 
-  leaveChannel() {}
+
+  leaveChannel() {
+    if (this.channelData && this.channelData.userIds) {
+      const updatedUserArray = this.channelData.userIds.filter(userId => userId !== this.currentUser?.id);
+      this.channelData.userIds = updatedUserArray;
+      this.updateChannel();
+      this.closeDialog();
+      this.channelService.clearActiveChannel();
+    }
+  }
+
+  
 }

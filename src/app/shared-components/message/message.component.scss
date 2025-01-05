@@ -329,6 +329,16 @@
   }
 }
 
+.thread-edit-div{
+  min-width: unset;
+  width: 90%;
+
+  .edit-msg-div-footer button{
+    width: 130px;
+    height: 40px;
+  }
+}
+
 .edit-msg-div-footer{
   margin-top: 16px;
   width: 100%;

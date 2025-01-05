@@ -7,7 +7,7 @@
             </div>
 
             @if(editingMessage){
-                <div class="edit-msg-div">
+                <div class="edit-msg-div" [ngClass]="{'thread-edit-div': usedFor === 'thread'}">
                     <textarea [(ngModel)]="message!.messageText" required></textarea>
                     <div class="edit-msg-div-footer">
                         <div class="action-icon-container">

@@ -1,6 +1,37 @@
 <div class="default-chat-header">
     <span class="title">Neue Nachricht</span>
-    <input type="text" placeholder="An: #channel, oder @jemand oder E-Mail Adresse">
+    <div class="input-container">
+        <span class="input-prefix">An:</span>
+        <input type="text" placeholder="#channel, oder @jemand oder E-Mail Adresse" [(ngModel)]="inputValue" (keyup)="checkInputValue()">
+    </div>
+
+    @if(showChannelDropdown){
+        <div class="drop-down-div">
+            <div class="scroll-div">
+                @for (channel of filteredChannels; track $index) {
+                    <div class="channel-title-div">
+                        <div class="channel-title-container" (click)="setReceiver(channel)">
+                            <img src= './../../../../assets/img/tag2.png'>
+                            <span class="channel-title">{{channel.name}}</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }@else if(showUserDropdown){
+        <div class="drop-down-div">
+            <div class="scroll-div">
+                @for (user of filteredUsers; track $index) {
+                    <div class="user-div" (click)="setReceiver(user)">
+                        <div class="user-avatar-div">
+                            <img src="{{user.avatar}}" class="user-img">
+                        </div>
+                        <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </div>
 
 <app-chat-history></app-chat-history>

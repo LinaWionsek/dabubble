@@ -4,6 +4,8 @@ import { WorkspaceDirectMessagesComponent } from "./workspace-direct-messages/wo
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
+import { ChannelService } from '../../services/channel.service';
+import { ChatService } from '../../services/dm-chat.service';
 
 @Component({
   selector: 'app-workspace',
@@ -34,7 +36,8 @@ export class WorkspaceComponent {
   workspaceMenuOpened = true;
 
 
-  constructor(private authService: AuthService){}
+  constructor(private authService: AuthService, private channelService: ChannelService, private chatService: ChatService){}
+
 
   ngOnInit(){
     this.getCurrentUser();
@@ -55,4 +58,9 @@ export class WorkspaceComponent {
     this.workspaceMenuOpened = !this.workspaceMenuOpened;
   }
 
+
+  activateDefaultChat(){
+    this.channelService.clearActiveChannel();
+    this.chatService.clearActiveChat();
+  }
 }
