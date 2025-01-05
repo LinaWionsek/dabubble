@@ -29,9 +29,7 @@ export class NewPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      this.oobCode = params['oobCode'];
-    });
+    this.oobCode = this.route.snapshot.queryParamMap.get('oobCode') || '';
   }
 
   togglePassword(): void {
