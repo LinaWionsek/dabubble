@@ -55,8 +55,7 @@ export class HeaderComponent implements OnInit {
   messages$!: Observable<Message[]>;
   allMessages: Message[] = [];
   searchResults: Message[] = [];
-  showMessagesDropdown: boolean = true;
-  showUsersDropdown: boolean = true;
+  showDropDown: boolean = false;
 
   constructor(
     private router: Router,
@@ -92,13 +91,35 @@ export class HeaderComponent implements OnInit {
   }
 
   searchDevspace() {
+    if (!this.searchTerm || this.searchTerm.trim().length === 0) {
+      this.resetSearch();
+      return;
+    }
+    this.showDropDown = true;
     this.searchUser();
     this.getAllChannels();
-    this.searchChannels();
+   
+  }
+
+  resetSearch() {
+    this.searchResults = [];
+    this.searchedUsers = [];
+    this.showDropDown = false;
+  }
+
+  setActiveChat(user: User) {
+    this.chatService.setActiveChat(user);
+    this.searchTerm = '';
+    this.resetSearch();
+  }
+
+  setActiveChannel(channel: Channel) {
+    this.channelService.setActiveChannel(channel);
+    this.searchTerm = '';
+    this.resetSearch();
   }
 
   searchUser() {
-    console.log(this.searchTerm);
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
       idField: 'id',
@@ -116,12 +137,6 @@ export class HeaderComponent implements OnInit {
             .includes(this.searchTerm.toLowerCase())
       );
     });
-  }
-
-  setActiveChat(user: User) {
-    this.chatService.setActiveChat(user);
-    this.showUsersDropdown = false;
-    //TODO: input feld clearen
   }
 
   getAllChannels() {
@@ -160,30 +175,16 @@ export class HeaderComponent implements OnInit {
       }));
       this.allMessages.push(...messages);
     }
-  }
-
-  //Sucht dann nach Nachrichten die den Suchbegriff enthalten
-  searchChannels() {
+     //Sucht dann nach Nachrichten die den Suchbegriff enthalten
     let results = this.allMessages.filter((message) =>
       message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
 
     this.searchResults = results;
-    console.log('results', this.searchResults);
-    if (this.searchResults.length > 0 && this.searchResults[0].channel) {
-      console.log(this.searchResults);
-      // this.setActiveChannel(searchResults[0].channel);
-    }
+
   }
 
-showChannelName(channel: Channel) {
-  // id vom channel abrufen welcher name
-}
-
-  setActiveChannel(channel: Channel) {
-    console.log('Setze aktiven Channel:', channel);
-    this.channelService.setActiveChannel(channel);
-  }
+ 
 
   updateHeaderOnRoute(url: string) {
     if (url.includes('login')) {

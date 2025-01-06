@@ -18,47 +18,42 @@
     </section>
 
 
-    @if(showMessagesDropdown){
+    @if(showDropDown){
     <div class="drop-down-div">
       <div class="scroll-div">
 
-        @for (result of searchResults; track $index) {
 
-        <!-- <div (click)="setActiveChannel(channel)"></div> -->
-        <div class="userList" (click)="setActiveChannel(result.channel)">
-          <b>{{result.channel.name}}'</b>
-          <div>
-            {{result.senderName}}:
-            {{result.messageText}}
-          </div>
+        @if(searchResults.length > 0 || searchedUsers.length > 0) {
+        <!-- Messages Section -->
+              @if(searchResults.length > 0){
+              <div class="section-header">Nachrichten</div>
+              @for (result of searchResults; track $index) {
+              <div class="userList" (click)="setActiveChannel(result.channel)">
+                <b>{{result.channel.name}}</b>
+                <div>
+                  {{result.senderName}}:
+                  {{result.messageText}}
+                </div>
+              </div>
+              }
+              }
 
-        </div>
-
-
-        }
-
-        <!-- @for (channel of filteredChannels; track $index) {
-                  <div class="channel-title-div">
-                      <div class="channel-title-container" (click)="setReceiver(channel)">
-                          <img src= './../../../../assets/img/tag2.png'>
-                          <span class="channel-title">{{channel.name}}</span>
-                      </div>
-                  </div>
-              } -->
-      </div>
-    </div>
-    }
-    @if(showUsersDropdown){
-    <div class="drop-down-div">
-      <div class="scroll-div">
-        @for (user of searchedUsers; track $index) {
-        <div class="userList" (click)="setActiveChat(user)">
-          <img src="{{user.avatar}}" alt="" class="user-img">
-          <div>
-            {{user.firstName}}
-            {{user.lastName}}
-          </div>
-
+        <!-- Users Section -->
+            @if(searchedUsers.length > 0){
+            <div class="section-header">Benutzer</div>
+            @for (user of searchedUsers; track $index) {
+            <div class="userList" (click)="setActiveChat(user)">
+              <img src="{{user.avatar}}" alt="" class="user-img">
+              <div>
+                {{user.firstName}}
+                {{user.lastName}}
+              </div>
+            </div>
+            }
+            }
+        } @else {
+        <div class="no-results">
+          Keine Ergebnisse für "{{searchTerm}}" gefunden
         </div>
         }
       </div>
@@ -70,8 +65,14 @@
 
 
 
+    }
 
-    } @if (showUserProfile) {
+
+
+
+
+
+    @if (showUserProfile) {
     <section (click)="toggleUserMenu()" class="user-header-menu">
       <span>{{ user?.firstName }} {{ user?.lastName }}</span>
       <div class="user-avatar-wrapper">
