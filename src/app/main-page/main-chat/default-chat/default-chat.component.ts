@@ -149,16 +149,32 @@ export class DefaultChatComponent {
     this.showChannelDropdown = false;
 
     if(this.inputValue.startsWith('@')){
-      this.checkForValidUserInput();
+      this.checkForValidUserNameInput();
     } else if(this.inputValue.startsWith('#')){
       this.checkForValidChannelInput();
-    } else if(this.inputValue){
-      //check if inputValue is a mail
+    } else if(this.isEmail(this.inputValue)){
+      this.checkForValidUserMailInput();
     }
   }
 
 
-  checkForValidUserInput(){
+  checkForValidUserMailInput(){
+    const inputUserMail = this.inputValue.toLowerCase();
+    const foundUser = this.allUsers.find((user) => user.email === inputUserMail);
+    
+    if(foundUser){
+      this.setReceiver(foundUser);
+    }
+  }
+
+
+  isEmail(input: string){
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(input);
+  }
+
+
+  checkForValidUserNameInput(){
     if(this.inputValue.length > 1){
       const inputUserName = this.inputValue.slice(1).toLowerCase();
       const foundUser = this.allUsers.find((user) => (user.firstName + ' ' + user.lastName).toLowerCase() === inputUserName);
