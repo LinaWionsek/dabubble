@@ -21,6 +21,7 @@ import { Channel } from './../../models/channel.class';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/dm-chat.service';
 import { Message } from '../../models/message.class';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-header',
@@ -61,7 +62,8 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private channelService: ChannelService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private threadService: ThreadService
   ) {}
 
   ngOnInit(): void {
@@ -98,16 +100,11 @@ export class HeaderComponent implements OnInit {
     this.showDropDown = true;
     this.searchUser();
     this.getAllChannels();
-   
-  }
-
-  resetSearch() {
-    this.searchResults = [];
-    this.searchedUsers = [];
-    this.showDropDown = false;
   }
 
   setActiveChat(user: User) {
+    this.channelService.clearActiveChannel();
+    this.threadService.deactivateThread();
     this.chatService.setActiveChat(user);
     this.searchTerm = '';
     this.resetSearch();
@@ -118,7 +115,11 @@ export class HeaderComponent implements OnInit {
     this.searchTerm = '';
     this.resetSearch();
   }
-
+  resetSearch() {
+    this.searchResults = [];
+    this.searchedUsers = [];
+    this.showDropDown = false;
+  }
   searchUser() {
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
@@ -154,13 +155,13 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  //Holt alle Channel und Nachrichten
+
   async getAllChannelsForCurrentUser() {
     this.allUserChannels = this.allChannels.filter((channel) =>
       channel.userIds.includes(this.user!.id)
     );
 
-    this.allMessages = [];
+    const messagesMap = new Map<string, Message>();
 
     for (const channel of this.allUserChannels) {
       const channelMessagesRef = collection(
@@ -173,18 +174,17 @@ export class HeaderComponent implements OnInit {
         id: doc.id,
         channel: channel,
       }));
-      this.allMessages.push(...messages);
+      // Add messages to the map to avoid duplicates
+      messages.forEach((message) => messagesMap.set(message.id, message));
     }
-     //Sucht dann nach Nachrichten die den Suchbegriff enthalten
-    let results = this.allMessages.filter((message) =>
+    // Convert map back to a list
+    this.allMessages = Array.from(messagesMap.values());
+    // Filter the messages based on the search term
+    this.searchResults = this.allMessages.filter((message) =>
       message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
 
-    this.searchResults = results;
-
   }
-
- 
 
   updateHeaderOnRoute(url: string) {
     if (url.includes('login')) {
