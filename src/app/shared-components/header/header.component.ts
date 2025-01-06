@@ -55,8 +55,8 @@ export class HeaderComponent implements OnInit {
   messages$!: Observable<Message[]>;
   allMessages: Message[] = [];
   searchResults: Message[] = [];
-  showMessagesDropdown: boolean = false;
-  showUsersDropdown: boolean = false;
+  showMessagesDropdown: boolean = true;
+  showUsersDropdown: boolean = true;
 
   constructor(
     private router: Router,
@@ -120,6 +120,8 @@ export class HeaderComponent implements OnInit {
 
   setActiveChat(user: User) {
     this.chatService.setActiveChat(user);
+    this.showUsersDropdown = false;
+    //TODO: input feld clearen
   }
 
   getAllChannels() {
@@ -174,9 +176,13 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+showChannelName(channel: Channel) {
+  // id vom channel abrufen welcher name
+}
+
   setActiveChannel(channel: Channel) {
     console.log('Setze aktiven Channel:', channel);
-    // this.channelService.setActiveChannel(channel);
+    this.channelService.setActiveChannel(channel);
   }
 
   updateHeaderOnRoute(url: string) {

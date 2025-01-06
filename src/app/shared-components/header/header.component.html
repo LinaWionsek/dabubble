@@ -22,9 +22,20 @@
     <div class="drop-down-div">
       <div class="scroll-div">
 
+        @for (result of searchResults; track $index) {
+
+        <!-- <div (click)="setActiveChannel(channel)"></div> -->
+        <div class="userList" (click)="setActiveChannel(result.channel)">
+          <b>{{result.channel.name}}'</b>
+          <div>
+            {{result.senderName}}:
+            {{result.messageText}}
+          </div>
+
+        </div>
 
 
-
+        }
 
         <!-- @for (channel of filteredChannels; track $index) {
                   <div class="channel-title-div">
@@ -36,40 +47,25 @@
               } -->
       </div>
     </div>
-    }@else if(showUsersDropdown){
+    }
+    @if(showUsersDropdown){
     <div class="drop-down-div">
       <div class="scroll-div">
         @for (user of searchedUsers; track $index) {
-        <div class="list" (click)="setActiveChat(user)">
+        <div class="userList" (click)="setActiveChat(user)">
           <img src="{{user.avatar}}" alt="" class="user-img">
-          <div> 
+          <div>
             {{user.firstName}}
             {{user.lastName}}
           </div>
 
         </div>
         }
-
-
-        <!-- @for (user of filteredUsers; track $index) {
-                  <div class="user-div" (click)="setReceiver(user)">
-                      <div class="user-avatar-div">
-                          <img src="{{user.avatar}}" class="user-img">
-                      </div>
-                      <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
-                  </div>
-              } -->
       </div>
     </div>
     }
 
 
-
-    @for (result of searchResults; track $index) {
-    <!-- {{result.senderName}}:
-    {{result.messageText}} -->
-
-    }
 
 
 
