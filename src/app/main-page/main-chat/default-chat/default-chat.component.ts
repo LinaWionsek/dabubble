@@ -144,4 +144,44 @@ export class DefaultChatComponent {
   }
 
 
+  checkForValidReceiverInput(){
+    this.showUserDropdown = false;
+    this.showChannelDropdown = false;
+
+    if(this.inputValue.startsWith('@')){
+      this.checkForValidUserInput();
+    } else if(this.inputValue.startsWith('#')){
+      this.checkForValidChannelInput();
+    } else if(this.inputValue){
+      //check if inputValue is a mail
+    }
+  }
+
+
+  checkForValidUserInput(){
+    if(this.inputValue.length > 1){
+      const inputUserName = this.inputValue.slice(1).toLowerCase();
+      const foundUser = this.allUsers.find((user) => (user.firstName + ' ' + user.lastName).toLowerCase() === inputUserName);
+
+      if(foundUser){
+        this.setReceiver(foundUser);
+      }
+    }
+  }
+
+
+  checkForValidChannelInput(){
+    if(this.inputValue.length > 1){
+      const inputChannelName = this.inputValue.slice(1).toLowerCase();
+      const foundChannel = this.allChannels.find((channel) => channel.name.toLowerCase() === inputChannelName);
+      
+      if(foundChannel){
+        this.setReceiver(foundChannel);
+      }
+    }
+  }
+
+
+
+
 }

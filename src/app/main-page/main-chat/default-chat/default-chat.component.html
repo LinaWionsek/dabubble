@@ -2,7 +2,7 @@
     <span class="title">Neue Nachricht</span>
     <div class="input-container">
         <span class="input-prefix">An:</span>
-        <input type="text" placeholder="#channel, oder @jemand oder E-Mail Adresse" [(ngModel)]="inputValue" (keyup)="checkInputValue()">
+        <input type="text" placeholder="#channel, oder @jemand oder E-Mail Adresse" [(ngModel)]="inputValue" (keyup)="checkInputValue()" (blur)="checkForValidReceiverInput()">
     </div>
 
     @if(showChannelDropdown){
