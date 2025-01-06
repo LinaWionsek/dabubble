@@ -5,10 +5,21 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { User } from '../../models/user.class';
 import { Observable } from 'rxjs';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  query,
+  collectionGroup,
+  getDocs,
+  where,
+} from '@angular/fire/firestore';
 import { AuthService } from '../../services/authentication.service';
 import { HeaderUserDialogComponent } from './header-user-dialog/header-user-dialog.component';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
+import { Channel } from './../../models/channel.class';
+import { ChannelService } from '../../services/channel.service';
+import { Message } from '../../models/message.class';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +29,8 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
     CommonModule,
     HeaderUserDialogComponent,
     UserProfileComponent,
-   FormsModule],
+    FormsModule,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -34,10 +46,21 @@ export class HeaderComponent implements OnInit {
   isUserProfileOpen: boolean = false;
   selectedUserId: string | null = null;
   private authSubscription: Subscription | null = null;
-  inputData = '';
+  searchTerm = '';
   searchedUsers: User[] = [];
+  channels$!: Observable<Channel[]>;
+  allChannels: Channel[] = [];
+  allUserChannels: Channel[] = [];
+  messages$!: Observable<Message[]>;
+  allMessages: Message[] = [];
+  searchResults: Message[] = [];
+ 
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private channelService: ChannelService
+  ) {}
 
   ngOnInit(): void {
     this.showSearchBar = false;
@@ -57,8 +80,6 @@ export class HeaderComponent implements OnInit {
       },
       (error) => console.error('Fehler beim Überwachen des Auth-Status:', error)
     );
-
-   
   }
 
   ngOnDestroy(): void {
@@ -69,10 +90,12 @@ export class HeaderComponent implements OnInit {
 
   searchDevspace() {
     this.searchUser();
+    this.getAllChannels();
+    this.searchChannels();
   }
 
   searchUser() {
-    console.log(this.inputData);
+    console.log(this.searchTerm);
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
       idField: 'id',
@@ -84,12 +107,64 @@ export class HeaderComponent implements OnInit {
         (filterResult) =>
           filterResult.firstName
             .toLowerCase()
-            .includes(this.inputData.toLowerCase()) ||
+            .includes(this.searchTerm.toLowerCase()) ||
           filterResult.lastName
             .toLowerCase()
-            .includes(this.inputData.toLowerCase())
+            .includes(this.searchTerm.toLowerCase())
       );
     });
+  }
+
+  getAllChannels() {
+    const userChannelsCollection = collection(this.firestore, 'channels');
+    this.channels$ = collectionData(userChannelsCollection, {
+      idField: 'id',
+    }) as Observable<Channel[]>;
+
+    this.channels$.subscribe((changes) => {
+      this.allChannels = Array.from(
+        new Map(changes.map((channel) => [channel.id, channel])).values()
+      );
+
+      this.getAllChannelsForCurrentUser();
+    });
+  }
+
+  async getAllChannelsForCurrentUser() {
+    this.allUserChannels = this.allChannels.filter((channel) =>
+      channel.userIds.includes(this.user!.id)
+    );
+
+    this.allMessages = [];
+
+    for (const channel of this.allUserChannels) {
+      const channelMessagesRef = collection(
+        this.firestore,
+        `channels/${channel.id}/messages`
+      );
+      const snapshot = await getDocs(channelMessagesRef);
+      const messages = snapshot.docs.map((doc) => ({
+        ...(doc.data() as Message),
+        id: doc.id,
+        channel: channel
+      }));
+      this.allMessages.push(...messages);
+    }
+  }
+
+  searchChannels() {
+    const searchResults = this.allMessages.filter(message => 
+      message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+    
+    if (searchResults.length > 0 && searchResults[0].channel) {
+      this.setActiveChannel(searchResults[0].channel);
+    }
+  }
+
+  setActiveChannel(channel: Channel) {
+    console.log('Setze aktiven Channel:', channel);
+    this.channelService.setActiveChannel(channel);
   }
 
   updateHeaderOnRoute(url: string) {
@@ -124,7 +199,6 @@ export class HeaderComponent implements OnInit {
   openUserProfile(userId: string) {
     this.selectedUserId = userId;
     this.isUserProfileOpen = true;
-
   }
 
   closeUserProfile() {

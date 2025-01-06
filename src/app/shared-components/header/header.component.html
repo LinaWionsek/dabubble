@@ -17,7 +17,7 @@
     @if (showSearchBar) {
     <section class="search-bar">
       <div class="search-bar-input-container">
-        <input (keyup)="searchDevspace()" ngModel [(ngModel)]="inputData"
+        <input (keyup)="searchDevspace()" ngModel [(ngModel)]="searchTerm"
           class="search-bar-input"
           placeholder="Devspace durchsuchen"
           type="text"
@@ -31,6 +31,15 @@
         </div>
       </div>
     </section>
+
+    @for (user of searchedUsers; track $index) {
+      {{user.firstName}}
+      {{user.lastName}}
+      }
+
+      
+
+
 
     } @if (showUserProfile) {
     <section (click)="toggleUserMenu()" class="user-header-menu">
