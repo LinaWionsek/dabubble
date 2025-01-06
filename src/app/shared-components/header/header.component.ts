@@ -19,6 +19,7 @@ import { HeaderUserDialogComponent } from './header-user-dialog/header-user-dial
 import { UserProfileComponent } from '../user-profile/user-profile.component';
 import { Channel } from './../../models/channel.class';
 import { ChannelService } from '../../services/channel.service';
+import { ChatService } from '../../services/dm-chat.service';
 import { Message } from '../../models/message.class';
 
 @Component({
@@ -54,12 +55,14 @@ export class HeaderComponent implements OnInit {
   messages$!: Observable<Message[]>;
   allMessages: Message[] = [];
   searchResults: Message[] = [];
- 
+  showMessagesDropdown: boolean = false;
+  showUsersDropdown: boolean = false;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -115,6 +118,10 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  setActiveChat(user: User) {
+    this.chatService.setActiveChat(user);
+  }
+
   getAllChannels() {
     const userChannelsCollection = collection(this.firestore, 'channels');
     this.channels$ = collectionData(userChannelsCollection, {
@@ -130,6 +137,7 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  //Holt alle Channel und Nachrichten
   async getAllChannelsForCurrentUser() {
     this.allUserChannels = this.allChannels.filter((channel) =>
       channel.userIds.includes(this.user!.id)
@@ -146,25 +154,29 @@ export class HeaderComponent implements OnInit {
       const messages = snapshot.docs.map((doc) => ({
         ...(doc.data() as Message),
         id: doc.id,
-        channel: channel
+        channel: channel,
       }));
       this.allMessages.push(...messages);
     }
   }
 
+  //Sucht dann nach Nachrichten die den Suchbegriff enthalten
   searchChannels() {
-    const searchResults = this.allMessages.filter(message => 
+    let results = this.allMessages.filter((message) =>
       message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
-    
-    if (searchResults.length > 0 && searchResults[0].channel) {
-      this.setActiveChannel(searchResults[0].channel);
+
+    this.searchResults = results;
+    console.log('results', this.searchResults);
+    if (this.searchResults.length > 0 && this.searchResults[0].channel) {
+      console.log(this.searchResults);
+      // this.setActiveChannel(searchResults[0].channel);
     }
   }
 
   setActiveChannel(channel: Channel) {
     console.log('Setze aktiven Channel:', channel);
-    this.channelService.setActiveChannel(channel);
+    // this.channelService.setActiveChannel(channel);
   }
 
   updateHeaderOnRoute(url: string) {

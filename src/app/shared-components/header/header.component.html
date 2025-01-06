@@ -1,14 +1,6 @@
 <header>
-  <section
-    [ngClass]="{ 'padding-left-34': showSearchBar }"
-    class="header-left"
-    routerLink="/login"
-  >
-    <img
-      class="logo"
-      src="../../assets/img/da_bubble_logo.png"
-      alt="da_bubble_logo"
-    />
+  <section [ngClass]="{ 'padding-left-34': showSearchBar }" class="header-left" routerLink="/login">
+    <img class="logo" src="../../assets/img/da_bubble_logo.png" alt="da_bubble_logo" />
     <span>DABubble</span>
   </section>
 
@@ -17,27 +9,69 @@
     @if (showSearchBar) {
     <section class="search-bar">
       <div class="search-bar-input-container">
-        <input (keyup)="searchDevspace()" ngModel [(ngModel)]="searchTerm"
-          class="search-bar-input"
-          placeholder="Devspace durchsuchen"
-          type="text"
-        />
+        <input (keyup)="searchDevspace()" ngModel [(ngModel)]="searchTerm" class="search-bar-input"
+          placeholder="Devspace durchsuchen" type="text" />
         <div class="search-bar-input-icon-container">
-          <img
-            class="search-bar-input-icon-hover"
-            src="./../../assets/img/search_icon.png"
-            alt="search_icon"
-          />
+          <img class="search-bar-input-icon-hover" src="./../../assets/img/search_icon.png" alt="search_icon" />
         </div>
       </div>
     </section>
 
-    @for (user of searchedUsers; track $index) {
-      {{user.firstName}}
-      {{user.lastName}}
-      }
 
-      
+    @if(showMessagesDropdown){
+    <div class="drop-down-div">
+      <div class="scroll-div">
+
+
+
+
+
+        <!-- @for (channel of filteredChannels; track $index) {
+                  <div class="channel-title-div">
+                      <div class="channel-title-container" (click)="setReceiver(channel)">
+                          <img src= './../../../../assets/img/tag2.png'>
+                          <span class="channel-title">{{channel.name}}</span>
+                      </div>
+                  </div>
+              } -->
+      </div>
+    </div>
+    }@else if(showUsersDropdown){
+    <div class="drop-down-div">
+      <div class="scroll-div">
+        @for (user of searchedUsers; track $index) {
+        <div class="list" (click)="setActiveChat(user)">
+          <img src="{{user.avatar}}" alt="" class="user-img">
+          <div> 
+            {{user.firstName}}
+            {{user.lastName}}
+          </div>
+
+        </div>
+        }
+
+
+        <!-- @for (user of filteredUsers; track $index) {
+                  <div class="user-div" (click)="setReceiver(user)">
+                      <div class="user-avatar-div">
+                          <img src="{{user.avatar}}" class="user-img">
+                      </div>
+                      <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
+                  </div>
+              } -->
+      </div>
+    </div>
+    }
+
+
+
+    @for (result of searchResults; track $index) {
+    <!-- {{result.senderName}}:
+    {{result.messageText}} -->
+
+    }
+
+
 
 
 
@@ -45,22 +79,11 @@
     <section (click)="toggleUserMenu()" class="user-header-menu">
       <span>{{ user?.firstName }} {{ user?.lastName }}</span>
       <div class="user-avatar-wrapper">
-        <img
-          class="user-avatar"
-          [src]="getAvatarBaseName(user?.avatar)"
-          alt="user_avatar"
-        />
-        <span
-          [ngClass]="{ online: user?.isOnline, offline: !user?.isOnline }"
-          class="online-status"
-        ></span>
+        <img class="user-avatar" [src]="getAvatarBaseName(user?.avatar)" alt="user_avatar" />
+        <span [ngClass]="{ online: user?.isOnline, offline: !user?.isOnline }" class="online-status"></span>
       </div>
 
-      <img
-        class="drop_down_arrow"
-        src="./../../../assets/img/drop_down_arrow.png"
-        alt=""
-      />
+      <img class="drop_down_arrow" src="./../../../assets/img/drop_down_arrow.png" alt="" />
     </section>
 
     }
@@ -76,16 +99,11 @@
 
 @if(isUserMenuOpen){
 <div (click)="toggleUserMenu()" class="dialog-bg">
-  <app-header-user-dialog
-    (userProfileOpened)="openUserProfile($event)"
-  ></app-header-user-dialog>
+  <app-header-user-dialog (userProfileOpened)="openUserProfile($event)"></app-header-user-dialog>
 </div>
 
 } @if(isUserProfileOpen){
 <div (click)="closeUserProfile()" class="dialog-bg">
-  <app-user-profile
-    (closeProfile)="closeUserProfile()"
-    [userId]="selectedUserId"
-  ></app-user-profile>
+  <app-user-profile (closeProfile)="closeUserProfile()" [userId]="selectedUserId"></app-user-profile>
 </div>
 }
