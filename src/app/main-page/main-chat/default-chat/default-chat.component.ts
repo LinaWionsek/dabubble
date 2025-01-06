@@ -32,6 +32,8 @@ export class DefaultChatComponent {
   users$!: Observable<User[]>;
   allUsers: User[] = [];
 
+  displayInvalidReceiverMsg = false;
+
 
   firestore: Firestore = inject(Firestore);
 
@@ -42,6 +44,14 @@ export class DefaultChatComponent {
     await this.getCurrentUser();
     this.getAllChannels();
     this.getAllUsers();
+    this.subscribeToInvalidReceiverSubject();
+
+  }
+
+  subscribeToInvalidReceiverSubject(){
+    this.receiverService.invalidReceiver$.subscribe((isInvalid) => {
+      this.displayInvalidReceiverMsg = isInvalid;
+    })
   }
 
 
@@ -79,6 +89,7 @@ export class DefaultChatComponent {
 
 
   checkInputValue(){
+    this.displayInvalidReceiverMsg = false;
     if(this.inputValue.startsWith('#')){
       this.showUserDropdown = false;
       this.showChannelDropdown = true;
@@ -145,9 +156,11 @@ export class DefaultChatComponent {
 
 
   checkForValidReceiverInput(){
-    this.showUserDropdown = false;
-    this.showChannelDropdown = false;
-
+    setTimeout(()=>{
+      this.showUserDropdown = false;
+      this.showChannelDropdown = false;
+    }, 200);
+    
     if(this.inputValue.startsWith('@')){
       this.checkForValidUserNameInput();
     } else if(this.inputValue.startsWith('#')){
@@ -164,6 +177,8 @@ export class DefaultChatComponent {
     
     if(foundUser){
       this.setReceiver(foundUser);
+    } else {
+      this.receiverService.resetReceiver();
     }
   }
 
@@ -196,7 +211,6 @@ export class DefaultChatComponent {
       }
     }
   }
-
 
 
 
