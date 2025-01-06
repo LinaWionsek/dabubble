@@ -5,6 +5,13 @@
         <input type="text" placeholder="#channel, oder @jemand oder E-Mail Adresse" [(ngModel)]="inputValue" (keyup)="checkInputValue()" (blur)="checkForValidReceiverInput()">
     </div>
 
+    @if(displayInvalidReceiverMsg){
+        <div class="drop-down-div">
+            <span class="warning-span">Bitte einen gültigen Empfänger eingeben</span>
+        </div>
+    }
+    
+
     @if(showChannelDropdown){
         <div class="drop-down-div">
             <div class="scroll-div">
