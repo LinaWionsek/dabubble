@@ -156,12 +156,12 @@ export class HeaderComponent implements OnInit {
   }
 
   async getAllChannelsForCurrentUser() {
-    await this.getUserChannels();
+    this.getUserChannels();
     await this.fetchMessagesForChannels();
     this.filterSearchResults();
   }
 
-  async getUserChannels() {
+  getUserChannels() {
     this.allUserChannels = this.allChannels.filter((channel) =>
       channel.userIds.includes(this.user!.id)
     );
