@@ -26,6 +26,8 @@ import { Auth, updateEmail, sendEmailVerification } from '@angular/fire/auth';
 })
 export class UserProfileComponent {
   @Input() userId: string | null = null;
+  @Input() usedFor: string | null = null;
+  @Input() otherUser: User | null = null;
   @Output() closeProfile = new EventEmitter<void>();
   isOwnProfile: boolean = false;
   user: User | null = null;
@@ -46,7 +48,9 @@ export class UserProfileComponent {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    if (this.userId) {
+    if(this.usedFor === 'otherProfile'){
+      this.user = this.otherUser
+    } else if (this.usedFor !== 'otherProfile' && this.userId) {
       this.user = await this.authService.getFullUser();
       let currentUserId = this.authService.getUserId();
       this.isOwnProfile = this.user?.id === currentUserId;
@@ -55,7 +59,6 @@ export class UserProfileComponent {
     this.selectedAvatar = this.avatarService.getSelectedAvatar();
     let currentUser = this.auth.currentUser;
     this.isEmailVerified = currentUser!.emailVerified;
-    console.log('User is verified', currentUser?.emailVerified);
   }
 
   toggleEdit(): void {
