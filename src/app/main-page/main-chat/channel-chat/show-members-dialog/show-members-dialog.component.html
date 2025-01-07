@@ -11,7 +11,7 @@
     
         <div class="dialog-content">
             @for (user of channelUsers; track $index) {
-                <div class="member-div">
+                <div class="member-div" (click)="showMemberProfile(user)">
                     <img src="{{user.avatar}}" class="avatar-img-small">
                     <span class="name-span">{{user.firstName + ' ' + user.lastName}}</span>
                 </div>
@@ -28,6 +28,18 @@
      </div>
         
     </div>
+
+
+    @if(memberProfileOpened){
+        <div class="profile-dialog-bg" (click)="hideMemberProfile()">
+            <app-user-profile
+                [otherUser]="clickedUser!"
+                [usedFor]="'otherProfile'"
+                (closeProfile)="hideMemberProfile()"
+            ></app-user-profile>
+        </div>
+    }
+
     
 
 

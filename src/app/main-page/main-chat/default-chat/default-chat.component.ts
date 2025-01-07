@@ -32,6 +32,8 @@ export class DefaultChatComponent {
   users$!: Observable<User[]>;
   allUsers: User[] = [];
 
+  displayInvalidReceiverMsg = false;
+
 
   firestore: Firestore = inject(Firestore);
 
@@ -42,6 +44,14 @@ export class DefaultChatComponent {
     await this.getCurrentUser();
     this.getAllChannels();
     this.getAllUsers();
+    this.subscribeToInvalidReceiverSubject();
+
+  }
+
+  subscribeToInvalidReceiverSubject(){
+    this.receiverService.invalidReceiver$.subscribe((isInvalid) => {
+      this.displayInvalidReceiverMsg = isInvalid;
+    })
   }
 
 
@@ -79,6 +89,7 @@ export class DefaultChatComponent {
 
 
   checkInputValue(){
+    this.displayInvalidReceiverMsg = false;
     if(this.inputValue.startsWith('#')){
       this.showUserDropdown = false;
       this.showChannelDropdown = true;
@@ -142,6 +153,65 @@ export class DefaultChatComponent {
       this.showUserDropdown = false;
     }
   }
+
+
+  checkForValidReceiverInput(){
+    setTimeout(()=>{
+      this.showUserDropdown = false;
+      this.showChannelDropdown = false;
+    }, 200);
+    
+    if(this.inputValue.startsWith('@')){
+      this.checkForValidUserNameInput();
+    } else if(this.inputValue.startsWith('#')){
+      this.checkForValidChannelInput();
+    } else if(this.isEmail(this.inputValue)){
+      this.checkForValidUserMailInput();
+    }
+  }
+
+
+  checkForValidUserMailInput(){
+    const inputUserMail = this.inputValue.toLowerCase();
+    const foundUser = this.allUsers.find((user) => user.email === inputUserMail);
+    
+    if(foundUser){
+      this.setReceiver(foundUser);
+    } else {
+      this.receiverService.resetReceiver();
+    }
+  }
+
+
+  isEmail(input: string){
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(input);
+  }
+
+
+  checkForValidUserNameInput(){
+    if(this.inputValue.length > 1){
+      const inputUserName = this.inputValue.slice(1).toLowerCase();
+      const foundUser = this.allUsers.find((user) => (user.firstName + ' ' + user.lastName).toLowerCase() === inputUserName);
+
+      if(foundUser){
+        this.setReceiver(foundUser);
+      }
+    }
+  }
+
+
+  checkForValidChannelInput(){
+    if(this.inputValue.length > 1){
+      const inputChannelName = this.inputValue.slice(1).toLowerCase();
+      const foundChannel = this.allChannels.find((channel) => channel.name.toLowerCase() === inputChannelName);
+      
+      if(foundChannel){
+        this.setReceiver(foundChannel);
+      }
+    }
+  }
+
 
 
 }

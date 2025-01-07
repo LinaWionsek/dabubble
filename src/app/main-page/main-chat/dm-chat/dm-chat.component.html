@@ -1,6 +1,9 @@
 <div class="dm-chat-header">
-    <img src="{{activeChatUser?.avatar}}" class="active-user-img">
-    <span class="active-user-name">{{activeChatUser?.firstName + ' ' + activeChatUser?.lastName}}</span>
+    <div class="active-user-div" (click)="showUserProfile()">
+        <img src="{{activeChatUser?.avatar}}" class="active-user-img">
+        <span class="active-user-name">{{activeChatUser?.firstName + ' ' + activeChatUser?.lastName}}</span>
+    </div>
+    
 </div>
 
 <app-chat-history
@@ -15,3 +18,14 @@
         [userData]="activeChatUser"
     ></app-chat-input>
 </div>
+
+
+@if(userProfileOpened){
+    <div class="profile-dialog-bg" (click)="hideUserProfile()">
+        <app-user-profile
+            [otherUser]="activeChatUser"
+            [usedFor]="'otherProfile'"
+            (closeProfile)="hideUserProfile()"
+        ></app-user-profile>
+    </div>
+}

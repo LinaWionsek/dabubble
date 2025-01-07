@@ -23,6 +23,17 @@
     padding: 32px 45px 20px 45px;
 }
 
+.active-user-div{
+    @include display-flex();
+    border-radius: 30px;
+    padding: 4px 8px;
+
+    &:hover{
+        cursor: pointer;
+        background-color: $bg-color-gray;
+    }
+}
+
 .active-user-img{
     height: 50px;
     width: 50px;
@@ -33,4 +44,14 @@
     font-size: 24px;
     font-weight: 700;
     margin-left: 16px;
+}
+
+.profile-dialog-bg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 400;
 }

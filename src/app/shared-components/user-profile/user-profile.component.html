@@ -1,4 +1,4 @@
-<section class="user-profile" (click)="$event.stopPropagation()">
+<section class="user-profile" [ngClass]="{'centralized': usedFor === 'otherProfile'}" (click)="$event.stopPropagation()">
   @if(isEmailVerified && !isPasswordRequired) {
   <header>
     <span>Profil</span>

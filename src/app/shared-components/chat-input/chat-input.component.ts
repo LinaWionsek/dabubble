@@ -127,6 +127,8 @@ export class ChatInputComponent {
       this.sendDmMessage();
       this.chatService.setActiveChat(this.activeReceiver as User);
       this.receiverService.resetReceiver();
+    } else {
+      this.receiverService.setInvalidReceiver();
     }
   }
 
