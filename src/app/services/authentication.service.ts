@@ -9,8 +9,17 @@ import {
   User as FirebaseUser,
   onAuthStateChanged,
   UserCredential,
+  sendSignInLinkToEmail,
+  EmailAuthProvider, 
+  reauthenticateWithCredential
 } from '@angular/fire/auth';
-import { Firestore, doc, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.class';
 import { userData } from '../types/types';
@@ -55,7 +64,7 @@ export class AuthService {
   }
 
   updateUserData(uid: string, updatedData: Partial<User>) {
-    const userRef = doc(this.firestore, `users/${uid}`);
+    let userRef = doc(this.firestore, `users/${uid}`);
     return updateDoc(userRef, updatedData);
   }
 
@@ -146,6 +155,24 @@ export class AuthService {
       }
     } catch (error) {
       console.error('Fehler beim Setzen des Onlinestatus:', error);
+    }
+  }
+
+
+  async reauthenticateUser(email: string, password: string): Promise<void> {
+    let user = this.auth.currentUser;
+  
+    if (!user) {
+      throw new Error('Kein Benutzer ist aktuell authentifiziert.');
+    }
+  
+    try {
+      let credential = EmailAuthProvider.credential(email, password);
+      await reauthenticateWithCredential(user, credential);
+  
+    } catch (error) {
+      console.error('Fehler bei der Re-Authentifizierung:', error);
+      throw error;
     }
   }
 }

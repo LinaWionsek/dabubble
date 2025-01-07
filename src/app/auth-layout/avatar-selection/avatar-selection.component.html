@@ -32,7 +32,7 @@
   <section class="auth-buttons align-items-flex-end">
     <div class="auth-button-container">
       <button
-        [disabled]="isAvatarEmpty"
+        [disabled]="isAvatarEmpty || isRegistering"
         [ngClass]="{ disabled: isAvatarEmpty }"
         class="primary-button"
         (click)="registerUser()"

@@ -141,3 +141,22 @@
 .user-edit-button-container {
   @include display-flex($gap: 40px);
 }
+
+.password-verification {
+  @include display-flex($ai: center, $fd: column, $gap: 24px);
+  transition: 225ms ease-in-out;
+  text-align: center;
+}
+
+.verification-info {
+  @include display-flex($jc: center, $fd: column, $gap: 60px);
+  @include size(100%, 100%);
+  text-align: center;
+  > span {
+    @include font-style($font-size-20, $font-weight-700, $text-color-black);
+  }
+}
+
+.password-verification-info {
+  @include font-style($font-size-20, $font-weight-700, $text-color-black);
+}

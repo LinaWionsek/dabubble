@@ -1,16 +1,16 @@
 @import "mixins", "styles";
 
 .toast {
-  @include position(fixed, 50%, 50%);
+  @include position(fixed, 50%, 50%, $zi: 4);
   @include font-style($font-size-32, $font-weight-700, $primary-color-white);
   transform: translate(5000%, -50%);
-  z-index: 3;
   padding: 50px;
   border-radius: 30px 30px 0 30px;
   background: $primary-color-purple;
   box-shadow: $primary-box-shadow;
   max-width: 80%;
   transition: 225ms ease-in-out;
+  text-align: center;
 }
 
 .toast.is-visible {
