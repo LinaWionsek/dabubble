@@ -61,7 +61,7 @@
                     <img src="{{userData?.avatar}}" class="large-user-img">
                     <span class="user-name-span">{{userData?.firstName + ' ' + userData?.lastName}}</span>
                 </div>
-                <span class="info-span">Diese Unterhaltung findet nur zwischen dir und <span class="blue">&#64;{{userData?.firstName + ' ' + userData?.lastName}}</span> statt.</span>
+                <span class="info-span">Diese Unterhaltung findet nur zwischen dir und <span class="blue" (click)="showUserProfile()">&#64;{{userData?.firstName + ' ' + userData?.lastName}}</span> statt.</span>
             </div>
         } @else {
             @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
@@ -82,4 +82,15 @@
 
        
     </div>
+
+
+    @if(userProfileOpened){
+        <div class="profile-dialog-bg" (click)="hideUserProfile()">
+            <app-user-profile
+                [otherUser]="userData!"
+                [usedFor]="'otherProfile'"
+                (closeProfile)="hideUserProfile()"
+            ></app-user-profile>
+        </div>
+    }
 }
