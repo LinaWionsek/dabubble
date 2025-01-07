@@ -15,7 +15,12 @@ import {
   Avatar,
   AvatarSelectionService,
 } from '../../services/avatar-selection.service';
-import { Auth, updateEmail, sendEmailVerification } from '@angular/fire/auth';
+import {
+  Auth,
+  sendEmailVerification,
+  verifyBeforeUpdateEmail,
+} from '@angular/fire/auth';
+import { PasswordVisibilityService } from '../../services/password-visibility.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -37,12 +42,16 @@ export class UserProfileComponent {
   isAvatarListOpen: boolean = false;
   @ViewChild('userEditEmailInput') userEditEmailInput!: NgModel;
   isEmailVerified: boolean = false;
+  isPasswordRequired: boolean = false;
+  verificationPassword: string = '';
+  pendingSaveChanges: boolean = false;
 
   constructor(
     private authService: AuthService,
     private toastService: ToastService,
     private avatarService: AvatarSelectionService,
-    public auth: Auth
+    public auth: Auth,
+    public passwordVisibilityService: PasswordVisibilityService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -61,6 +70,12 @@ export class UserProfileComponent {
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     this.selectedAvatar = this.user?.avatar || '';
+  }
+
+  togglePasswordVerification(): void {
+    this.isPasswordRequired = !this.isPasswordRequired;
+    this.verificationPassword = '';
+    this.userEditEmail = '';
   }
 
   onClose(): void {
@@ -128,12 +143,16 @@ export class UserProfileComponent {
       }
 
       if (this.userEditEmail && this.userEditEmail.trim() !== user.email) {
-        console.log('Verifizierungs-E-Mail wird gesendet...');
-        await sendEmailVerification(user);
-        console.log('Verifizierungs-E-Mail erfolgreich gesendet.');
-
+        if (!this.verificationPassword && !this.isPasswordRequired) {
+          this.isPasswordRequired = true;
+          this.pendingSaveChanges = true;
+          return;
+        }
+  
+        await this.authService.reauthenticateUser(user.email!, this.verificationPassword);
+        await verifyBeforeUpdateEmail(user, this.userEditEmail.trim());
+  
         updatedData.pendingEmail = this.userEditEmail.trim();
-
         this.toastService.showToast(
           'Bitte überprüfen Sie Ihre neue E-Mail-Adresse. Die Änderung wird wirksam, sobald Sie die E-Mail bestätigen.'
         );
@@ -146,17 +165,42 @@ export class UserProfileComponent {
       if (Object.keys(updatedData).length > 0) {
         await this.authService.updateUserData(user.uid, updatedData);
         console.log('Benutzerdaten erfolgreich aktualisiert:', updatedData);
-      } else {
-        console.log('Keine Änderungen vorgenommen.');
       }
 
       this.isEditing = false;
-      this.toastService.showToast('Änderungen erfolgreich gespeichert!');
+      // this.toastService.showToast('Änderungen erfolgreich gespeichert!');
     } catch (error) {
       console.error('Fehler bei der Editierung:', error);
       this.toastService.showToast(
         'Fehler beim Speichern der Änderungen: ' + error
       );
+    }
+  }
+
+  async sendVerificationMail() {
+    let user = this.auth.currentUser;
+    if (!user) {
+      throw new Error('Kein Benutzer ist aktuell authentifiziert.');
+    }
+    await sendEmailVerification(user);
+    this.toastService.showToast('Verifizierungs-E-Mail erfolgreich gesendet.');
+    this.onClose();
+  }
+
+  togglePassword() {
+    this.passwordVisibilityService.togglePasswordInputType();
+  }
+
+  async confirmPassword(): Promise<void> {
+    try {
+      if (!this.verificationPassword) {
+        throw new Error('Bitte geben Sie ein Passwort ein.');
+      }
+  
+      this.isPasswordRequired = false;
+      await this.saveEditingChanges();
+    } catch (error) {
+      this.toastService.showToast('Passwort-Bestätigung fehlgeschlagen.');
     }
   }
 }

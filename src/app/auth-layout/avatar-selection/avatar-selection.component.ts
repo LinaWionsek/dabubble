@@ -32,6 +32,7 @@ export class AvatarSelectionComponent implements OnInit {
   avatars: Avatar[] = [];
   selectedAvatar: string = 'assets/img/avatar_empty.png';
   userName: string = '';
+  isRegistering: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -97,7 +98,8 @@ export class AvatarSelectionComponent implements OnInit {
         userData.toPlainObject()
       );
       await sendEmailVerification(result.user);
-
+      this.isRegistering = true;
+      
       setTimeout(() => {
         this.stateService.setState('message', 'Verifizierungs-E-Mail wurde gesendet');
         this.router.navigate(['/main']);
@@ -106,6 +108,8 @@ export class AvatarSelectionComponent implements OnInit {
       console.log('Benutzer erfolgreich registriert:', userData);
     } catch (error) {
       console.error('Fehler bei der Registrierung:', error);
+    } finally {
+      this.isRegistering = false;
     }
   }
 }

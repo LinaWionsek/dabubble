@@ -11,6 +11,7 @@ import { ImprintComponent } from './auth-layout/legal/imprint/imprint.component'
 import { PrivacyPolicyComponent } from './auth-layout/legal/privacy-policy/privacy-policy.component';
 import { EmailVerificationComponent } from './auth-layout/email-verification/email-verification.component';
 import { ActionHandlerComponent } from './action-handler/action-handler.component';
+import { ChangeEmailComponent } from './auth-layout/change-email/change-email.component';
 
 
 export const routes: Routes = [
@@ -47,6 +48,10 @@ export const routes: Routes = [
       {
         path: 'email-verification',
         component: EmailVerificationComponent,
+      },
+      {
+        path: 'change-email',
+        component: ChangeEmailComponent,
       },
       {
         path: 'action-handler',
