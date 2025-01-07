@@ -8,12 +8,13 @@ import { Message } from '../../models/message.class';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
 import { ChannelService } from '../../services/channel.service';
+import { UserProfileComponent } from '../user-profile/user-profile.component';
 
 
 @Component({
   selector: 'app-chat-history',
   standalone: true,
-  imports: [MessageComponent, SeperatorComponent],
+  imports: [MessageComponent, SeperatorComponent, UserProfileComponent],
   templateUrl: './chat-history.component.html',
   styleUrl: './chat-history.component.scss'
 })
@@ -38,6 +39,8 @@ export class ChatHistoryComponent {
   messagesLoaded = false;
   currentUser!: User | null ;
   firestore: Firestore = inject(Firestore);
+
+  userProfileOpened=false;
 
 
   constructor(private authService: AuthService, private channelService: ChannelService){}
@@ -152,15 +155,25 @@ export class ChatHistoryComponent {
 
 
   sortedDateKeys(messagesObject: { [key: string]: Message[] }): string[] {
-  const keys = Object.keys(messagesObject);
-  const sortedKeys = keys.sort((a, b) => {
-    const dateA = new Date(a).getTime();
-    const dateB = new Date(b).getTime();
-    return dateB - dateA; // Descending order
-  });
+    const keys = Object.keys(messagesObject);
+    const sortedKeys = keys.sort((a, b) => {
+      const dateA = new Date(a).getTime();
+      const dateB = new Date(b).getTime();
+      return dateB - dateA; // Descending order
+    });
 
-  return sortedKeys;
-}
+    return sortedKeys;
+  }
+
+
+  showUserProfile(){
+    this.userProfileOpened = true;
+  }
+
+  hideUserProfile(){
+    this.userProfileOpened = false;
+  }
+
 
 
 }
