@@ -1,18 +1,15 @@
-import { Component, OnInit, inject, Input } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { User } from '../../models/user.class';
 import { Observable } from 'rxjs';
 import {
   Firestore,
   collection,
   collectionData,
-  query,
-  collectionGroup,
   getDocs,
-  where,
 } from '@angular/fire/firestore';
 import { AuthService } from '../../services/authentication.service';
 import { HeaderUserDialogComponent } from './header-user-dialog/header-user-dialog.component';
@@ -46,6 +43,7 @@ export class HeaderComponent implements OnInit {
   user: User | null = null;
   isUserMenuOpen: boolean = false;
   isUserProfileOpen: boolean = false;
+  searching: boolean = false;
   selectedUserId: string | null = null;
   private authSubscription: Subscription | null = null;
   searchTerm = '';
@@ -92,34 +90,38 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  setActiveChat(user: User) {
+    this.channelService.clearActiveChannel();
+    this.threadService.deactivateThread();
+    this.chatService.setActiveChat(user);
+    this.resetSearch();
+  }
+
+  setActiveChannel(channel: Channel) {
+    this.channelService.setActiveChannel(channel);
+    this.resetSearch();
+  }
+
   searchDevspace() {
     if (!this.searchTerm || this.searchTerm.trim().length === 0) {
       this.resetSearch();
       return;
     }
     this.showDropDown = true;
+    this.searching = true;
     this.searchUser();
     this.getAllChannels();
+    
   }
 
-  setActiveChat(user: User) {
-    this.channelService.clearActiveChannel();
-    this.threadService.deactivateThread();
-    this.chatService.setActiveChat(user);
-    this.searchTerm = '';
-    this.resetSearch();
-  }
-
-  setActiveChannel(channel: Channel) {
-    this.channelService.setActiveChannel(channel);
-    this.searchTerm = '';
-    this.resetSearch();
-  }
   resetSearch() {
     this.searchResults = [];
     this.searchedUsers = [];
     this.showDropDown = false;
+    this.searching = false;
+    this.searchTerm = '';
   }
+
   searchUser() {
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
@@ -145,24 +147,28 @@ export class HeaderComponent implements OnInit {
     this.channels$ = collectionData(userChannelsCollection, {
       idField: 'id',
     }) as Observable<Channel[]>;
-
     this.channels$.subscribe((changes) => {
       this.allChannels = Array.from(
         new Map(changes.map((channel) => [channel.id, channel])).values()
       );
-
       this.getAllChannelsForCurrentUser();
     });
   }
 
-
   async getAllChannelsForCurrentUser() {
+    await this.getUserChannels();
+    await this.fetchMessagesForChannels();
+    this.filterSearchResults();
+  }
+
+  async getUserChannels() {
     this.allUserChannels = this.allChannels.filter((channel) =>
       channel.userIds.includes(this.user!.id)
     );
+  }
 
+  async fetchMessagesForChannels() {
     const messagesMap = new Map<string, Message>();
-
     for (const channel of this.allUserChannels) {
       const channelMessagesRef = collection(
         this.firestore,
@@ -174,16 +180,15 @@ export class HeaderComponent implements OnInit {
         id: doc.id,
         channel: channel,
       }));
-      // Add messages to the map to avoid duplicates
       messages.forEach((message) => messagesMap.set(message.id, message));
     }
-    // Convert map back to a list
     this.allMessages = Array.from(messagesMap.values());
-    // Filter the messages based on the search term
+  }
+
+  filterSearchResults() {
     this.searchResults = this.allMessages.filter((message) =>
       message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
-
   }
 
   updateHeaderOnRoute(url: string) {

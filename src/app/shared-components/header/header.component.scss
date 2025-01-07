@@ -27,7 +27,7 @@ header {
 
 .header-center {
   @include display-flex($jc: space-between);
-  @include size(1505px);
+  @include size(1512px);
 }
 
 .header-right {
@@ -90,24 +90,16 @@ header {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
+.section-header {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
 .drop-down-div {
   position: absolute;
   top: 80px;
   z-index: 5;
-  // top: 130px;
-  // left: 80px;
-  background-color: white;
-  border-radius: 12px;
-  padding: 12px 0px;
-  box-shadow: 0px 6px 10px 0px #00000033;
-}
-
-.drop-down-div2{
-  position: absolute;
-  top: 180px;
-  z-index: 5;
-  // top: 130px;
-  // left: 80px;
   background-color: white;
   border-radius: 12px;
   padding: 12px 0px;
@@ -128,9 +120,21 @@ header {
   border-radius: 50%;
   margin-right: 8px;
 }
-
-.userList {
+.user-list {
   @include display-flex($jc: flex-start);
+  border-radius: 30px;
+  transition: all 125ms ease;
+  padding: 4px 20px;
+  margin-bottom: 8px;
+  width: 100%;
+  &:hover {
+    cursor: pointer;
+    background-color: $bg-color-gray;
+  }
+}
+
+.message-list {
+  @include display-flex($fd: column, $ai: flex-start);
   border-radius: 30px;
   transition: all 125ms ease;
   padding: 4px 20px;

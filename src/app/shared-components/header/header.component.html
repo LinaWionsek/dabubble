@@ -5,102 +5,95 @@
   </section>
 
   @if(showSearchBar){
-  <div class="header-center">
-    @if (showSearchBar) {
-    <section class="search-bar">
-      <div class="search-bar-input-container">
-        <input (keyup)="searchDevspace()" ngModel [(ngModel)]="searchTerm" class="search-bar-input"
-          placeholder="Devspace durchsuchen" type="text" />
-        <div class="search-bar-input-icon-container">
-          <img class="search-bar-input-icon-hover" src="./../../assets/img/search_icon.png" alt="search_icon" />
-        </div>
-      </div>
-    </section>
+    <div class="header-center">
 
-
-    @if(showDropDown){
-    <div class="drop-down-div">
-      <div class="scroll-div">
-
-
-        @if(searchResults.length > 0 || searchedUsers.length > 0) {
-        <!-- Messages Section -->
-              @if(searchResults.length > 0){
-              <div class="section-header">Nachrichten</div>
-              @for (result of searchResults; track $index) {
-              <div class="userList" (click)="setActiveChannel(result.channel)">
-                <b>{{result.channel.name}}</b>
-                <div>
-                  {{result.senderName}}:
-                  {{result.messageText}}
-                </div>
-              </div>
+      @if (showSearchBar) {
+        <section class="search-bar">
+          <div class="search-bar-input-container">
+            <input (keyup)="searchDevspace()" ngModel [(ngModel)]="searchTerm" class="search-bar-input"
+              placeholder="Devspace durchsuchen" type="text" />
+            <div class="search-bar-input-icon-container">
+              @if (!searching) {
+                <img class="search-bar-input-icon-hover" src="./../../assets/img/search_icon.png" alt="search_icon"/>
+              } @else {
+                <img (click)="resetSearch()" class="search-bar-input-icon-hover" src="./../../assets/img/close.png" alt="search_icon"/>
               }
-              }
-
-        <!-- Users Section -->
-            @if(searchedUsers.length > 0){
-            <div class="section-header">Benutzer</div>
-            @for (user of searchedUsers; track $index) {
-            <div class="userList" (click)="setActiveChat(user)">
-              <img src="{{user.avatar}}" alt="" class="user-img">
-              <div>
-                {{user.firstName}}
-                {{user.lastName}}
-              </div>
             </div>
-            }
-            }
-        } @else {
-        <div class="no-results">
-          Keine Ergebnisse für "{{searchTerm}}" gefunden
-        </div>
+          </div>
+        </section>
+
+        @if(showDropDown){
+          <div class="drop-down-div">
+            <div class="scroll-div">
+
+              @if(searchResults.length > 0 || searchedUsers.length > 0) {
+                <!-- Messages Section -->
+                @if(searchResults.length > 0){
+                  <div class="section-header">Nachrichten</div>
+                  @for (result of searchResults; track $index) {
+                    <div class="message-list" (click)="setActiveChannel(result.channel)">
+                      <b>{{result.channel.name}}</b>
+                      <div>
+                        {{result.senderName}}:
+                        {{result.messageText}}
+                      </div>
+                    </div>
+                  }
+                }
+
+                <!-- Users Section -->
+                @if(searchedUsers.length > 0){
+                  <div class="section-header">Benutzer</div>
+                  @for (user of searchedUsers; track $index) {
+                    <div class="user-list" (click)="setActiveChat(user)">
+                      <img src="{{user.avatar}}" alt="" class="user-img">
+                      <div>
+                        {{user.firstName}}
+                        {{user.lastName}}
+                      </div>
+                    </div>
+                  }
+                }
+              } @else {
+                <div class="no-results">
+                  Keine Ergebnisse für "{{searchTerm}}" gefunden
+                </div>
+              }
+            </div>
+          </div>
         }
-      </div>
+      }
+
+      @if (showUserProfile) {
+      <section (click)="toggleUserMenu()" class="user-header-menu">
+        <span>{{ user?.firstName }} {{ user?.lastName }}</span>
+        <div class="user-avatar-wrapper">
+          <img class="user-avatar" [src]="getAvatarBaseName(user?.avatar)" alt="user_avatar" />
+          <span [ngClass]="{ online: user?.isOnline, offline: !user?.isOnline }" class="online-status"></span>
+        </div>
+        <img class="drop_down_arrow" src="./../../../assets/img/drop_down_arrow.png" alt="" />
+      </section>
+      }
     </div>
-    }
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-    @if (showUserProfile) {
-    <section (click)="toggleUserMenu()" class="user-header-menu">
-      <span>{{ user?.firstName }} {{ user?.lastName }}</span>
-      <div class="user-avatar-wrapper">
-        <img class="user-avatar" [src]="getAvatarBaseName(user?.avatar)" alt="user_avatar" />
-        <span [ngClass]="{ online: user?.isOnline, offline: !user?.isOnline }" class="online-status"></span>
-      </div>
-
-      <img class="drop_down_arrow" src="./../../../assets/img/drop_down_arrow.png" alt="" />
+  } 
+  
+  @if (showRegistrationLink) {
+    <section class="header-right">
+      <span>Neu bei DABubble ?</span>
+      <a class="primary-href" routerLink="/registration">Konto erstellen</a>
     </section>
-
-    }
-  </div>
-  } @if (showRegistrationLink) {
-  <section class="header-right">
-    <span>Neu bei DABubble ?</span>
-    <a class="primary-href" routerLink="/registration">Konto erstellen</a>
-  </section>
-
   }
+
+  @if(isUserMenuOpen){
+    <div (click)="toggleUserMenu()" class="dialog-bg">
+      <app-header-user-dialog (userProfileOpened)="openUserProfile($event)"></app-header-user-dialog>
+    </div>
+  } 
+
+  @if(isUserProfileOpen){
+    <div (click)="closeUserProfile()" class="dialog-bg">
+      <app-user-profile (closeProfile)="closeUserProfile()" [userId]="selectedUserId"></app-user-profile>
+    </div>
+  }
+
 </header>
-
-@if(isUserMenuOpen){
-<div (click)="toggleUserMenu()" class="dialog-bg">
-  <app-header-user-dialog (userProfileOpened)="openUserProfile($event)"></app-header-user-dialog>
-</div>
-
-} @if(isUserProfileOpen){
-<div (click)="closeUserProfile()" class="dialog-bg">
-  <app-user-profile (closeProfile)="closeUserProfile()" [userId]="selectedUserId"></app-user-profile>
-</div>
-}
