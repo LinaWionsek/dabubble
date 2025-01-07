@@ -1,5 +1,6 @@
 @import "mixins", "styles";
 
+
 .user-profile {
   @include size(500px, 600px);
   min-height: fit-content;
@@ -15,6 +16,13 @@
       @include font-style($font-size-24, $font-weight-700, $text-color-black);
     }
   }
+}
+
+.user-profile.centralized{
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
 }
 
 .user-avatar,
