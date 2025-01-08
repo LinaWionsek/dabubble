@@ -6,6 +6,7 @@ export type userData = {
   pendingEmail?: string;
   avatar?: string;
   isOnline?: boolean;
+  lastReactions?: string[];
 };
 
 export type channelData = {

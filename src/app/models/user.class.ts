@@ -8,6 +8,8 @@ export class User {
   pendingEmail: string;
   avatar: string;
   isOnline: boolean;
+  lastReactions: string[];
+
   
 
   constructor(data?: userData) {
@@ -18,6 +20,7 @@ export class User {
     this.pendingEmail = data?.pendingEmail ?? '';
     this.avatar = data?.avatar ?? '';
     this.isOnline = data?.isOnline ?? false;
+    this.lastReactions = data?.lastReactions ?? [];
   }
 
   toPlainObject() {

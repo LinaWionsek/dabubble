@@ -40,7 +40,6 @@ export class MessageComponent {
   activeChannel?: Channel | null;
   activatedMessage?: Message | null;
   
-
   reaction: Reaction = new Reaction();
   messageReactions?: Reaction[];
   messageReactions$?: Observable<Reaction[]>;
@@ -51,6 +50,8 @@ export class MessageComponent {
 
   mainEmojiOptionsMenu = false;
   secondaryEmojiOptionsMenu = false;
+  lastTwoReactions: string[] = [];
+  allReactions = ['tick', 'hands_up', 'nerd_face', 'rocket'];
 
 
   constructor(private threadService: ThreadService, private channelService: ChannelService) {}
@@ -62,11 +63,23 @@ export class MessageComponent {
     this.loadMessageAnswers();
     this.loadMessageReactions();
     this.initializeNewReaction();
-    
-    setTimeout(()=>{
-      console.log(this.groupedReactions);
-    }, 500)
+    this.setLastTwoReactions();
   }
+
+
+  setLastTwoReactions(){
+    if(this.currentUser?.lastReactions.length === 2){
+      this.lastTwoReactions = this.currentUser.lastReactions
+    } else if (this.currentUser?.lastReactions.length === 1){
+      const firstReaction = this.currentUser.lastReactions[0];
+      const secondReaction = this.allReactions.filter(r => r !== firstReaction)[Math.floor(Math.random() * 3)];
+      this.lastTwoReactions = [firstReaction, secondReaction];
+    } else if (this.currentUser?.lastReactions.length === 0){
+      this.lastTwoReactions = ['tick', 'hands_up']
+    }
+  }
+
+
 
 
   subscribeToChannelService(){
@@ -312,6 +325,41 @@ deleteDmThreadMessage(){
       } else if(this.usedFor === 'thread' && !this.activeChannel){
         this.addReactionForDmThreadMessage();
       }
+    }
+    this.updateLastTwoReactions(type);
+  }
+
+
+  updateLastTwoReactions(type:string){
+    if(this.lastTwoReactions.length === 0){
+      this.lastTwoReactions.push(type);
+    } else if(this.lastTwoReactions.length === 1){
+      if (this.lastTwoReactions[0] !== type) {
+        this.lastTwoReactions.unshift(type);
+      }
+    } else if (this.lastTwoReactions.length === 2){
+      if(!this.lastTwoReactions.includes(type)){
+        this.lastTwoReactions[0] = type;
+      } else {
+        const index = this.lastTwoReactions.indexOf(type);
+        this.lastTwoReactions = [this.lastTwoReactions[index], this.lastTwoReactions[1 - index]];
+      }
+    } else {
+      this.lastTwoReactions = this.lastTwoReactions.filter(reaction => reaction !== type).slice(0, 1);
+      this.lastTwoReactions.unshift(type);
+    }
+
+    this.updateCurrentUser();
+  }
+
+
+  async updateCurrentUser(){
+    this.currentUser!.lastReactions = this.lastTwoReactions;
+    const userRef = doc(this.firestore, `users/${this.currentUser?.id}`);
+    try {
+      await updateDoc(userRef, {lastReactions: this.lastTwoReactions})
+    } catch (error) {
+      console.error(error)
     }
   }
 
