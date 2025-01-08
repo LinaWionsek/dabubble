@@ -32,6 +32,29 @@
                         <div class="reaction-div" (click)="addReaction(reactionType.key)">
                             <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
                             <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
+
+                            <div class="reaction-bubble">
+                                <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">
+                                @for (reaction of reactionType.value; track $index) {
+                                    <span class="reaction-bubble-text">
+                                        @if(reaction.originatorId === currentUser?.id){
+                                            <span class="reaction-originator-name-span">Du</span>                            
+                                        }@else {
+                                            <span class="reaction-originator-name-span">{{ reaction.originatorName }}</span>                            
+                                        }
+                                        @if ($index === reactionType.value.length - 2) {
+                                            <span class="reaction-originator-name-span"> und </span>
+                                        }
+                                    </span>
+                                }
+                                <span class="reaction-bubble-text">
+                                    @if (reactionType.value.length === 1) {
+                                        <span>@if (reaction.originatorId === currentUser?.id) {hast} @else {hat} reagiert</span>
+                                    } @else if(reactionType.value.length > 1){
+                                        <span>haben reagiert</span>
+                                    }
+                                </span>
+                            </div>
                         </div>
 
                     }
@@ -153,6 +176,29 @@
                     <div class="reaction-div" (click)="addReaction(reactionType.key)">
                         <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
                         <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
+
+                        <div class="reaction-bubble received">
+                            <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">
+                            @for (reaction of reactionType.value; track $index) {
+                                <span class="reaction-bubble-text">
+                                    @if(reaction.originatorId === currentUser?.id){
+                                        <span class="reaction-originator-name-span">Du</span>                            
+                                    }@else {
+                                        <span class="reaction-originator-name-span">{{ reaction.originatorName }}</span>                            
+                                    }
+                                    @if ($index === reactionType.value.length - 2) {
+                                        <span class="reaction-originator-name-span"> und </span>
+                                    }
+                                </span>
+                            }
+                            <span class="reaction-bubble-text">
+                                @if (reactionType.value.length === 1) {
+                                    <span>@if (reaction.originatorId === currentUser?.id) {hast} @else {hat} reagiert</span>
+                                } @else if(reactionType.value.length > 1){
+                                    <span>haben reagiert</span>
+                                }
+                            </span>
+                        </div>
                     </div>
 
                 }

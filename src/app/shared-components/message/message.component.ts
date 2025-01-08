@@ -62,6 +62,10 @@ export class MessageComponent {
     this.loadMessageAnswers();
     this.loadMessageReactions();
     this.initializeNewReaction();
+    
+    setTimeout(()=>{
+      console.log(this.groupedReactions);
+    }, 500)
   }
 
 
