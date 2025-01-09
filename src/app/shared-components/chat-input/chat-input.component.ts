@@ -10,13 +10,15 @@ import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/dm-chat.service';
 import { ReceiverService } from '../../services/receiver.service';
 import { ClickOutsideModule } from 'ng-click-outside';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+
 
 
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClickOutsideModule],
+  imports: [CommonModule, FormsModule, ClickOutsideModule, PickerComponent],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })
@@ -69,6 +71,15 @@ export class ChatInputComponent {
 
   addEmoticon(emoticon:string){
 
+  }
+
+  // toggleEmojiPicker() {
+  //   this.emojiPickerVisible = !this.emojiPickerVisible;
+  // }
+
+  addEmoji(event: any) {
+    const emoji = event.emoji.native;  // Get the emoji character
+    this.newMessage.messageText += emoji;  // Append to the message text
   }
 
 
