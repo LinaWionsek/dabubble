@@ -214,12 +214,11 @@
         
     
         <div class="received message-options-div">
-            <div class="emoji-div icon-container" (click)="addReaction('tick')">
-                <img src="./../../../assets/img/emojis/tick.png" alt="">
-            </div>
-            <div class="emoji-div icon-container" (click)="addReaction('hands_up')">
-                <img src="./../../../assets/img/emojis/hands_up.png" alt="">
-            </div>
+            @for (reaction of lastTwoReactions; track $index) {
+                <div class="emoji-div icon-container" (click)="addReaction(reaction)">
+                    <img [src]="'./../../../assets/img/emojis/' + reaction + '.png'">
+                </div>
+            }
             <div class="icon-container" (click)="showSecondaryReactionOptions()">
                 <img src="./../../../assets/img/add_reaction.png" alt="">
 

@@ -64,8 +64,6 @@ export class MessageComponent {
     this.loadMessageReactions();
     this.initializeNewReaction();
     this.setLastTwoReactions();
-
-    console.log(this.currentUser);
   }
 
 
@@ -328,29 +326,25 @@ deleteDmThreadMessage(){
         this.addReactionForDmThreadMessage();
       }
     }
+    
     this.updateLastTwoReactions(type);
   }
 
 
-  updateLastTwoReactions(type:string){
-    if(this.lastTwoReactions.length === 0){
+
+  updateLastTwoReactions(type: string) {
+    if (this.lastTwoReactions.length === 0) {
       this.lastTwoReactions.push(type);
-    } else if(this.lastTwoReactions.length === 1){
+    } else if (this.lastTwoReactions.length === 1) {
       if (this.lastTwoReactions[0] !== type) {
         this.lastTwoReactions.unshift(type);
       }
-    } else if (this.lastTwoReactions.length === 2){
-      if(!this.lastTwoReactions.includes(type)){
-        this.lastTwoReactions[0] = type;
-      } else {
-        const index = this.lastTwoReactions.indexOf(type);
-        this.lastTwoReactions = [this.lastTwoReactions[index], this.lastTwoReactions[1 - index]];
+    } else if (this.lastTwoReactions.length >= 2) {
+      if (this.lastTwoReactions[0] !== type) {
+        this.lastTwoReactions = [type, this.lastTwoReactions[0]];
       }
-    } else {
-      this.lastTwoReactions = this.lastTwoReactions.filter(reaction => reaction !== type).slice(0, 1);
-      this.lastTwoReactions.unshift(type);
     }
-
+  
     this.updateCurrentUser();
   }
 
