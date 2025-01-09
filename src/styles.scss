@@ -55,6 +55,7 @@ html {
   scroll-behavior: smooth;
 }
 
+
 .width-100 {
   width: 100%;
 }
@@ -167,6 +168,10 @@ html {
   border-radius: 30px;
   box-shadow: $primary-box-shadow;
   background: $primary-color-white;
+}
+
+.auth-email {
+  @include font-style($font-size-18, $font-weight-700, $primary-color-purple);
 }
 
 .form-header {

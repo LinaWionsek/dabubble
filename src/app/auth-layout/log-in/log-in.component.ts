@@ -58,10 +58,12 @@ export class LogInComponent implements OnInit {
       .then(() => {
         console.log('Successful login');
         this.toastService.showToast('Login erfolgreich!');
-        this.authService.setOnlineStatus(true);
+        this.email = '';
+        this.password = '';
 
         setTimeout(() => {
           this.navigateToMainPage();
+          this.authService.setOnlineStatus(true);
         }, 2250);
       })
       .catch((error) => {

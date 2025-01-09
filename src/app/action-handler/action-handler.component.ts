@@ -31,7 +31,7 @@ export class ActionHandlerComponent implements OnInit {
         this.navigateTo('new-password', oobCode);
         break;
 
-      case 'changeEmail':
+      case 'verifyAndChangeEmail':
         this.navigateTo('change-email', oobCode);
         break;
 

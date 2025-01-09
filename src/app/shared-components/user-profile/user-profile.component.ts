@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -47,18 +48,20 @@ export class UserProfileComponent {
   isPasswordRequired: boolean = false;
   verificationPassword: string = '';
   pendingSaveChanges: boolean = false;
+  isPasswordInvalid: boolean = false;
 
   constructor(
     private authService: AuthService,
     private toastService: ToastService,
     private avatarService: AvatarSelectionService,
     public auth: Auth,
-    public passwordVisibilityService: PasswordVisibilityService
+    public passwordVisibilityService: PasswordVisibilityService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
-    if(this.usedFor === 'otherProfile'){
-      this.user = this.otherUser
+    if (this.usedFor === 'otherProfile') {
+      this.user = this.otherUser;
     } else if (this.usedFor !== 'otherProfile' && this.userId) {
       this.user = await this.authService.getFullUser();
       let currentUserId = this.authService.getUserId();
@@ -151,10 +154,13 @@ export class UserProfileComponent {
           this.pendingSaveChanges = true;
           return;
         }
-  
-        await this.authService.reauthenticateUser(user.email!, this.verificationPassword);
+
+        // await this.authService.reauthenticateUser(
+        //   user.email!,
+        //   this.verificationPassword
+        // );
         await verifyBeforeUpdateEmail(user, this.userEditEmail.trim());
-  
+
         updatedData.pendingEmail = this.userEditEmail.trim();
         this.toastService.showToast(
           'Bitte überprüfen Sie Ihre neue E-Mail-Adresse. Die Änderung wird wirksam, sobald Sie die E-Mail bestätigen.'
@@ -196,14 +202,23 @@ export class UserProfileComponent {
 
   async confirmPassword(): Promise<void> {
     try {
-      if (!this.verificationPassword) {
-        throw new Error('Bitte geben Sie ein Passwort ein.');
-      }
+      await this.authService.reauthenticateUser(
+        this.auth.currentUser?.email || '',
+        this.verificationPassword
+      );
   
-      this.isPasswordRequired = false;
       await this.saveEditingChanges();
+  
+      this.verificationPassword = '';
+      this.isPasswordInvalid = false;
     } catch (error) {
-      this.toastService.showToast('Passwort-Bestätigung fehlgeschlagen.');
+      console.error('Passwortüberprüfung fehlgeschlagen:', error);
+  
+      this.isPasswordInvalid = true;
+      setTimeout(() => {
+        this.isPasswordInvalid = false;
+      }, 5000);
+      return;
     }
   }
 }

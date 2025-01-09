@@ -22,14 +22,14 @@ export class EmailVerificationComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private auth: Auth,
-    private AuthService: AuthService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     let oobCode = this.activatedRoute.snapshot.queryParamMap.get('oobCode');
     if (oobCode) {
       this.completeEmailVerification(oobCode);
-      this.AuthService.signOut();
+      this.authService.signOut();
     } else {
       this.isLoading = false;
       this.isVerified = false;
