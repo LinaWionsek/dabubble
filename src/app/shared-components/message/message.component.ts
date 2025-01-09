@@ -64,6 +64,8 @@ export class MessageComponent {
     this.loadMessageReactions();
     this.initializeNewReaction();
     this.setLastTwoReactions();
+
+    console.log(this.currentUser);
   }
 
 
