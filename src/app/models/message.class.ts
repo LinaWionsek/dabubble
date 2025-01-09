@@ -1,4 +1,5 @@
 import { messageData } from "../types/types";
+import  { Channel } from "./channel.class";
 
 export class Message {
     id: string;
@@ -9,6 +10,7 @@ export class Message {
     timeStamp: string;
     reactions: string[];
     messageText: string;
+    channel!: Channel;  
 
     constructor(data?: messageData) {
         this.id = data?.id ?? '';

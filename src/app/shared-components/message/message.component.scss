@@ -125,12 +125,56 @@
 }
 
 .reaction-div {
+  position: relative;
   width: 63px;
   height: 34px;
   border: 1px solid rgba(173, 176, 217, 1);
   border-radius: 20px;
   padding: 5px 10px;
   @include display-flex();
+
+  &:hover{
+    cursor: pointer;
+  }
+
+  &:hover .reaction-bubble{
+    @include display-flex($fd:column)
+  }
+}
+
+.reaction-bubble{
+  display: none;
+  position: absolute;
+  bottom: 32px;
+  right: 30px;
+  padding: 15px 15px;
+  border-radius: 30px 30px 0 30px;
+  background-color: $highlight-color-cyan;
+  color: white;
+  font-size: 16px;
+  z-index: 400;
+
+}
+
+.reaction-bubble.received{
+  right: unset;
+  left: 30px;
+  border-radius: 30px 30px 30px 0 !important;
+
+}
+
+.reaction-originator-name-span{
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.reaction-bubble-text{
+  white-space: nowrap;
+}
+
+.reaction-bubble-img{
+  margin-bottom: 8px;
 }
 
 .reaction-count-span {

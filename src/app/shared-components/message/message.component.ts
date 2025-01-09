@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { ThreadService } from '../../services/thread.service';
 import { ChannelService } from '../../services/channel.service';
 import { Channel } from '../../models/channel.class';
+import { ReactionService } from '../../services/reaction.service';
 
 
 
@@ -40,7 +41,6 @@ export class MessageComponent {
   activeChannel?: Channel | null;
   activatedMessage?: Message | null;
   
-
   reaction: Reaction = new Reaction();
   messageReactions?: Reaction[];
   messageReactions$?: Observable<Reaction[]>;
@@ -51,9 +51,11 @@ export class MessageComponent {
 
   mainEmojiOptionsMenu = false;
   secondaryEmojiOptionsMenu = false;
+  lastTwoReactions: string[] = [];
+  allReactions = ['tick', 'hands_up', 'nerd_face', 'rocket'];
 
 
-  constructor(private threadService: ThreadService, private channelService: ChannelService) {}
+  constructor(private threadService: ThreadService, private channelService: ChannelService, private reactionService: ReactionService) {}
 
 
   ngOnInit(){
@@ -62,7 +64,32 @@ export class MessageComponent {
     this.loadMessageAnswers();
     this.loadMessageReactions();
     this.initializeNewReaction();
+    this.subscribeToReactionService();
+    this.setLastTwoReactions();
   }
+
+
+  setLastTwoReactions(){
+    if(this.currentUser?.lastReactions.length === 2){
+      this.lastTwoReactions = this.currentUser.lastReactions
+    } else if (this.currentUser?.lastReactions.length === 1){
+      const firstReaction = this.currentUser.lastReactions[0];
+      const secondReaction = this.allReactions.filter(r => r !== firstReaction)[Math.floor(Math.random() * 3)];
+      this.lastTwoReactions = [firstReaction, secondReaction];
+    } else if (this.currentUser?.lastReactions.length === 0){
+      this.lastTwoReactions = ['tick', 'hands_up']
+    }
+
+    this.reactionService.setLastTwoReactions(this.lastTwoReactions);
+  }
+
+
+  subscribeToReactionService(){
+    this.reactionService.lastTwoReactions$.subscribe((reactions) => {
+      this.lastTwoReactions = reactions;
+    });
+  }
+
 
 
   subscribeToChannelService(){
@@ -308,6 +335,39 @@ deleteDmThreadMessage(){
       } else if(this.usedFor === 'thread' && !this.activeChannel){
         this.addReactionForDmThreadMessage();
       }
+    }
+    
+    this.updateLastTwoReactions(type);
+    this.updateCurrentUserReactions();
+  }
+
+
+
+  updateLastTwoReactions(type: string) {
+    if (this.lastTwoReactions.length === 0) {
+      this.lastTwoReactions.push(type);
+    } else if (this.lastTwoReactions.length === 1) {
+      if (this.lastTwoReactions[0] !== type) {
+        this.lastTwoReactions.unshift(type);
+      }
+    } else if (this.lastTwoReactions.length >= 2) {
+      if (this.lastTwoReactions[0] !== type) {
+        this.lastTwoReactions = [type, this.lastTwoReactions[0]];
+      }
+    }
+    
+    this.reactionService.setLastTwoReactions(this.lastTwoReactions);
+    this.updateCurrentUserReactions();
+  }
+
+
+  async updateCurrentUserReactions(){
+    this.currentUser!.lastReactions = this.lastTwoReactions;
+    const userRef = doc(this.firestore, `users/${this.currentUser?.id}`);
+    try {
+      await updateDoc(userRef, {lastReactions: this.lastTwoReactions})
+    } catch (error) {
+      console.error(error)
     }
   }
 

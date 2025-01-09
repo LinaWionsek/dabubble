@@ -1,14 +1,24 @@
-import { Component, OnInit, inject, Input } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { User } from '../../models/user.class';
 import { Observable } from 'rxjs';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  getDocs,
+} from '@angular/fire/firestore';
 import { AuthService } from '../../services/authentication.service';
 import { HeaderUserDialogComponent } from './header-user-dialog/header-user-dialog.component';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
+import { Channel } from './../../models/channel.class';
+import { ChannelService } from '../../services/channel.service';
+import { ChatService } from '../../services/dm-chat.service';
+import { Message } from '../../models/message.class';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +28,8 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
     CommonModule,
     HeaderUserDialogComponent,
     UserProfileComponent,
-   FormsModule],
+    FormsModule,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -32,12 +43,26 @@ export class HeaderComponent implements OnInit {
   user: User | null = null;
   isUserMenuOpen: boolean = false;
   isUserProfileOpen: boolean = false;
+  searching: boolean = false;
   selectedUserId: string | null = null;
   private authSubscription: Subscription | null = null;
-  inputData = '';
+  searchTerm = '';
   searchedUsers: User[] = [];
+  channels$!: Observable<Channel[]>;
+  allChannels: Channel[] = [];
+  allUserChannels: Channel[] = [];
+  messages$!: Observable<Message[]>;
+  allMessages: Message[] = [];
+  searchResults: Message[] = [];
+  showDropDown: boolean = false;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private channelService: ChannelService,
+    private chatService: ChatService,
+    private threadService: ThreadService
+  ) {}
 
   ngOnInit(): void {
     this.showSearchBar = false;
@@ -57,8 +82,6 @@ export class HeaderComponent implements OnInit {
       },
       (error) => console.error('Fehler beim Überwachen des Auth-Status:', error)
     );
-
-   
   }
 
   ngOnDestroy(): void {
@@ -67,12 +90,39 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  setActiveChat(user: User) {
+    this.channelService.clearActiveChannel();
+    this.threadService.deactivateThread();
+    this.chatService.setActiveChat(user);
+    this.resetSearch();
+  }
+
+  setActiveChannel(channel: Channel) {
+    this.channelService.setActiveChannel(channel);
+    this.resetSearch();
+  }
+
   searchDevspace() {
+    if (!this.searchTerm || this.searchTerm.trim().length === 0) {
+      this.resetSearch();
+      return;
+    }
+    this.showDropDown = true;
+    this.searching = true;
     this.searchUser();
+    this.getAllChannels();
+    
+  }
+
+  resetSearch() {
+    this.searchResults = [];
+    this.searchedUsers = [];
+    this.showDropDown = false;
+    this.searching = false;
+    this.searchTerm = '';
   }
 
   searchUser() {
-    console.log(this.inputData);
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
       idField: 'id',
@@ -84,12 +134,61 @@ export class HeaderComponent implements OnInit {
         (filterResult) =>
           filterResult.firstName
             .toLowerCase()
-            .includes(this.inputData.toLowerCase()) ||
+            .includes(this.searchTerm.toLowerCase()) ||
           filterResult.lastName
             .toLowerCase()
-            .includes(this.inputData.toLowerCase())
+            .includes(this.searchTerm.toLowerCase())
       );
     });
+  }
+
+  getAllChannels() {
+    const userChannelsCollection = collection(this.firestore, 'channels');
+    this.channels$ = collectionData(userChannelsCollection, {
+      idField: 'id',
+    }) as Observable<Channel[]>;
+    this.channels$.subscribe((changes) => {
+      this.allChannels = Array.from(
+        new Map(changes.map((channel) => [channel.id, channel])).values()
+      );
+      this.getAllChannelsForCurrentUser();
+    });
+  }
+
+  async getAllChannelsForCurrentUser() {
+    this.getUserChannels();
+    await this.fetchMessagesForChannels();
+    this.filterSearchResults();
+  }
+
+  getUserChannels() {
+    this.allUserChannels = this.allChannels.filter((channel) =>
+      channel.userIds.includes(this.user!.id)
+    );
+  }
+
+  async fetchMessagesForChannels() {
+    const messagesMap = new Map<string, Message>();
+    for (const channel of this.allUserChannels) {
+      const channelMessagesRef = collection(
+        this.firestore,
+        `channels/${channel.id}/messages`
+      );
+      const snapshot = await getDocs(channelMessagesRef);
+      const messages = snapshot.docs.map((doc) => ({
+        ...(doc.data() as Message),
+        id: doc.id,
+        channel: channel,
+      }));
+      messages.forEach((message) => messagesMap.set(message.id, message));
+    }
+    this.allMessages = Array.from(messagesMap.values());
+  }
+
+  filterSearchResults() {
+    this.searchResults = this.allMessages.filter((message) =>
+      message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
   updateHeaderOnRoute(url: string) {
@@ -124,7 +223,6 @@ export class HeaderComponent implements OnInit {
   openUserProfile(userId: string) {
     this.selectedUserId = userId;
     this.isUserProfileOpen = true;
-
   }
 
   closeUserProfile() {

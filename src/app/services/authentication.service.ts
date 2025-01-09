@@ -124,6 +124,8 @@ export class AuthService {
         lastName: userFirestoreData?.lastName ?? '',
         avatar: userFirestoreData?.avatar ?? '',
         isOnline: userFirestoreData?.isOnline ?? false,
+        pendingEmail: userFirestoreData?.pendingEmail ?? '',
+        lastReactions: userFirestoreData?.lastReactions?? []
       };
 
       return new User(userData);

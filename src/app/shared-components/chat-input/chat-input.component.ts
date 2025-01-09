@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, SimpleChanges, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { Channel } from './../../models/channel.class'
 import { User } from './../../models/user.class'
 import { AuthService } from '../../services/authentication.service';
@@ -9,15 +9,19 @@ import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/dm-chat.service';
 import { ReceiverService } from '../../services/receiver.service';
+import { ClickOutsideModule } from 'ng-click-outside';
+
+
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ClickOutsideModule],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })
 export class ChatInputComponent {
+  @ViewChild('messageInput') messageInput: any;
   @Input() activeMessage?: Message | null;
   @Input() channelData?: Channel | null;
   @Input() userData?: User | null;
@@ -32,6 +36,7 @@ export class ChatInputComponent {
   isActiveReceiverChannel = false;
   isActiveReceiverUser = false;
   
+  emoticonsDivOpened = false;
 
   firestore: Firestore = inject(Firestore);
 
@@ -39,16 +44,31 @@ export class ChatInputComponent {
   constructor(private authService: AuthService, private channelService: ChannelService, private receiverService: ReceiverService, private chatService: ChatService){}
 
 
+  ngAfterViewInit() {
+    this.messageInput.nativeElement.focus();
+  }
+
   ngOnChanges(changes: SimpleChanges){
     this.checkInputUsecase();
     this.setCurrentUser();
     this.subscribeToChannelService();
   }
 
-
   async setCurrentUser(){
     this.currentUser = await this.authService.getFullUser();
     this.initializeNewMessage();
+  }
+
+  toggleEmoticonsDiv(){
+    this.emoticonsDivOpened = !this.emoticonsDivOpened;
+  }
+
+  hideEmoticonsDiv(){
+    this.emoticonsDivOpened = false;
+  }
+
+  addEmoticon(emoticon:string){
+
   }
 
 
