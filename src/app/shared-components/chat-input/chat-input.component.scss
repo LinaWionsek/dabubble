@@ -1,4 +1,6 @@
 @import "mixins", "styles";
+@import '@ctrl/ngx-emoji-mart/picker';
+
 
 :host{
     flex:1;
@@ -89,6 +91,8 @@
     @include display-flex();
     padding: 16px;
     gap: 16px;
+    height: 400px;
+    overflow-y: auto;
 }
 
 .emoji-img{
@@ -99,3 +103,8 @@
         scale: 1.1;
     }
 }
+
+emoji-mart {
+    height: 400px;  
+  }
+

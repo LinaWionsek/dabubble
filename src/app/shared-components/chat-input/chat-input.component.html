@@ -16,16 +16,20 @@
 
     <div class="chat-input-action-div">
         <div class="add-elements">
-            <div class="action-icon-container" (click)="toggleEmoticonsDiv()" (clickOutside)="hideEmoticonsDiv()">
+            <div class="action-icon-container" (click)="toggleEmoticonsDiv()" >
                 <img src="./../../../assets/img/emoji_reaction.png">
 
                 @if(emoticonsDivOpened){
-                    <div class="emoticons-container" (mouseleave)="hideEmoticonsDiv()">
+                    <div class="emoticons-container" (mouseleave)="toggleEmoticonsDiv()">
+                        <emoji-mart (emojiSelect)="addEmoji($event)" set="google" [i18n]="{ search: 'Suchen', categories: { search: 'Suchergebnisse', recent: 'Kürzlich verwendet' } }"
+                             [enableSearch] = "false" [showPreview]="false"  class="custom-emoji-mart"></emoji-mart>
+                    </div>
+                    <!-- <div class="emoticons-container">
                         <img src="./../../../assets/img/emojis/tick.png" class="emoji-img" (click)="addEmoticon('tick')">
                         <img src="./../../../assets/img/emojis/hands_up.png" class="emoji-img" (click)="addEmoticon('hands_up')">
                         <img src="./../../../assets/img/emojis/nerd_face.png" class="emoji-img" (click)="addEmoticon('nerd_face')">
                         <img src="./../../../assets/img/emojis/rocket.png" class="emoji-img" (click)="addEmoticon('rocket')">
-                    </div>
+                    </div> -->
                 }
                
             </div>
