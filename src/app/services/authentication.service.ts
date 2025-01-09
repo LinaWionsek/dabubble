@@ -10,8 +10,8 @@ import {
   onAuthStateChanged,
   UserCredential,
   sendSignInLinkToEmail,
-  EmailAuthProvider, 
-  reauthenticateWithCredential
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from '@angular/fire/auth';
 import {
   Firestore,
@@ -19,6 +19,10 @@ import {
   getDoc,
   setDoc,
   updateDoc,
+  query, 
+  collection, 
+  where, 
+  getDocs 
 } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.class';
@@ -86,6 +90,19 @@ export class AuthService {
     } else {
       return null;
     }
+  }
+
+  async getUserByPendingEmail(email: string): Promise<User | null> {
+    const usersCollection = collection(this.firestore, 'users');
+    const emailQuery = query(usersCollection, where('pendingEmail', '==', email));
+    const querySnapshot = await getDocs(emailQuery);
+  
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data() as userData;
+      return new User({ id: userDoc.id, ...userData });
+    }
+    return null;
   }
 
   async getFullUser(): Promise<User | null> {
@@ -158,18 +175,16 @@ export class AuthService {
     }
   }
 
-
   async reauthenticateUser(email: string, password: string): Promise<void> {
     let user = this.auth.currentUser;
-  
+
     if (!user) {
       throw new Error('Kein Benutzer ist aktuell authentifiziert.');
     }
-  
+
     try {
       let credential = EmailAuthProvider.credential(email, password);
       await reauthenticateWithCredential(user, credential);
-  
     } catch (error) {
       console.error('Fehler bei der Re-Authentifizierung:', error);
       throw error;

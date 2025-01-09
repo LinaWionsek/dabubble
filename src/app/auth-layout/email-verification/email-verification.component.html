@@ -7,7 +7,7 @@
   } @if (!isLoading && isVerified) {
   <div class="auth-verification">
     <p>
-      Die E-Mail-Adresse {{ verifiedEmail }} wurde erfolgreich verifiziert. Sie
+      Die E-Mail-Adresse <span class="auth-email">{{ verifiedEmail }}</span> wurde erfolgreich verifiziert. Sie
       können sich jetzt einloggen.
     </p>
     <button routerLink="/login" class="primary-button">Weiter zu Login</button>

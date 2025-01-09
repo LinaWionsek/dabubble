@@ -1,4 +1,8 @@
-<section class="user-profile" [ngClass]="{'centralized': usedFor === 'otherProfile'}" (click)="$event.stopPropagation()">
+<section
+  class="user-profile"
+  [ngClass]="{ centralized: usedFor === 'otherProfile' }"
+  (click)="$event.stopPropagation()"
+>
   @if(isEmailVerified && !isPasswordRequired) {
   <header>
     <span>Profil</span>
@@ -187,9 +191,15 @@
     </button>
   </section>
   } @if(isPasswordRequired) {
-  <section class="password-verification" (click)="$event.stopPropagation()">
+  <form
+    #verifyEmailPasswordForm="ngForm"
+    class="password-verification"
+    (ngSubmit)="confirmPassword()"
+    (click)="$event.stopPropagation()"
+  >
     <span class="password-verification-info"
-      >Für die Änderung der E-Mail-Addresse wird eine Verifizierung benötigt, bitte verifizieren Sie sich mit Ihrem Passwort.</span
+      >Für die Änderung der E-Mail-Adresse wird eine Verifizierung benötigt,
+      bitte verifizieren Sie sich mit Ihrem Passwort.</span
     >
     <div class="auth-input-container">
       <input
@@ -198,11 +208,13 @@
         placeholder="Passwort bestätigen"
         [(ngModel)]="verificationPassword"
         name="verificationPassword"
+        #verifyEmailPasswordInput="ngModel"
         required
         minlength="8"
         [type]="
           passwordVisibilityService.isPasswordVisible ? 'text' : 'password'
         "
+        autocomplete="password"
       />
       <div class="auth-input-icon-container" (click)="togglePassword()">
         <img
@@ -211,17 +223,35 @@
           alt="password_icon"
         />
       </div>
+      <span
+        class="invalid-input"
+        [class.is-invalid]="
+          (verifyEmailPasswordInput.invalid &&
+            verifyEmailPasswordInput.touched &&
+            verifyEmailPasswordInput.value != '') ||
+          isPasswordInvalid
+        "
+      >
+        Dieses Passwort ist leider ungültig.
+      </span>
     </div>
 
     <div class="auth-button-container">
       <button class="secondary-button" (click)="togglePasswordVerification()">
         Abbrechen
       </button>
-      <button class="primary-button" (click)="confirmPassword()">
+      <button
+        [disabled]="
+          !verifyEmailPasswordInput.value ||
+          verifyEmailPasswordInput.value.length < 8
+        "
+        class="primary-button"
+      >
         Passwort bestätigen
       </button>
     </div>
-  </section>
+  </form>
+
   }
 </section>
 
