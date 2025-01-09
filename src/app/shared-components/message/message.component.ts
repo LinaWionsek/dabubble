@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { ThreadService } from '../../services/thread.service';
 import { ChannelService } from '../../services/channel.service';
 import { Channel } from '../../models/channel.class';
+import { ReactionService } from '../../services/reaction.service';
 
 
 
@@ -54,7 +55,7 @@ export class MessageComponent {
   allReactions = ['tick', 'hands_up', 'nerd_face', 'rocket'];
 
 
-  constructor(private threadService: ThreadService, private channelService: ChannelService) {}
+  constructor(private threadService: ThreadService, private channelService: ChannelService, private reactionService: ReactionService) {}
 
 
   ngOnInit(){
@@ -63,6 +64,7 @@ export class MessageComponent {
     this.loadMessageAnswers();
     this.loadMessageReactions();
     this.initializeNewReaction();
+    this.subscribeToReactionService();
     this.setLastTwoReactions();
   }
 
@@ -77,8 +79,16 @@ export class MessageComponent {
     } else if (this.currentUser?.lastReactions.length === 0){
       this.lastTwoReactions = ['tick', 'hands_up']
     }
+
+    this.reactionService.setLastTwoReactions(this.lastTwoReactions);
   }
 
+
+  subscribeToReactionService(){
+    this.reactionService.lastTwoReactions$.subscribe((reactions) => {
+      this.lastTwoReactions = reactions;
+    });
+  }
 
 
 
@@ -328,6 +338,7 @@ deleteDmThreadMessage(){
     }
     
     this.updateLastTwoReactions(type);
+    this.updateCurrentUserReactions();
   }
 
 
@@ -344,12 +355,13 @@ deleteDmThreadMessage(){
         this.lastTwoReactions = [type, this.lastTwoReactions[0]];
       }
     }
-  
-    this.updateCurrentUser();
+    
+    this.reactionService.setLastTwoReactions(this.lastTwoReactions);
+    this.updateCurrentUserReactions();
   }
 
 
-  async updateCurrentUser(){
+  async updateCurrentUserReactions(){
     this.currentUser!.lastReactions = this.lastTwoReactions;
     const userRef = doc(this.firestore, `users/${this.currentUser?.id}`);
     try {
