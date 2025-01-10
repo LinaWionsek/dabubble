@@ -69,8 +69,8 @@ export class ChatInputComponent {
     this.emoticonsDivOpened = false;
   }
 
-  addEmoticon(emoticon:string){
-
+  onEmojiMartClick(event: MouseEvent){
+    event.stopPropagation();
   }
 
   // toggleEmojiPicker() {
