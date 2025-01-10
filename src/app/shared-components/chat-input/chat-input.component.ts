@@ -87,8 +87,10 @@ export class ChatInputComponent {
   }
 
   addressUser(user: User){
-
+    this.newMessage.messageText += `@${user.firstName} ${user.lastName} `;
+    this.messageInput.nativeElement.focus();
   }
+  
 
   toggleEmoticonsDiv(){
     this.emoticonsDivOpened = !this.emoticonsDivOpened;
