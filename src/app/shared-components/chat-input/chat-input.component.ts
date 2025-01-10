@@ -2,7 +2,7 @@ import { Component, Input, SimpleChanges, inject, ViewChild, AfterViewInit } fro
 import { Channel } from './../../models/channel.class'
 import { User } from './../../models/user.class'
 import { AuthService } from '../../services/authentication.service';
-import { Firestore, doc, updateDoc, collection, addDoc, CollectionReference, DocumentData } from '@angular/fire/firestore';
+import { Firestore, doc, updateDoc, collection, addDoc, CollectionReference, DocumentData, collectionData } from '@angular/fire/firestore';
 import { Message } from '../../models/message.class';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { ChatService } from '../../services/dm-chat.service';
 import { ReceiverService } from '../../services/receiver.service';
 import { ClickOutsideModule } from 'ng-click-outside';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { Observable } from 'rxjs';
 
 
 
@@ -39,6 +40,10 @@ export class ChatInputComponent {
   isActiveReceiverUser = false;
   
   emoticonsDivOpened = false;
+  userDivOpened = false;
+  users$!: Observable<User[]>;
+  allUsers: User[] = [];
+  filteredUsers: User[] = [];
 
   firestore: Firestore = inject(Firestore);
 
@@ -54,6 +59,8 @@ export class ChatInputComponent {
     this.checkInputUsecase();
     this.setCurrentUser();
     this.subscribeToChannelService();
+    this.loadUsers();
+    this.messageInput.nativeElement.focus();
   }
 
   async setCurrentUser(){
@@ -61,25 +68,55 @@ export class ChatInputComponent {
     this.initializeNewMessage();
   }
 
+
+  loadUsers(){
+    const usersCollection = collection(this.firestore, 'users')
+    this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
+
+    this.users$.subscribe((changes) => {
+      this.allUsers = Array.from(new Map(changes.filter(user => user.id !== this.currentUser?.id)
+        .map(user => [user.id, user])
+      ).values());
+      this.filterUsersForUsecase();
+    })
+  }
+
+
+  filterUsersForUsecase(){
+    this.filteredUsers = this.allUsers;
+  }
+
+  addressUser(user: User){
+
+  }
+
   toggleEmoticonsDiv(){
     this.emoticonsDivOpened = !this.emoticonsDivOpened;
   }
+
+  toggleUserDiv(){
+    this.userDivOpened = !this.userDivOpened;
+  }
+
+
+  hideUserDiv(){
+    this.userDivOpened = false;
+  }
+
 
   hideEmoticonsDiv(){
     this.emoticonsDivOpened = false;
   }
 
+
   onEmojiMartClick(event: MouseEvent){
     event.stopPropagation();
   }
 
-  // toggleEmojiPicker() {
-  //   this.emojiPickerVisible = !this.emojiPickerVisible;
-  // }
-
+ 
   addEmoji(event: any) {
-    const emoji = event.emoji.native;  // Get the emoji character
-    this.newMessage.messageText += emoji;  // Append to the message text
+    const emoji = event.emoji.native;  
+    this.newMessage.messageText += emoji;  
   }
 
 
