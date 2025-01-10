@@ -75,8 +75,8 @@
         filter: brightness(0) saturate(100%) invert(43%) sepia(100%) saturate(4049%) hue-rotate(226deg) brightness(94%) contrast(100%);
     }
 
-    &:hover .emoji-img{
-        filter:none;
+    &:hover .user-img{
+        filter: none !important;
     }
 
 }
@@ -108,6 +108,46 @@ emoji-mart {
     position: absolute;
     bottom: 35px;
     left: 20px;
-    // height: 400px;  
-  }
+}
+
+.user-container {
+    position: absolute;
+    bottom: 35px;
+    left: 20px;
+    background-color: white;
+    border: 1px solid #ADB0D9;
+    border-radius: 8px 8px 8px 0;
+    @include display-flex($fd: column, $jc: flex-start);
+    padding: 4px ;
+    max-height: 200px;
+    overflow-y: auto;
+    gap: 8px;
+}
+
+
+.user-div{
+    @include display-flex($jc: flex-start);
+    border-radius: 30px;
+    transition: all 125ms ease;
+    padding: 4px 20px;
+    
+    width: 100%;
+
+    &:hover{
+        background-color: $bg-color-gray;
+        cursor: pointer;
+    }
+}
+
+.user-img{
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.user-name{
+    white-space: nowrap;
+    
+}
 

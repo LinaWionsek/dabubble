@@ -27,8 +27,19 @@
                 }
                 
             </div>
-            <div class="action-icon-container">
+            <div class="action-icon-container" (click)="toggleUserDiv()" (clickOutside)="hideUserDiv()">
                 <img src="./../../../assets/img/at_reaction.png">
+
+                @if(userDivOpened){
+                    <div class="user-container">
+                        @for (user of filteredUsers; track $index) {
+                            <div class="user-div" (click)="addressUser(user)">
+                                <img src="{{user.avatar}}" class="user-img">
+                                <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
+                            </div>
+                        }
+                    </div>
+                }
             </div>
         </div>
         <img src="./../../../assets/img/send.png" class="send-icon" (click)="sendMessage()">
