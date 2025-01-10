@@ -83,7 +83,17 @@ export class ChatInputComponent {
 
 
   filterUsersForUsecase(){
-    this.filteredUsers = this.allUsers;
+    if(this.usedFor === 'dm-chat' && this.userData){
+      this.filteredUsers.push(this.userData);
+    } else if(this.usedFor === 'channel') {
+      this.filteredUsers = this.allUsers.filter((user) => this.activeChannel?.userIds.includes(user.id));
+    } else if(this.usedFor === 'thread' && this.activeChannel){
+      this.filteredUsers = this.allUsers.filter((user) => this.activeChannel?.userIds.includes(user.id));
+    } else if(this.usedFor === 'thread' && !this.activeChannel && this.userData){
+      this.filteredUsers.push(this.userData);
+    } else if (this.usedFor === 'default'){
+      this.filteredUsers = this.allUsers;
+    }
   }
 
   addressUser(user: User){

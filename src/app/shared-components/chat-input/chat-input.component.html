@@ -30,7 +30,7 @@
             <div class="action-icon-container" (click)="toggleUserDiv()" (clickOutside)="hideUserDiv()">
                 <img src="./../../../assets/img/at_reaction.png">
 
-                @if(userDivOpened){
+                @if(userDivOpened ){
                     <div class="user-container">
                         @for (user of filteredUsers; track $index) {
                             <div class="user-div" (click)="addressUser(user)">
