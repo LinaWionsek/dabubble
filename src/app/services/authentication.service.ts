@@ -192,4 +192,28 @@ export class AuthService {
       throw error;
     }
   }
+
+
+  async isEmailAlreadyUsed(email: string): Promise<boolean> {
+    try {
+      const usersCollection = collection(this.firestore, 'users');
+      const emailQuery = query(usersCollection, where('email', '==', email));
+      const pendingEmailQuery = query(usersCollection, where('pendingEmail', '==', email));
+
+      let emailSnapshot = await getDocs(emailQuery);
+      if (!emailSnapshot.empty) {
+        return true;
+      }
+
+      let pendingEmailSnapshot = await getDocs(pendingEmailQuery);
+      if (!pendingEmailSnapshot.empty) {
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Fehler bei der Überprüfung der E-Mail:', error);
+      throw error;
+    }
+  }
 }
