@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -49,6 +48,8 @@ export class UserProfileComponent {
   verificationPassword: string = '';
   pendingSaveChanges: boolean = false;
   isPasswordInvalid: boolean = false;
+  emailErrorMessage: string = 'Diese E-Mail ist leider ungültig';
+  isEmailInUse: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -56,7 +57,6 @@ export class UserProfileComponent {
     private avatarService: AvatarSelectionService,
     public auth: Auth,
     public passwordVisibilityService: PasswordVisibilityService,
-    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -177,7 +177,6 @@ export class UserProfileComponent {
       }
 
       this.isEditing = false;
-      // this.toastService.showToast('Änderungen erfolgreich gespeichert!');
     } catch (error) {
       console.error('Fehler bei der Editierung:', error);
       this.toastService.showToast(
@@ -206,19 +205,47 @@ export class UserProfileComponent {
         this.auth.currentUser?.email || '',
         this.verificationPassword
       );
-  
+      this.isPasswordRequired = false;
       await this.saveEditingChanges();
-  
+
       this.verificationPassword = '';
       this.isPasswordInvalid = false;
+      this.userEditEmail = '';
     } catch (error) {
       console.error('Passwortüberprüfung fehlgeschlagen:', error);
-  
+
       this.isPasswordInvalid = true;
       setTimeout(() => {
         this.isPasswordInvalid = false;
       }, 5000);
       return;
+    }
+  }
+
+  async isEmailAlreadyUsed(): Promise<boolean> {
+    if (!this.userEditEmail || this.userEditEmail.trim() === '') {
+      this.isEmailInUse = false;
+      return false;
+    }
+
+    try {
+      let emailUsed = await this.authService.isEmailAlreadyUsed(
+        this.userEditEmail
+      );
+      this.isEmailInUse = emailUsed;
+      let currentUser = this.auth.currentUser;
+
+      if (emailUsed || this.userEditEmailInput.value == currentUser?.email) {
+        this.emailErrorMessage = 'Diese E-Mail-Adresse wird bereits verwendet.';
+      } else {
+        this.emailErrorMessage = 'Diese E-Mail ist leider ungültig.';
+      }
+      return emailUsed;
+    } catch (error) {
+      console.error('Fehler bei der E-Mail-Überprüfung:', error);
+      this.emailErrorMessage = 'Fehler beim Überprüfen der E-Mail-Adresse.';
+      this.isEmailInUse = true;
+      return true;
     }
   }
 }

@@ -139,6 +139,7 @@
             name="userEditEmail"
             #userEditEmailInput="ngModel"
             email
+            (change)="isEmailAlreadyUsed()"
           />
           <img
             class="auth-input-icon"
@@ -150,10 +151,10 @@
             [class.is-invalid]="
               userEditEmailInput.invalid &&
               userEditEmailInput.touched &&
-              userEditEmailInput.value != ''
+              userEditEmailInput.value != '' || isEmailInUse
             "
           >
-            Diese E-Mail-Adresse ist leider ungültig.
+            {{ emailErrorMessage }}
           </span>
         </div>
       </div>
@@ -165,7 +166,7 @@
         <button
           [disabled]="
             isSubmitDisabled() &&
-            (userEditfullNameInput.valid || userEditEmailInput.valid)
+            (userEditfullNameInput.valid || userEditEmailInput.valid) || isEmailInUse
           "
           type="submit"
           class="primary-button"

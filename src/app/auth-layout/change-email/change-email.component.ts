@@ -11,6 +11,7 @@ import { AuthService } from '../../services/authentication.service';
 import { PasswordVisibilityService } from '../../services/password-visibility.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { LogInComponent } from '../log-in/log-in.component';
 
 @Component({
   selector: 'app-change-email',
@@ -38,8 +39,7 @@ export class ChangeEmailComponent implements OnInit {
 
   ngOnInit(): void {
     let oobCode = this.activatedRoute.snapshot.queryParamMap.get('oobCode');
-    
-    
+
     if (oobCode) {
       this.oobCode = oobCode;
       this.isPasswordRequired = true;
@@ -69,15 +69,19 @@ export class ChangeEmailComponent implements OnInit {
         throw new Error('Kein Benutzer mit dieser E-Mail gefunden.');
       }
 
-      await this.authService.reauthenticateUser(
+      const userCredential = await this.authService.signIn(
         user.email,
         this.changeEmailPassword
       );
 
-      console.log(user.email,this.changeEmailPassword);
-      console.log("reauthenticateUser" + "augerufen");
-      
-      
+      if (!userCredential.user) {
+        throw new Error('Benutzer konnte nicht angemeldet werden.');
+      }
+
+      console.log('Benutzer erfolgreich angemeldet:', userCredential.user);
+
+      await userCredential.user?.getIdToken(true);
+      console.log('Authentifizierungs-Token erfolgreich erneuert.');
 
       await this.confirmEmailChange();
       this.isPasswordRequired = false;
@@ -88,34 +92,38 @@ export class ChangeEmailComponent implements OnInit {
         this.isPasswordInvalid = false;
       }, 5000);
     }
-    return;
   }
 
   async confirmEmailChange(): Promise<void> {
     try {
       let firebaseUser = this.auth.currentUser;
-      console.log(firebaseUser);
-      
 
       if (!firebaseUser) {
         throw new Error('Kein authentifizierter Benutzer gefunden.');
       }
 
+      console.log('Authentifizierter Benutzer:', firebaseUser);
+
       this.currentEmail = firebaseUser.email;
 
       await applyActionCode(this.auth, this.oobCode);
+      console.log('Aktionscode erfolgreich angewendet.', this.oobCode);
+
       await updateEmail(firebaseUser, this.newEmail);
+      console.log('E-Mail erfolgreich geändert auf:', this.newEmail);
 
       const updatedData: Partial<User> = {
         email: this.newEmail,
         pendingEmail: '',
       };
+
+      console.log('Update UserData in Firebase:', updatedData);
+
       await this.authService.updateUserData(firebaseUser.uid, updatedData);
-      
+      await this.authService.signOut();
+      console.log('Firestore-Daten erfolgreich aktualisiert:', updatedData);
     } catch (error) {
       console.error('Fehler bei der E-Mail-Änderung:', error);
-    } finally {
-      this.authService.signOut();
     }
   }
 }
