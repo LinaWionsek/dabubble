@@ -1,0 +1,28 @@
+@import "mixins", "styles";
+
+// header{
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+// }
+
+header {
+    width: 100%;
+    padding: 25px 45px 0px 45px;
+    @include display-flex($jc: space-between);
+}
+
+input {
+    width: 989px;
+    outline: none;
+    border: none;
+    border-radius: 42px;
+    padding: 17.5px 45px;
+    font-size: $font-size-24;
+    background-color: white;
+    background-image: url('./../../../assets/img/search.png');
+    background-position: center right 20px;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+}
+
