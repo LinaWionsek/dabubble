@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { ChatHistoryComponent } from "../../../shared-components/chat-history/chat-history.component";
-import { ChatInputComponent } from "../../../shared-components/chat-input/chat-input.component";
+import { ChatHistoryComponent } from '../../../shared-components/chat-history/chat-history.component';
+import { ChatInputComponent } from '../../../shared-components/chat-input/chat-input.component';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Channel } from '../../../models/channel.class';
@@ -14,18 +14,17 @@ import { ReceiverService } from '../../../services/receiver.service';
   standalone: true,
   imports: [ChatHistoryComponent, ChatInputComponent, FormsModule],
   templateUrl: './default-chat.component.html',
-  styleUrl: './default-chat.component.scss'
+  styleUrl: './default-chat.component.scss',
 })
 export class DefaultChatComponent {
-
   inputValue: string = '';
   showChannelDropdown = false;
   showUserDropdown = false;
 
   filteredChannels: Channel[] = [];
   filteredUsers: User[] = [];
-  
-  currentUser?: User | null ;
+
+  currentUser?: User | null;
   channels$!: Observable<Channel[]>;
   allChannels: Channel[] = [];
   allUserChannels: Channel[] = [];
@@ -34,67 +33,76 @@ export class DefaultChatComponent {
 
   displayInvalidReceiverMsg = false;
 
-
   firestore: Firestore = inject(Firestore);
 
-  constructor(private authService: AuthService, private receiverService: ReceiverService){}
+  constructor(
+    private authService: AuthService,
+    private receiverService: ReceiverService
+  ) {}
 
-
-  async ngOnInit(){
+  async ngOnInit() {
     await this.getCurrentUser();
     this.getAllChannels();
     this.getAllUsers();
     this.subscribeToInvalidReceiverSubject();
-
   }
 
-  subscribeToInvalidReceiverSubject(){
+  subscribeToInvalidReceiverSubject() {
     this.receiverService.invalidReceiver$.subscribe((isInvalid) => {
       this.displayInvalidReceiverMsg = isInvalid;
-    })
+    });
   }
 
-
-  async getCurrentUser(){
+  async getCurrentUser() {
     this.currentUser = await this.authService.getFullUser();
   }
 
+  getAllChannels() {
+    const userChannelsCollection = collection(this.firestore, 'channels');
+    this.channels$ = collectionData(userChannelsCollection, {
+      idField: 'id',
+    }) as Observable<Channel[]>;
 
-  getAllChannels(){
-      const userChannelsCollection = collection(this.firestore, 'channels' );
-      this.channels$ = collectionData(userChannelsCollection, { idField: 'id'}) as Observable<Channel[]>;
-      
-      this.channels$.subscribe((changes) => {
-        this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
-        this.getAllChannelsForCurrentUser();
-      })
-  }
-  
-  
-  getAllChannelsForCurrentUser(){
-    this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
+    this.channels$.subscribe((changes) => {
+      this.allChannels = Array.from(
+        new Map(changes.map((channel) => [channel.id, channel])).values()
+      );
+      this.getAllChannelsForCurrentUser();
+    });
   }
 
+  getAllChannelsForCurrentUser() {
+    setTimeout(() => {
+      this.allUserChannels = this.allChannels.filter((channel) =>
+        channel.userIds.includes(this.currentUser!.id)
+      );
+    }, 100);
+  }
 
-  getAllUsers(){
-    const usersCollection = collection(this.firestore, 'users')
-    this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
+  getAllUsers() {
+    const usersCollection = collection(this.firestore, 'users');
+    this.users$ = collectionData(usersCollection, {
+      idField: 'id',
+    }) as Observable<User[]>;
 
     this.users$.subscribe((changes) => {
-      this.allUsers = Array.from(new Map(changes.filter(user => user.id !== this.currentUser?.id)
-        .map(user => [user.id, user])
-      ).values());
-    })
+      this.allUsers = Array.from(
+        new Map(
+          changes
+            .filter((user) => user.id !== this.currentUser?.id)
+            .map((user) => [user.id, user])
+        ).values()
+      );
+    });
   }
 
-
-  checkInputValue(){
+  checkInputValue() {
     this.displayInvalidReceiverMsg = false;
-    if(this.inputValue.startsWith('#')){
+    if (this.inputValue.startsWith('#')) {
       this.showUserDropdown = false;
       this.showChannelDropdown = true;
       this.setFilteredChannels();
-    } else if(this.inputValue.startsWith('@')){
+    } else if (this.inputValue.startsWith('@')) {
       this.showChannelDropdown = false;
       this.showUserDropdown = true;
       this.setFilteredUsers();
@@ -104,114 +112,109 @@ export class DefaultChatComponent {
     }
   }
 
-
-  setFilteredChannels(){
-    if(this.inputValue.length > 1){
+  setFilteredChannels() {
+    if (this.inputValue.length > 1) {
       this.filterChannels();
     } else {
       this.filteredChannels = [...this.allUserChannels];
     }
   }
 
-
-  setFilteredUsers(){
-    if(this.inputValue.length > 1){
+  setFilteredUsers() {
+    if (this.inputValue.length > 1) {
       this.filterUsers();
     } else {
       this.filteredUsers = [...this.allUsers];
     }
   }
 
-
-  filterChannels(){
+  filterChannels() {
     const trimmedInput = this.inputValue.slice(1).toLowerCase();
-    this.filteredChannels = this.allUserChannels.filter((channel) => 
+    this.filteredChannels = this.allUserChannels.filter((channel) =>
       channel.name.toLowerCase().startsWith(trimmedInput)
     );
     this.showChannelDropdown = this.filteredChannels.length > 0;
   }
 
-
-  filterUsers(){
+  filterUsers() {
     const trimmedInput = this.inputValue.slice(1).toLowerCase();
-    this.filteredUsers = this.allUsers.filter((user) => 
-      user.firstName.toLowerCase().startsWith(trimmedInput) || 
-      user.lastName.toLowerCase().startsWith(trimmedInput)
+    this.filteredUsers = this.allUsers.filter(
+      (user) =>
+        user.firstName.toLowerCase().startsWith(trimmedInput) ||
+        user.lastName.toLowerCase().startsWith(trimmedInput)
     );
     this.showUserDropdown = this.filteredUsers.length > 0;
   }
 
-
-  setReceiver(receiver: Channel | User){
-    if('creator' in receiver){
-      this.inputValue = "#" + receiver.name;
+  setReceiver(receiver: Channel | User) {
+    if ('creator' in receiver) {
+      this.inputValue = '#' + receiver.name;
       this.receiverService.setReceiver(receiver);
       this.showChannelDropdown = false;
-    } else if('email' in receiver){
+    } else if ('email' in receiver) {
       this.inputValue = receiver.firstName + ' ' + receiver.lastName;
       this.receiverService.setReceiver(receiver);
       this.showUserDropdown = false;
     }
   }
 
-
-  checkForValidReceiverInput(){
-    setTimeout(()=>{
+  checkForValidReceiverInput() {
+    setTimeout(() => {
       this.showUserDropdown = false;
       this.showChannelDropdown = false;
     }, 200);
-    
-    if(this.inputValue.startsWith('@')){
+
+    if (this.inputValue.startsWith('@')) {
       this.checkForValidUserNameInput();
-    } else if(this.inputValue.startsWith('#')){
+    } else if (this.inputValue.startsWith('#')) {
       this.checkForValidChannelInput();
-    } else if(this.isEmail(this.inputValue)){
+    } else if (this.isEmail(this.inputValue)) {
       this.checkForValidUserMailInput();
     }
   }
 
-
-  checkForValidUserMailInput(){
+  checkForValidUserMailInput() {
     const inputUserMail = this.inputValue.toLowerCase();
-    const foundUser = this.allUsers.find((user) => user.email === inputUserMail);
-    
-    if(foundUser){
+    const foundUser = this.allUsers.find(
+      (user) => user.email === inputUserMail
+    );
+
+    if (foundUser) {
       this.setReceiver(foundUser);
     } else {
       this.receiverService.resetReceiver();
     }
   }
 
-
-  isEmail(input: string){
+  isEmail(input: string) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(input);
   }
 
-
-  checkForValidUserNameInput(){
-    if(this.inputValue.length > 1){
+  checkForValidUserNameInput() {
+    if (this.inputValue.length > 1) {
       const inputUserName = this.inputValue.slice(1).toLowerCase();
-      const foundUser = this.allUsers.find((user) => (user.firstName + ' ' + user.lastName).toLowerCase() === inputUserName);
+      const foundUser = this.allUsers.find(
+        (user) =>
+          (user.firstName + ' ' + user.lastName).toLowerCase() === inputUserName
+      );
 
-      if(foundUser){
+      if (foundUser) {
         this.setReceiver(foundUser);
       }
     }
   }
 
-
-  checkForValidChannelInput(){
-    if(this.inputValue.length > 1){
+  checkForValidChannelInput() {
+    if (this.inputValue.length > 1) {
       const inputChannelName = this.inputValue.slice(1).toLowerCase();
-      const foundChannel = this.allChannels.find((channel) => channel.name.toLowerCase() === inputChannelName);
-      
-      if(foundChannel){
+      const foundChannel = this.allChannels.find(
+        (channel) => channel.name.toLowerCase() === inputChannelName
+      );
+
+      if (foundChannel) {
         this.setReceiver(foundChannel);
       }
     }
   }
-
-
-
 }
