@@ -1,12 +1,20 @@
-@import "mixins", "styles";
+@import "mixins", "styles", "queries";
 
 .content {
   @include display-flex($jc: space-between, $fd: column);
   @include size(100vw, 100dvh);
   background: $bg-color-gray;
+}
+
+.content-wrapper {
+  @include display-flex($jc: space-between, $fd: column, $gap: 12px);
+  @include size(100%, 100%);
+  max-width: 1920px;
   padding: 32px;
+  overflow-y: auto;
 }
 
 .auth-header {
   @include size(100%);
 }
+

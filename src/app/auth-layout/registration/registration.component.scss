@@ -1,4 +1,4 @@
-@import "mixins", "styles";
+@import "mixins", "styles", "queries";
 
 .auth-checkbox-container {
   @include display-flex($fd: column, $ai: flex-start);

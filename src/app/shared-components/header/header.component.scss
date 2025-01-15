@@ -1,4 +1,4 @@
-@import "mixins", "styles";
+@import "mixins", "styles", "queries";
 
 header {
   @include size(100%);
@@ -42,11 +42,6 @@ header {
 .search-bar {
   @include size(990px);
 }
-
-// .user-profile-container {
-//   @include size(500px);
-//   @include display-flex($jc: flex-end);
-// }
 
 .user-header-menu {
   @include display-flex($gap: 16px);
@@ -143,5 +138,15 @@ header {
   &:hover {
     cursor: pointer;
     background-color: $bg-color-gray;
+  }
+}
+
+@media only screen and (max-width: $mobile-large) {
+  .header-right {
+    display: none;
+  }
+
+  header {
+    justify-content: center;
   }
 }

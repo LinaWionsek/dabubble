@@ -1,4 +1,4 @@
-@import "mixins", "styles";
+@import "mixins", "styles", "queries";
 
 .login {
   @include display-flex();
@@ -19,7 +19,7 @@
   overflow: hidden;
   transform: translateX(200px);
   animation: logo-slide-left 300ms ease-out 500ms forwards,
-    logo-slide-top-left 500ms ease-out 2000ms forwards;
+  logo-slide-top-left 500ms ease-out 2000ms forwards;
 }
 
 .logo-container {
@@ -54,7 +54,6 @@
   @include size(100%);
   > .divider-line {
     flex-grow: 1;
-
     height: 1px;
     background: $border-color-purple;
   }
@@ -72,4 +71,5 @@
     @include size(28px, 28px);
   }
 }
+
 

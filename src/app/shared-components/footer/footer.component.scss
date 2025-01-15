@@ -1,6 +1,27 @@
-@import "mixins", "styles";
+@import "mixins", "styles", "queries";
 
 .footer {
-    @include display-flex($gap: 30px);
-    background: $bg-color-gray;
+  @include display-flex($gap: 30px);
+  background: $bg-color-gray;
+}
+
+.header-right {
+  display: none;
+  @include size(170px);
+  > span {
+    align-self: center;
+    @include font-style($font-size-18, $font-weight-400, $text-color-black);
   }
+}
+
+@media only screen and (max-width: $mobile-large) {
+  footer {
+    > a {
+      display: none;
+    }
+  }
+
+  .header-right {
+    @include display-flex($fd: column);
+  }
+}
