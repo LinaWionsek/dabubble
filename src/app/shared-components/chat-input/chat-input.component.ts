@@ -52,16 +52,25 @@ export class ChatInputComponent {
 
 
   ngAfterViewInit() {
-    this.messageInput.nativeElement.focus();
+    this.addFocusToChatInput();
   }
+
 
   ngOnChanges(changes: SimpleChanges){
     this.checkInputUsecase();
     this.setCurrentUser();
     this.subscribeToChannelService();
     this.loadUsers();
-    this.messageInput.nativeElement.focus();
+    this.addFocusToChatInput();
   }
+
+
+  addFocusToChatInput(){
+    setTimeout(() => {
+      this.messageInput.nativeElement.focus();
+    }, 100)
+  }
+  
 
   async setCurrentUser(){
     this.currentUser = await this.authService.getFullUser();
