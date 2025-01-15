@@ -87,7 +87,9 @@ export class WorkspaceChannelsComponent {
 
 
   getAllChannelsForCurrentUser(){
-    this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
+    setTimeout(() => {
+      this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
+    }, 100)
   }
 
 
