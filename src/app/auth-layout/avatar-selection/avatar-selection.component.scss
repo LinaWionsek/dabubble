@@ -1,6 +1,7 @@
-@import "mixins", "styles";
+@import "mixins", "styles", "queries";
 
 .user-name {
   @include font-style($font-size-32, $font-weight-700, $text-color-black);
   text-align: center;
+  word-break: break-all;
 }

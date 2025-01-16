@@ -1,0 +1,65 @@
+@import "mixins", "styles";
+
+@media only screen and (max-width: $mobile-large) {
+  .form-header > .header-title > h3 {
+    font-size: $font-size-32;
+  }
+
+  .auth-inputs > .user-name {
+    font-size: $font-size-24;
+  }
+
+  .form-header > span,
+  footer > .header-right > span,
+  .auth-inputs > .avatar-selection .avatar-info {
+    font-size: $font-size-16;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .auth-buttons > .auth-input,
+  .auth-input,
+  .secondary-href,
+  .auth-form > .divider > .divider-text,
+  .auth-checkbox-container
+    > .auth-checkbox-wrapper
+    > .auth-checkbox-info-container
+    > .auth-checkbox-info {
+    font-size: $font-size-14;
+
+    &::placeholder {
+      font-size: $font-size-14;
+    }
+  }
+
+  .auth-input-container > .invalid-input {
+    font-size: 10px;
+  }
+
+  .content > .content-wrapper {
+    padding: 16px;
+  }
+
+  .auth-form {
+    padding: 16px 32px;
+  }
+
+  .auth-input {
+    padding: 10px 15px 10px 60px;
+  }
+
+  .auth-button-container {
+    gap: 20px;
+  }
+
+  .auth-form,
+  .auth-inputs {
+    gap: 12px;
+  }
+}
+
+@media only screen and (max-width: $mobile) {
+  .form-header > .header-title > h3 {
+    font-size: $font-size-24;
+  }
+}
