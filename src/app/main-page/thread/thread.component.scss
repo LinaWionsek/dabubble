@@ -8,10 +8,18 @@
 
 .thread-container{
     background-color: white;
-    flex: 1;
+    // flex: 1;
+    height: 86.5vh;
+
     width: 500px;
     border-radius: 30px;
     @include display-flex($fd: column, $jc: flex-start);
+
+    >app-chat-history {
+        flex: 1; /* Allow it to take up remaining space */
+        min-height: 0; /* Prevent it from exceeding the parent's height */
+        overflow: hidden; /* Ensure no overflow issues */
+      }
 }
 
 .thread-header{
