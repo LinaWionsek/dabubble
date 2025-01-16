@@ -1,9 +1,13 @@
 <div class="main-chat-container">
-    @if(activeChannel){
-        <app-channel-chat></app-channel-chat>
-    } @else if(activeChat){
-        <app-dm-chat></app-dm-chat>
+    @if(isSmallScreen && threadActivated){
+        <app-thread></app-thread>
     } @else {
-        <app-default-chat></app-default-chat>
+        @if(activeChannel){
+            <app-channel-chat></app-channel-chat>
+        } @else if(activeChat){
+            <app-dm-chat></app-dm-chat>
+        } @else {
+            <app-default-chat></app-default-chat>
+        }
     }
 </div>

@@ -14,4 +14,8 @@
   border-radius: 30px;
   background-color: $primary-color-white;
   height: 86.5vh;
+
+  >app-thread{
+    width: 100%;
+  }
 }

@@ -34,3 +34,11 @@
   //   flex: 0 0 auto; /* Fixed width, does not shrink or grow */
   // }
 }
+
+
+
+@media(max-width:1100px){
+  .thread-container{
+    display: none;
+  }
+}
