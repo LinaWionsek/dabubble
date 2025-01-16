@@ -6,6 +6,7 @@ import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/dm-chat.service';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-workspace',
@@ -36,7 +37,7 @@ export class WorkspaceComponent {
   workspaceMenuOpened = true;
 
 
-  constructor(private authService: AuthService, private channelService: ChannelService, private chatService: ChatService){}
+  constructor(private authService: AuthService, private channelService: ChannelService, private chatService: ChatService, private threadService: ThreadService){}
 
 
   ngOnInit(){
@@ -62,5 +63,6 @@ export class WorkspaceComponent {
   activateDefaultChat(){
     this.channelService.clearActiveChannel();
     this.chatService.clearActiveChat();
+    this.threadService.deactivateThread();
   }
 }

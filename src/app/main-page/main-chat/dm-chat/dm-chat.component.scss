@@ -2,7 +2,6 @@
 
 :host{
     width: 100%;
-    // flex: 1;
     height: 100%;
     @include display-flex($fd:column, $jc: flex-start);
 
