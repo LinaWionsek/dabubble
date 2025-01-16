@@ -19,5 +19,18 @@
   @include display-flex($jc: flex-start, $gap: 16px);
   @include size(100%, 100%);
   padding: 0 16px 16px 16px;
-  flex: 1;
+  height: 100%;
+
+  > app-workspace {
+    flex: 0 0 auto; /* Fixed width, does not shrink or grow */
+  }
+
+  > app-main-chat {
+    flex: 1 1 auto; /* Flexible width, shrinks and grows as needed */
+    // min-width: 400px; /* Optional: Define a minimum width to prevent it from collapsing too much */
+  }
+
+  // > app-thread {
+  //   flex: 0 0 auto; /* Fixed width, does not shrink or grow */
+  // }
 }
