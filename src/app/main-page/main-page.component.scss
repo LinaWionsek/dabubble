@@ -22,12 +22,11 @@
   height: 100%;
 
   > app-workspace {
-    flex: 0 0 auto; /* Fixed width, does not shrink or grow */
+    flex: 0 0 auto; 
   }
 
   > app-main-chat {
-    flex: 1 1 auto; /* Flexible width, shrinks and grows as needed */
-    // min-width: 400px; /* Optional: Define a minimum width to prevent it from collapsing too much */
+    flex: 1 1 auto; 
   }
 
   // > app-thread {
