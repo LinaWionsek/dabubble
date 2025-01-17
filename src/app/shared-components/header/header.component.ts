@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { Component, HostListener, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
@@ -35,6 +35,8 @@ import { WorkspaceService } from '../../services/workspace.service';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent implements OnInit {
+  @Input() usedFor: string = '';
+
   showRegistrationLink: boolean = false;
   firestore: Firestore = inject(Firestore);
   allUsers$!: Observable<User[]>;

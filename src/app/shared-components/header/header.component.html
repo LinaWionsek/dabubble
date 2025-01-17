@@ -4,10 +4,10 @@
     @if(!isSmallerScreen){
       <img class="logo" src="../../assets/img/da_bubble_logo.png" alt="da_bubble_logo" />
       <span>DABubble</span>
-    } @else if(isSmallerScreen && isWorkspaceActivated){
+    } @else if(isSmallerScreen && isWorkspaceActivated ){
       <img class="logo" src="../../assets/img/da_bubble_logo.png" alt="da_bubble_logo" />
       <span>DABubble</span>
-    } @else if (isSmallerScreen && !isWorkspaceActivated){
+    } @else if (isSmallerScreen && !isWorkspaceActivated && usedFor === 'main-page'){
       <div class="mobile-menu" (click)="activateWorkspace()">
         <img src="./../../../assets/img/arrow_left.png" class="arrow-left">
         <img src="./../../../assets/img/Workspace logo.png" class="workspace-logo">
