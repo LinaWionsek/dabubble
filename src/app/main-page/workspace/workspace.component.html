@@ -3,7 +3,63 @@
         <div class="workspace-header">
                  <img src="./../../../assets/img/Workspace logo.png" class="workspace-logo">
                  <span class="workspace-title">Devspace</span>
-                 <div class="icon-container" (click)="activateDefaultChat()">
+
+                 <section class="search-bar">
+                    <div class="search-bar-input-container">
+                      <input (keyup)="searchDevspace()" ngModel [(ngModel)]="searchTerm" class="search-bar-input"
+                        placeholder="Gehe zu..." type="text" />
+                      <div class="search-bar-input-icon-container">
+                        @if (!searching) {
+                          <img class="search-bar-input-icon-hover" src="./../../assets/img/search_icon.png" alt="search_icon"/>
+                        } @else {
+                          <img (click)="resetSearch()" class="search-bar-input-icon-hover" src="./../../assets/img/close.png" alt="search_icon"/>
+                        }
+                      </div>
+                    </div>
+                  </section>
+          
+                  @if(showDropDown){
+                    <div class="drop-down-div">
+                      <div class="scroll-div">
+          
+                        @if(searchResults.length > 0 || searchedUsers.length > 0) {
+                          @if(searchResults.length > 0){
+                            <div class="section-header">Nachrichten</div>
+                            @for (result of searchResults; track $index) {
+                              <div class="message-list" (click)="setActiveChannel(result.channel)">
+                                <b>{{result.channel.name}}</b>
+                                <div>
+                                  {{result.senderName}}:
+                                  {{result.messageText}}
+                                </div>
+                              </div>
+                            }
+                          }
+          
+                          @if(searchedUsers.length > 0){
+                            <div class="section-header">Benutzer</div>
+                            @for (user of searchedUsers; track $index) {
+                              <div class="user-list" (click)="setActiveChat(user)">
+                                <img src="{{user.avatar}}" alt="" class="user-img">
+                                <div>
+                                  {{user.firstName}}
+                                  {{user.lastName}}
+                                </div>
+                              </div>
+                            }
+                          }
+                        } @else {
+                          <div class="no-results">
+                            Keine Ergebnisse für "{{searchTerm}}" gefunden
+                          </div>
+                        }
+                      </div>
+                    </div>
+                }
+                
+          
+
+                 <div class="icon-container write-msg-btn" (click)="activateDefaultChat()">
                     <img src="./../../../assets/img/edit_square.png" class="edit-img">
                  </div>
                  
@@ -29,4 +85,9 @@
     } @else {
         <img src="./../../../assets/img/Show menu2.png" class="workspace-opened-img">
     }
+</div>
+
+
+<div class="new-message-div" (click)="activateDefaultChat()">
+    <img src="./../../../assets/img/white_edit_square.png" alt="">
 </div>

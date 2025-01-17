@@ -7,6 +7,7 @@ import { ChannelService } from '../../../services/channel.service';
 import { User } from '../../../models/user.class';
 import { ThreadService } from '../../../services/thread.service';
 import { ChatService } from '../../../services/dm-chat.service';
+import { WorkspaceService } from '../../../services/workspace.service';
 
 
 @Component({
@@ -31,7 +32,12 @@ export class WorkspaceChannelsComponent {
   @Input() currentUser?: User | null;
   @Output() dialogStateChange = new EventEmitter<boolean>();
   
-  constructor(private channelService: ChannelService, private threadService: ThreadService, private chatService: ChatService) {}
+  constructor(
+    private channelService: ChannelService, 
+    private threadService: ThreadService, 
+    private chatService: ChatService,
+    private workspaceService: WorkspaceService
+  ) {}
 
   showSubmenu = true;
   addChannelDialogOpened = false;
@@ -94,6 +100,7 @@ export class WorkspaceChannelsComponent {
 
 
   activateChannel(channel: Channel) {
+    this.workspaceService.deactivateWorkspace()
     this.chatService.clearActiveChat();
     this.threadService.deactivateThread();
     this.activeChannel = channel;

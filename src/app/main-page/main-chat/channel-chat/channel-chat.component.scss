@@ -2,8 +2,15 @@
 
 :host{
     width: 100%;
+    height: 100%;
     flex: 1;
     @include display-flex($fd:column, $jc: flex-start);
+
+    >app-chat-history {
+        flex: 1; 
+        min-height: 0; 
+        overflow: hidden; 
+      }
 }
 
 .chat-input-container{

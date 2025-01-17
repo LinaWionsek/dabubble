@@ -1,9 +1,21 @@
 <div class="main-chat-container">
-    @if(activeChannel){
-        <app-channel-chat></app-channel-chat>
-    } @else if(activeChat){
-        <app-dm-chat></app-dm-chat>
-    } @else {
-        <app-default-chat></app-default-chat>
+    @if(isSmallScreen && threadActivated){
+        <app-thread></app-thread>
+    } @else if (isSmallerScreen && workspaceActivated ) {
+        <app-workspace (dialogStateChange)="handleDialogStateChange($event)"></app-workspace>
+    } @else{
+        @if(activeChannel){
+            <app-channel-chat></app-channel-chat>
+        } @else if(activeChat){
+            <app-dm-chat></app-dm-chat>
+        } @else {
+            <app-default-chat></app-default-chat>
+        }
     }
 </div>
+
+@if(addChannelDialogOpened){
+    <app-add-channel-dialog
+      (dialogStateChange)="handleDialogStateChange($event)"
+    ></app-add-channel-dialog>
+    }

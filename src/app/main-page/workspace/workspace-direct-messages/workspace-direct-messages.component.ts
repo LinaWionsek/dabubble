@@ -8,6 +8,7 @@ import { ChannelService } from '../../../services/channel.service';
 import { ThreadService } from '../../../services/thread.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { WorkspaceService } from '../../../services/workspace.service';
 
 
 
@@ -40,7 +41,12 @@ export class WorkspaceDirectMessagesComponent {
   activeUser?: User | null;
 
 
-  constructor(private chatService: ChatService, private channelService: ChannelService, private threadService: ThreadService){}
+  constructor(
+    private chatService: ChatService, 
+    private channelService: ChannelService, 
+    private threadService: ThreadService,
+    private workspaceService: WorkspaceService
+  ){}
 
 
   ngOnInit(){
@@ -77,6 +83,7 @@ export class WorkspaceDirectMessagesComponent {
 
 
   activateChat(user: User){
+    this.workspaceService.deactivateWorkspace();
     this.channelService.clearActiveChannel();
     this.threadService.deactivateThread();
     this.activeUser = user;

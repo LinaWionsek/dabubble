@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { ChatHistoryComponent } from "../../shared-components/chat-history/chat-history.component";
 import { ChatInputComponent } from "../../shared-components/chat-input/chat-input.component";
 import { ThreadService } from '../../services/thread.service';
@@ -12,11 +12,12 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../services/authentication.service';
 import { User } from '../../models/user.class';
 import { ChatService } from '../../services/dm-chat.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [ChatHistoryComponent, ChatInputComponent],
+  imports: [ChatHistoryComponent, ChatInputComponent, CommonModule],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss'
 })
@@ -26,6 +27,7 @@ export class ThreadComponent {
   activeMessage: Message | null = null;
   currentUser?: User | null;
   activeChatUser?: User | null;
+  isSmallScreen = window.innerWidth <= 1100;
   
 
   firestore: Firestore = inject(Firestore);
@@ -38,6 +40,15 @@ export class ThreadComponent {
     this.subscribeToChannelService();
     this.subscribeToThreadService();
     this.subscribeToActiveChatService();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.updateScreenSize();
+  }
+
+  updateScreenSize(){
+    this.isSmallScreen = window.innerWidth <= 1100;
   }
 
 

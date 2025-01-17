@@ -19,5 +19,38 @@
   @include display-flex($jc: flex-start, $gap: 16px);
   @include size(100%, 100%);
   padding: 0 16px 16px 16px;
-  flex: 1;
+  height: 100%;
+
+  > app-workspace {
+    flex: 0 0 auto; 
+  }
+
+  > app-main-chat {
+    flex: 1 1 auto; 
+  }
+
+  // > app-thread {
+  //   flex: 0 0 auto; /* Fixed width, does not shrink or grow */
+  // }
+}
+
+
+
+@media(max-width:1100px){
+  .thread-container{
+    display: none;
+  }
+}
+
+
+@media(max-width: 900px){
+  .workspace-container{
+    display: none;
+  }
+}
+
+@media(max-width: 650px){
+  .main-content-div{
+    padding: 0;
+  }
 }

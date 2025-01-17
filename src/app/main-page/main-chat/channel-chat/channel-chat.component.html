@@ -17,38 +17,3 @@
 </div>
 
 
-
-
-
-<!-- @if(editChannelDialogOpened && activeChannel){
-    <app-edit-channel-dialog
-        [channelData]="activeChannel!"
-        (dialogClosed)="closeEditDialog()"
-        [position]="editChannelDialogPosition"
-        >
-    </app-edit-channel-dialog>
-}
-
-
-@if(showMembersDialogOpened && activeChannel){
-    <app-show-members-dialog
-        [channelData]="activeChannel" 
-        (dialogClosed)="closeShowMembersDialog()" 
-        [allUsers]="users"
-        (addMembersDialogOpened)="openAddMembersDialogThroughShowMembersDialog()"
-        [showMembersDialogPosition]="showMembersDialogPosition"
-        >
-    </app-show-members-dialog>
-}
-
-
-@if(addMembersDialogOpened && activeChannel){
-    <app-add-members-dialog
-        [channelData]="activeChannel" 
-        [allUsers]="users"
-        (dialogClosed)="closeAddMembersDialog()" 
-        (openAddMembersDialog)="openAddMembersDialog()"
-        [addMembersDialogPosition]="addMembersDialogPosition"
-        >
-    </app-add-members-dialog>
-} -->
