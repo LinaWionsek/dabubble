@@ -2,9 +2,13 @@
   <div class="main-page-container">
     <app-header class="width-100 pad-16"></app-header>
     <div class="main-content-div">
-      <app-workspace
+
+      <div class="workspace-container">
+        <app-workspace
         (dialogStateChange)="handleDialogStateChange($event)"
-      ></app-workspace>
+        ></app-workspace>
+      </div>
+      
       <app-main-chat></app-main-chat>
 
       @if(threadActivated){
