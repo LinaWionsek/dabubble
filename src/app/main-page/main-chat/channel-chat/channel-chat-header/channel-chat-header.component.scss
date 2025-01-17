@@ -151,3 +151,33 @@
     }
     
   }
+
+  @media(max-width: 1100px){
+    .edit-channel-dialog-container{
+        left: -200px;
+    }
+  }
+
+  @media(max-width: 900px){
+    .edit-channel-dialog-container{
+        left: 0px;
+    }
+  }
+
+  @media(max-width: 600px){
+    .edit-channel-dialog-container{
+        left: -30px;
+    }
+    .add-members-dialog-container{
+        right: 450px;
+    }
+  }
+
+@media(max-width: 525px){
+    .add-members-dialog-container{
+        position: fixed;
+        right: unset;
+        left: 25px;
+        top: 190px;
+    }
+}
