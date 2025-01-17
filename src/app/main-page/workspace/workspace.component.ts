@@ -177,7 +177,7 @@ export class WorkspaceComponent {
 
   getUserChannels() {
     this.allUserChannels = this.allChannels.filter((channel) =>
-      channel.userIds.includes(this.user!.id)
+      channel.userIds.includes(this.currentUser!.id)
     );
   }
 
