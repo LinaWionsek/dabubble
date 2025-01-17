@@ -11,7 +11,9 @@ header {
 }
 
 .header-left {
-  @include display-flex($gap: 16px);
+  @include display-flex($gap: 16px, $jc: flex-start);
+  width: 360px;
+  margin-right: 16px;
   transition: 225ms ease-in-out;
   &:hover {
     transform: scale(1.05);
@@ -27,7 +29,9 @@ header {
 
 .header-center {
   @include display-flex($jc: space-between);
-  @include size(1512px);
+  // @include size(1512px);
+  flex: 1 1 auto;
+  border: 1px solid red;
 }
 
 .header-right {
@@ -40,7 +44,10 @@ header {
 }
 
 .search-bar {
-  @include size(990px);
+  // @include size(990px);
+  flex: 1 1 auto;
+  margin-right: 24px;
+  // margin-left: 80px;
 }
 
 .user-header-menu {
@@ -148,5 +155,12 @@ header {
 
   header {
     justify-content: center;
+  }
+}
+
+
+@media(max-width: 1150px){
+  .search-bar-input::placeholder {
+    opacity: 0; /* Hides the placeholder */
   }
 }
