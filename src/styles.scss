@@ -430,3 +430,13 @@ li {
     height: 75px;
   }
 }
+
+
+@media(max-width:900px){
+  .search-bar-input-icon-container {
+    @include position(absolute, 10px, $rig: 24px);
+  }
+  .search-bar-input {
+    @include input-style(17.5px 30px, $primary-color-white);
+  }
+}
