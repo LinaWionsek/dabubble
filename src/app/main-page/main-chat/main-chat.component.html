@@ -1,7 +1,9 @@
 <div class="main-chat-container">
     @if(isSmallScreen && threadActivated){
         <app-thread></app-thread>
-    } @else {
+    } @else if (isSmallerScreen && workspaceActivated ) {
+        <app-workspace></app-workspace>
+    } @else{
         @if(activeChannel){
             <app-channel-chat></app-channel-chat>
         } @else if(activeChat){

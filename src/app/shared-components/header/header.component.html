@@ -1,8 +1,24 @@
 <header>
   <section [ngClass]="{ 'padding-left-34': showSearchBar }" class="header-left" routerLink="/login">
-    <img class="logo" src="../../assets/img/da_bubble_logo.png" alt="da_bubble_logo" />
-    <span>DABubble</span>
+
+    @if(!isSmallerScreen){
+      <img class="logo" src="../../assets/img/da_bubble_logo.png" alt="da_bubble_logo" />
+      <span>DABubble</span>
+    } @else if(isSmallerScreen && isWorkspaceActivated){
+      <img class="logo" src="../../assets/img/da_bubble_logo.png" alt="da_bubble_logo" />
+      <span>DABubble</span>
+    } @else if (isSmallerScreen && !isWorkspaceActivated){
+      <div class="mobile-menu" (click)="activateWorkspace()">
+        <img src="./../../../assets/img/arrow_left.png" class="arrow-left">
+        <img src="./../../../assets/img/Workspace logo.png" class="workspace-logo">
+        <span class="workspace-title">Devspace</span>
+      </div>
+      
+    }
+    
   </section>
+
+  
 
   @if(showSearchBar){
     <div class="header-center">

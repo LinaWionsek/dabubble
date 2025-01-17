@@ -205,12 +205,34 @@ header {
   }
 
   .header-left {
-    width: 161px;
+    // width: 161px;
     > img {
-      @include size(45px, 45px);
+      @include size(50px, 50px);
     }
     > span {
       @include font-style($font-size-24, $font-weight-700, $text-color-black);
     }
+  }
+}
+
+
+.mobile-menu{
+  // margin-left: 16px;
+  width: 300px;
+  @include display-flex($jc: flex-start);
+  > span{
+    @include font-style($font-size-24, $font-weight-700, $text-color-black);
+
+  }
+
+  > .arrow-left{
+    width: 28px;
+    height: 28px;
+  }
+  > .workspace-logo{
+    width: 56px;
+    height: 56px;
+    margin-right: 12px;
+    margin-left: 0px;
   }
 }
