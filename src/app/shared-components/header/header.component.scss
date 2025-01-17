@@ -4,6 +4,7 @@ header {
   @include size(100%);
   @include display-flex($jc: space-between);
   @include position(relative);
+  height: 80px;
 }
 
 .padding-left-34 {
@@ -31,7 +32,6 @@ header {
   @include display-flex($jc: space-between);
   // @include size(1512px);
   flex: 1 1 auto;
-  border: 1px solid red;
 }
 
 .header-right {
@@ -161,6 +161,56 @@ header {
 
 @media(max-width: 1150px){
   .search-bar-input::placeholder {
-    opacity: 0; /* Hides the placeholder */
+    opacity: 0; 
+  }
+}
+
+@media(max-width: 1100px){
+  .user-header-menu {  
+    > span {
+      @include font-style($font-size-24, $font-weight-700, $text-color-black);
+    }
+}
+}
+
+@media (max-width: 900px) {
+  .user-header-menu {
+    > span {
+      display: none;
+    }
+
+    > .user-avatar-wrapper {
+      > .user-avatar {
+        @include size(50px, 50px); 
+        margin-top: 8px;
+      }
+
+      > .online-status {
+        @include position(absolute, $bot: 2px, $rig: 0); 
+        @include size(16px, 16px); 
+      }
+    }
+  }
+
+  .search-bar {
+    display: none;
+  }
+
+  .header-center {
+    justify-content: flex-end;
+  }
+
+  .drop_down_arrow {
+    display: none;
+  }
+
+  .header-left {
+    width: 161px;
+    > img {
+      @include size(45px, 45px);
+    }
+    > span {
+      @include font-style($font-size-24, $font-weight-700, $text-color-black);
+    }
   }
 }
