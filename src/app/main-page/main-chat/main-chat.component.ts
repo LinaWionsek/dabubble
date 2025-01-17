@@ -11,11 +11,12 @@ import { ThreadService } from '../../services/thread.service';
 import { ThreadComponent } from '../thread/thread.component';
 import { WorkspaceService } from '../../services/workspace.service';
 import { WorkspaceComponent } from '../workspace/workspace.component';
+import { AddChannelDialogComponent } from '../add-channel-dialog/add-channel-dialog.component';
 
 @Component({
   selector: 'app-main-chat',
   standalone: true,
-  imports: [ ChannelChatComponent, DmChatComponent, DefaultChatComponent, ThreadComponent, WorkspaceComponent],
+  imports: [ ChannelChatComponent, DmChatComponent, DefaultChatComponent, ThreadComponent, WorkspaceComponent, AddChannelDialogComponent],
   templateUrl: './main-chat.component.html',
   styleUrl: './main-chat.component.scss'
 })
@@ -26,6 +27,7 @@ export class MainChatComponent {
   isSmallScreen = window.innerWidth <= 1100;
   isSmallerScreen = window.innerWidth <= 900;
   workspaceActivated = false;
+  addChannelDialogOpened = false;
 
 
   constructor(
@@ -71,6 +73,10 @@ export class MainChatComponent {
     this.workspaceService.workspaceActivated$.subscribe((activated) => {
       this.workspaceActivated = activated;
     })
+  }
+
+  handleDialogStateChange(dialogState: boolean) {
+    this.addChannelDialogOpened = dialogState;
   }
     
 }
