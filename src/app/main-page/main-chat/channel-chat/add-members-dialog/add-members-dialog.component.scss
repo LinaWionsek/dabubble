@@ -221,3 +221,23 @@ input.error::placeholder {
         scale: 1.1;
     }
 }
+
+@media(max-width: 600px){
+    .dialog{
+        width: 450px;
+        padding: 30px;
+    }
+}
+
+
+@media(max-width: 525px){
+    .dialog{
+        width: 85vw;
+    }
+}
+
+@media(max-width: 450px){
+    .dialog{
+        width: 80vw;
+    }
+}
