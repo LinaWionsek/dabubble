@@ -1,9 +1,11 @@
+
+
 <section
   class="user-profile"
   [ngClass]="{ centralized: usedFor === 'otherProfile' }"
   (click)="$event.stopPropagation()"
 >
-  @if(isEmailVerified && !isPasswordRequired) {
+  @if((isEmailVerified && !isPasswordRequired) || usedFor === 'otherProfile') {
   <header>
     <span>Profil</span>
     <div (click)="onClose()" class="icon-container">
@@ -177,7 +179,7 @@
     </section>
   </form>
 
-  } } @if(!isEmailVerified) {
+  } } @if(!isEmailVerified && usedFor !== 'otherProfile') {
   <section class="verification-info">
     <span>
       Ihr Account ist nicht verifiziert, bitte schließen Sie die Verifizierung
@@ -255,5 +257,6 @@
 
   }
 </section>
+
 
 <app-toast></app-toast>
