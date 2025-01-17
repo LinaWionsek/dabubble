@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Router, NavigationStart } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
 import { RegistrationDataService } from '../../services/registration-data.service';
 import { AuthHeaderComponent } from '../auth-header/auth-header.component';
 import { Subscription } from 'rxjs';
 import { PasswordVisibilityService } from '../../services/password-visibility.service';
+import { AuthService } from '../../services/authentication.service';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-registration',
@@ -22,11 +24,16 @@ export class RegistrationComponent implements OnInit {
   email: string = '';
   password: string = '';
   private navigationSubscription: Subscription | null = null;
+  @ViewChild('emailInput') emailInput!: NgModel;
+  emailErrorMessage: string = 'Diese E-Mail ist leider ungültig';
+  isEmailInUse: boolean = false;
 
   constructor(
     private router: Router,
     private registrationDataService: RegistrationDataService,
-    public passwordVisibilityService: PasswordVisibilityService
+    public passwordVisibilityService: PasswordVisibilityService,
+    private authService: AuthService,
+    public auth: Auth
   ) {}
 
   ngOnInit(): void {
@@ -83,5 +90,30 @@ export class RegistrationComponent implements OnInit {
     });
 
     this.router.navigate(['/avatar-selection']);
+  }
+
+  async isEmailAlreadyUsed(): Promise<boolean> {
+    if (!this.email || this.email.trim() === '') {
+      this.isEmailInUse = false;
+      return false;
+    }
+
+    try {
+      let emailUsed = await this.authService.isEmailAlreadyUsed(this.email);
+      this.isEmailInUse = emailUsed;
+      let currentUser = this.auth.currentUser;
+
+      if (emailUsed || this.emailInput.value == currentUser?.email) {
+        this.emailErrorMessage = 'Diese E-Mail-Adresse wird bereits verwendet.';
+      } else {
+        this.emailErrorMessage = 'Diese E-Mail ist leider ungültig.';
+      }
+      return emailUsed;
+    } catch (error) {
+      console.error('Fehler bei der E-Mail-Überprüfung:', error);
+      this.emailErrorMessage = 'Fehler beim Überprüfen der E-Mail-Adresse.';
+      this.isEmailInUse = true;
+      return true;
+    }
   }
 }
