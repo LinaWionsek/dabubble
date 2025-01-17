@@ -137,3 +137,11 @@
     color: red;
     margin: 16px;
 }
+
+
+@media(max-width: 650px){
+    .default-chat-header{
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;  
+  }
+}

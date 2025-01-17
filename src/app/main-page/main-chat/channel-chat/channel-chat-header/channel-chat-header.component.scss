@@ -140,3 +140,14 @@
 }
 
 
+@media(max-width: 650px){
+    .show-members-div{
+        display: none;
+    }
+
+    .channel-chat-header{
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+    }
+    
+  }
