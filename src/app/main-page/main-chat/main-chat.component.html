@@ -2,7 +2,7 @@
     @if(isSmallScreen && threadActivated){
         <app-thread></app-thread>
     } @else if (isSmallerScreen && workspaceActivated ) {
-        <app-workspace></app-workspace>
+        <app-workspace (dialogStateChange)="handleDialogStateChange($event)"></app-workspace>
     } @else{
         @if(activeChannel){
             <app-channel-chat></app-channel-chat>
@@ -13,3 +13,9 @@
         }
     }
 </div>
+
+@if(addChannelDialogOpened){
+    <app-add-channel-dialog
+      (dialogStateChange)="handleDialogStateChange($event)"
+    ></app-add-channel-dialog>
+    }
