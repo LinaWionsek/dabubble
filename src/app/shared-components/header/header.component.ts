@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
@@ -19,6 +19,7 @@ import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/dm-chat.service';
 import { Message } from '../../models/message.class';
 import { ThreadService } from '../../services/thread.service';
+import { WorkspaceService } from '../../services/workspace.service';
 
 @Component({
   selector: 'app-header',
@@ -55,16 +56,22 @@ export class HeaderComponent implements OnInit {
   allMessages: Message[] = [];
   searchResults: Message[] = [];
   showDropDown: boolean = false;
+  isSmallerScreen = window.innerWidth <= 900;
+  isWorkspaceActivated = false;
 
   constructor(
     private router: Router,
     private authService: AuthService,
     private channelService: ChannelService,
     private chatService: ChatService,
-    private threadService: ThreadService
+    private threadService: ThreadService,
+    private workspaceService: WorkspaceService
   ) {}
 
   ngOnInit(): void {
+    this.subscribeToWorkspaceService();
+    this.updateScreenSize();
+
     this.showSearchBar = false;
     this.showUserProfile = false;
     this.showRegistrationLink = false;
@@ -84,10 +91,34 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+
+  subscribeToWorkspaceService(){
+    this.workspaceService.workspaceActivated$.subscribe((activated) => {
+        this.isWorkspaceActivated = activated;
+      }
+    );
+  }
+
+  @HostListener('window:resize', ['$event'])
+    onResize(event: Event): void {
+    this.updateScreenSize();
+  }
+
+
+  updateScreenSize(){
+    this.isSmallerScreen = window.innerWidth <= 900;
+  }
+
+  activateWorkspace(){
+    this.workspaceService.activateWorkspace();
+  }
+
+
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
+    this.authService.signOut();
   }
 
   setActiveChat(user: User) {

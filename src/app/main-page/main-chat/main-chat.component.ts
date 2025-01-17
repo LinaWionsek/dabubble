@@ -9,11 +9,13 @@ import { DefaultChatComponent } from './default-chat/default-chat.component';
 import { ChatService } from '../../services/dm-chat.service';
 import { ThreadService } from '../../services/thread.service';
 import { ThreadComponent } from '../thread/thread.component';
+import { WorkspaceService } from '../../services/workspace.service';
+import { WorkspaceComponent } from '../workspace/workspace.component';
 
 @Component({
   selector: 'app-main-chat',
   standalone: true,
-  imports: [ ChannelChatComponent, DmChatComponent, DefaultChatComponent, ThreadComponent],
+  imports: [ ChannelChatComponent, DmChatComponent, DefaultChatComponent, ThreadComponent, WorkspaceComponent],
   templateUrl: './main-chat.component.html',
   styleUrl: './main-chat.component.scss'
 })
@@ -22,9 +24,17 @@ export class MainChatComponent {
   activeChat: User | null = null;
   threadActivated = false;
   isSmallScreen = window.innerWidth <= 1100;
+  isSmallerScreen = window.innerWidth <= 900;
+  workspaceActivated = false;
 
 
-  constructor(private channelService: ChannelService, private authSercive: AuthService, private chatService: ChatService, private threadService: ThreadService) {}
+  constructor(
+    private channelService: ChannelService, 
+    private authSercive: AuthService, 
+    private chatService: ChatService, 
+    private threadService: ThreadService,
+    private workspaceService: WorkspaceService
+  ) {}
 
 
   ngOnInit() {
@@ -41,6 +51,7 @@ export class MainChatComponent {
 
   updateScreenSize(){
     this.isSmallScreen = window.innerWidth <= 1100;
+    this.isSmallerScreen = window.innerWidth <= 900;
   }
 
 
@@ -56,6 +67,10 @@ export class MainChatComponent {
     this.threadService.threadActivated$.subscribe((activated) => {
       this.threadActivated = activated;
     });
+
+    this.workspaceService.workspaceActivated$.subscribe((activated) => {
+      this.workspaceActivated = activated;
+    })
   }
     
 }
