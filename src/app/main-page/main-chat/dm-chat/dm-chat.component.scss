@@ -61,3 +61,12 @@
     background-color: rgba(0, 0, 0, 0.1);
     z-index: 400;
 }
+
+
+
+@media(max-width: 650px){
+    .dm-chat-header{
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;  
+  }
+}
