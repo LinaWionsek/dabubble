@@ -22,6 +22,7 @@
         #fullNameInput="ngModel"
         required
         pattern="[a-zA-ZÀ-ž\s\-]+"
+        [maxLength]="30"
       />
       <img
         class="auth-input-icon"
@@ -50,6 +51,7 @@
         #emailInput="ngModel"
         required
         email
+        (change)="isEmailAlreadyUsed()"
       />
       <img
         class="auth-input-icon"
@@ -59,10 +61,10 @@
       <span
         class="invalid-input"
         [class.is-invalid]="
-          emailInput.invalid && emailInput.touched && emailInput.value != ''
+          emailInput.invalid && emailInput.touched && emailInput.value != '' || isEmailInUse
         "
       >
-        Diese E-Mail-Adresse ist leider ungültig.
+      {{ emailErrorMessage }}
       </span>
     </div>
 
@@ -132,7 +134,7 @@
         [disabled]="
           !registrationForm.valid ||
           !isCheckboxChecked ||
-          passwordInput.value.length < 8
+          passwordInput.value.length < 8 || isEmailInUse
         "
         name="checkbox"
         type="submit"
