@@ -16,7 +16,7 @@
 }
 
 .main-content-div {
-  @include display-flex($jc: flex-start, $gap: 16px);
+  @include display-flex($jc: flex-start, $gap: 16px, $ai: flex-start);
   @include size(100%, 100%);
   padding: 0 16px 16px 16px;
   height: 100%;
