@@ -48,7 +48,7 @@ export class ChatHistoryComponent {
 
 
   ngOnInit(){
-    
+    this.getCurrentUser();
     this.subscribeToChannelService();
   }
 

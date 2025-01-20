@@ -126,7 +126,6 @@ export class HeaderComponent implements OnInit {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
-    this.authService.signOut();
   }
 
   setActiveChat(user: User) {
@@ -150,7 +149,6 @@ export class HeaderComponent implements OnInit {
     this.searching = true;
     this.searchUser();
     this.getAllChannels();
-    
   }
 
   resetSearch() {
