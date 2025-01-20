@@ -73,6 +73,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeToWorkspaceService();
     this.updateScreenSize();
+    this.getCurrentUser();
 
     this.showSearchBar = false;
     this.showUserProfile = false;
@@ -85,6 +86,7 @@ export class HeaderComponent implements OnInit {
       }
     });
 
+    
     this.authSubscription = this.authService.getUserStatus().subscribe(
       (user) => {
         this.user = user;
@@ -93,6 +95,10 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+
+  async getCurrentUser(){
+    this.user = await this.authService.getFullUser();
+  }
 
   subscribeToWorkspaceService(){
     this.workspaceService.workspaceActivated$.subscribe((activated) => {
