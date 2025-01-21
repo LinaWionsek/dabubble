@@ -131,6 +131,8 @@ export class AddChannelDialogComponent {
     addMembersToChannel(){
       if (this.selectedOption === 'option1' && this.activeChannel){
         this.channel.userIds = this.activeChannel.userIds;
+      } else if(this.selectedOption === 'option1' && !this.activeChannel){
+        this.users.forEach(user => this.channel.userIds.push(user.id));
       } else if (this.selectedOption === 'option2'){
         this.selectedUsers?.forEach(user => this.channel.userIds.push(user.id));
       }
