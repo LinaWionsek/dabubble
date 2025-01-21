@@ -111,7 +111,7 @@ export class AddChannelDialogComponent {
         this.channelNameInvalid = true
         setTimeout(()=>{
           this.channelNameInvalid = false;
-        }, 2000);
+        }, 3000);
       } else if(ngForm.submitted && ngForm.form.valid){
         this.channelNameInvalid = false;
         this.mainDialogOpened = false;
