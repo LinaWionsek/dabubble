@@ -20,6 +20,7 @@ import { ChatService } from '../../services/dm-chat.service';
 import { Message } from '../../models/message.class';
 import { ThreadService } from '../../services/thread.service';
 import { WorkspaceService } from '../../services/workspace.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -67,7 +68,8 @@ export class HeaderComponent implements OnInit {
     private channelService: ChannelService,
     private chatService: ChatService,
     private threadService: ThreadService,
-    private workspaceService: WorkspaceService
+    private workspaceService: WorkspaceService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -93,6 +95,10 @@ export class HeaderComponent implements OnInit {
       },
       (error) => console.error('Fehler beim Überwachen des Auth-Status:', error)
     );
+
+    this.userService.user$.subscribe((user) => {
+      this.user = user;
+    });
   }
 
 

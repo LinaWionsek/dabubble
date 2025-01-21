@@ -9,6 +9,7 @@ import { ThreadService } from '../../../services/thread.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { WorkspaceService } from '../../../services/workspace.service';
+import { UserService } from '../../../services/user.service';
 
 
 
@@ -45,13 +46,20 @@ export class WorkspaceDirectMessagesComponent {
     private chatService: ChatService, 
     private channelService: ChannelService, 
     private threadService: ThreadService,
-    private workspaceService: WorkspaceService
+    private workspaceService: WorkspaceService,
+    private userService: UserService
   ){}
 
 
   ngOnInit(){
     this.loadAllUsers();
     this.subscribeToChatService();
+
+    this.userService.user$.subscribe((updatedUser) => {
+      if (updatedUser && this.currentUser?.id === updatedUser.id) {
+        this.currentUser = updatedUser;
+      }
+    });
   }
 
   subscribeToChatService(){ 
