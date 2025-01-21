@@ -21,6 +21,7 @@ import {
   verifyBeforeUpdateEmail,
 } from '@angular/fire/auth';
 import { PasswordVisibilityService } from '../../services/password-visibility.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -57,6 +58,7 @@ export class UserProfileComponent {
     private avatarService: AvatarSelectionService,
     public auth: Auth,
     public passwordVisibilityService: PasswordVisibilityService,
+    private userService: UserService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -71,6 +73,12 @@ export class UserProfileComponent {
     this.selectedAvatar = this.avatarService.getSelectedAvatar();
     let currentUser = this.auth.currentUser;
     this.isEmailVerified = currentUser!.emailVerified;
+
+    this.userService.user$.subscribe((user) => {
+      if (user && (!this.userId || user.id === this.userId)) {
+        this.user = user;
+      }
+    });
   }
 
   toggleEdit(): void {
@@ -174,6 +182,8 @@ export class UserProfileComponent {
       if (Object.keys(updatedData).length > 0) {
         await this.authService.updateUserData(user.uid, updatedData);
         console.log('Benutzerdaten erfolgreich aktualisiert:', updatedData);
+
+        this.userService.setUser({ ...this.user, ...updatedData } as User);
       }
 
       this.isEditing = false;
