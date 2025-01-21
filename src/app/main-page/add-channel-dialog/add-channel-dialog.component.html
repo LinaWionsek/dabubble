@@ -20,8 +20,12 @@
                         <input type="text" name="channelName" id="channel-name" #channelName="ngModel" spellcheck="false"
                         [placeholder]="channelName.invalid && (channelName.touched || addChannelForm.submitted) ? getErrorMessage(channelName.errors) : 'z.B. Kooperationsprojekte'" 
                         [class.error]="channelName?.invalid && (channelName?.touched || addChannelForm.submitted)"
-                        [(ngModel)]="channel.name" required minlength="4">
+                        [(ngModel)]="channel.name" required minlength="4" maxlength="20">
                         <img src="./../../../assets/img/tag2.png" class="placeholder-image">
+
+                        @if(channelNameInvalid){
+                            <div class="form-validation-div">Der Channel-Name muss zwischen 4 und 20 Zeichen lang sein.</div>
+                        }
                     </div>
                     <div class="input-div">
                         <label for="channel-name">Beschreibung</label>

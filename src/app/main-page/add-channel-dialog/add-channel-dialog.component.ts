@@ -35,6 +35,8 @@ export class AddChannelDialogComponent {
   foundUsers?: User[] = [];
   displaySearchResultContainer = false;
   selectedUsers?: User[] = [];
+
+  channelNameInvalid = false;
   
 
   firestore: Firestore = inject(Firestore);
@@ -105,7 +107,13 @@ export class AddChannelDialogComponent {
 
 
     displayAddPeopleDialog(ngForm: NgForm){
-      if(ngForm.submitted && ngForm.form.valid){
+      if(this.channel.name.length < 4 || this.channel.name.length > 20){
+        this.channelNameInvalid = true
+        setTimeout(()=>{
+          this.channelNameInvalid = false;
+        }, 2000);
+      } else if(ngForm.submitted && ngForm.form.valid){
+        this.channelNameInvalid = false;
         this.mainDialogOpened = false;
         this.addPeopleDialogOpened = true;
       }
