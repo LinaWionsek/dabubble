@@ -96,9 +96,9 @@ export class HeaderComponent implements OnInit {
       (error) => console.error('Fehler beim Überwachen des Auth-Status:', error)
     );
 
-    this.userService.user$.subscribe((user) => {
-      this.user = user;
-    });
+    // this.userService.user$.subscribe((user) => {
+    //   this.user = user;
+    // });
   }
 
 
