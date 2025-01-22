@@ -15,7 +15,7 @@
 
     @if(showSubmenu){
         <div class="workspace-section-submenu workspace-user-div" @submenuAnimation>
-            @if (currentUser) {
+            @if (currentUser && currentUser.firstName !== 'Guest') {
                 <div class="user-div">
                     <div class="user-avatar-div">
                         <img src="{{currentUser.avatar}}" class="user-img">
