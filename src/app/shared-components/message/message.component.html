@@ -47,13 +47,17 @@
                                         }
                                     </span>
                                 }
+
                                 <span class="reaction-bubble-text">
-                                    @if (reactionType.value.length === 1) {
-                                        <span>@if (reaction.originatorId === currentUser?.id) {hast} @else {hat} reagiert</span>
+                                    @if (reactionType.value.length === 1 && reaction.originatorId !== currentUser?.id) {
+                                        <span>hat reagiert</span>
+                                    } @else if(reactionType.value.length === 1 && reaction.originatorId === currentUser?.id){
+                                        <span>hast reagiert</span>
                                     } @else if(reactionType.value.length > 1){
                                         <span>haben reagiert</span>
                                     }
                                 </span>
+                                
                             </div>
                         </div>
 
@@ -192,8 +196,10 @@
                                 </span>
                             }
                             <span class="reaction-bubble-text">
-                                @if (reactionType.value.length === 1) {
-                                    <span>@if (reaction.originatorId === currentUser?.id) {hast} @else {hat} reagiert</span>
+                                @if (reactionType.value.length === 1 && reaction.originatorId !== currentUser?.id) {
+                                    <span>hat reagiert</span>
+                                } @else if(reactionType.value.length === 1 && reaction.originatorId == currentUser?.id){
+                                    <span>hast reagiert</span>
                                 } @else if(reactionType.value.length > 1){
                                     <span>haben reagiert</span>
                                 }
