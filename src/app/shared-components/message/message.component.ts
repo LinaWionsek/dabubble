@@ -177,6 +177,9 @@ export class MessageComponent {
       }
       this.groupedReactions[reactionType].push(reaction);
     })
+
+    console.log(this.message?.messageText, this.groupedReactions)
+    console.log('currentUser:', this.currentUser)
   }
 
   
