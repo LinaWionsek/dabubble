@@ -1,5 +1,3 @@
-
-
 <section
   class="user-profile"
   [ngClass]="{ centralized: usedFor === 'otherProfile' }"
@@ -151,9 +149,10 @@
           <span
             class="invalid-input"
             [class.is-invalid]="
-              userEditEmailInput.invalid &&
-              userEditEmailInput.touched &&
-              userEditEmailInput.value != '' || isEmailInUse
+              (userEditEmailInput.invalid &&
+                userEditEmailInput.touched &&
+                userEditEmailInput.value != '') ||
+              isEmailInUse
             "
           >
             {{ emailErrorMessage }}
@@ -167,8 +166,9 @@
         </button>
         <button
           [disabled]="
-            isSubmitDisabled() &&
-            (userEditfullNameInput.valid || userEditEmailInput.valid) || isEmailInUse
+            (isSubmitDisabled() &&
+              (userEditfullNameInput.valid || userEditEmailInput.valid)) ||
+            isEmailInUse
           "
           type="submit"
           class="primary-button"
@@ -257,6 +257,5 @@
 
   }
 </section>
-
 
 <app-toast></app-toast>

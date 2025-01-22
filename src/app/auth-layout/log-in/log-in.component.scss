@@ -19,7 +19,12 @@
   overflow: hidden;
   transform: translateX(200px);
   animation: logo-slide-left 300ms ease-out 500ms forwards,
-  logo-slide-top-left 500ms ease-out 2000ms forwards;
+    logo-slide-top-left 500ms ease-out 2000ms forwards;
+
+    @media only screen and (max-width: $mobile-large) {
+      animation: logo-slide-left 300ms ease-out 500ms forwards,
+      logo-slide-top-mobile 500ms ease-out 2000ms forwards;
+    }
 }
 
 .logo-container {
@@ -42,6 +47,10 @@
 .logo {
   @include size($height: 200px);
   animation: adjust-logo-size 500ms ease-out 2000ms forwards;
+
+  @media only screen and (max-width: $mobile-large) {
+    animation: adjust-logo-size-mobile 500ms ease-out 2000ms forwards;
+  }
 }
 
 .content {
@@ -71,5 +80,3 @@
     @include size(28px, 28px);
   }
 }
-
-
