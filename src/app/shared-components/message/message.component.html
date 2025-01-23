@@ -49,11 +49,11 @@
                                 }
 
                                 <span class="reaction-bubble-text">
-                                    @if (reactionType.value.length === 1 && reaction.originatorId !== currentUser?.id) {
+                                    @if (reactionType.value.length === 1 && reactionType.value[0]!.originatorId !== currentUser?.id) {
                                         <span>hat reagiert</span>
-                                    } @else if(reactionType.value.length === 1 && reaction.originatorId === currentUser?.id){
+                                    } @else if (reactionType?.value?.length === 1 && reaction.originatorId === currentUser?.id) {
                                         <span>hast reagiert</span>
-                                    } @else if(reactionType.value.length > 1){
+                                    } @else if (reactionType.value.length > 1) {
                                         <span>haben reagiert</span>
                                     }
                                 </span>
@@ -124,9 +124,7 @@
                     }
 
                 </div>
-                <!-- <div class="icon-container">
-                    <img src="./../../../assets/img/comment.png">
-                </div> -->
+              
                 <div class="icon-container more" (click)="showEditMessageBtn()">
                     <img src="./../../../assets/img/more_vert.png" alt="">
     
@@ -182,7 +180,8 @@
                         <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
 
                         <div class="reaction-bubble received">
-                            <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">
+                            <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">                          
+                            
                             @for (reaction of reactionType.value; track $index) {
                                 <span class="reaction-bubble-text">
                                     @if(reaction.originatorId === currentUser?.id){
@@ -196,11 +195,11 @@
                                 </span>
                             }
                             <span class="reaction-bubble-text">
-                                @if (reactionType.value.length === 1 && reaction.originatorId !== currentUser?.id) {
+                                @if (reactionType.value.length === 1 && reactionType.value[0]!.originatorId !== currentUser?.id) {
                                     <span>hat reagiert</span>
-                                } @else if(reactionType.value.length === 1 && reaction.originatorId == currentUser?.id){
+                                } @else if (reactionType?.value?.length === 1 && reaction.originatorId === currentUser?.id) {
                                     <span>hast reagiert</span>
-                                } @else if(reactionType.value.length > 1){
+                                } @else if (reactionType.value.length > 1) {
                                     <span>haben reagiert</span>
                                 }
                             </span>
