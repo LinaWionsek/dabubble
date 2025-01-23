@@ -33,6 +33,7 @@ export class ChannelChatHeaderComponent {
 
 
   ngOnInit(){
+    console.log('header',this.activeChannelData)
     this.listenToActiveChannelChanges();
     // this.updateChannelUsers();
   }

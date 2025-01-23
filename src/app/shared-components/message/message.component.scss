@@ -2,6 +2,8 @@
 
 :host {
   width: 100%;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .message-container {
@@ -153,7 +155,7 @@
   background-color: $highlight-color-cyan;
   color: white;
   font-size: 16px;
-  z-index: 400;
+  z-index: 999999;
 
 }
 
