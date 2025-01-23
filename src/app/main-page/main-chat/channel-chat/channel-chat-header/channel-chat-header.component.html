@@ -47,12 +47,11 @@
                 <img src="./../../../../assets/img/person_add.png">
             </div>
 
-            @if(addMembersDialogOpened){
+            @if(addMembersDialogOpened && activeChannelData){
                 <div class="add-members-dialog-container">
                     <app-add-members-dialog
                         [allUsers]="allUsers"
                         [channelData]="activeChannelData"
-                        
                         (dialogClosed)="closeAddMembersDialog()"
                     ></app-add-members-dialog>
                 </div>
