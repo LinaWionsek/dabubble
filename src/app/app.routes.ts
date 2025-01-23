@@ -43,7 +43,6 @@ export const routes: Routes = [
       {
         path: 'new-password',
         component: NewPasswordComponent,
-        // canActivate: [reverseAuthGuard],
       },
       {
         path: 'email-verification',
