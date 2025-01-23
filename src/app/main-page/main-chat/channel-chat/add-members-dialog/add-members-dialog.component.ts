@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Channel } from './../../../../models/channel.class';
 import { Firestore, collection, collectionData, doc, updateDoc } from '@angular/fire/firestore';
 import { User } from './../../../../models/user.class';
+import { ChannelService } from '../../../../services/channel.service';
 
 @Component({
   selector: 'app-add-members-dialog',
@@ -13,7 +14,7 @@ import { User } from './../../../../models/user.class';
   styleUrl: './add-members-dialog.component.scss'
 })
 export class AddMembersDialogComponent {
-  @Input() channelData?: Channel | null;
+  @Input() channelData?: Channel | null = null;
   @Input() allUsers!: User[];
   @Output() dialogClosed = new EventEmitter<void>();
 
@@ -28,7 +29,20 @@ export class AddMembersDialogComponent {
   selectedUsers?: User[] = [];
 
 
+  constructor(private channelService: ChannelService) {}
 
+
+  ngOnInit(){
+    this.subscribeToActiveChannel()
+  }
+
+
+  subscribeToActiveChannel(){
+    this.channelService.activeChannel$.subscribe((channel) => {
+      this.channelData = channel;
+    })
+  }
+  
 
   closeDialog(){
     this.dialogClosed.emit();
