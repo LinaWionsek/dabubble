@@ -21,6 +21,7 @@ export class EditChannelDialogComponent {
 
   firestore: Firestore = inject(Firestore);
   currentUser?: User | null ;
+  channelCopy: Channel | null = null;
 
   editingChannelName = false;
   editingChannelDescription = false;
@@ -30,7 +31,15 @@ export class EditChannelDialogComponent {
 
   ngOnInit(){
     this.getCurrentUser();
+    this.createChannelCopy()
   }
+
+  createChannelCopy(){
+    if(this.channelData){
+      this.channelCopy = {...this.channelData}
+    }
+  }
+
 
 
   async getCurrentUser(){
@@ -52,6 +61,8 @@ export class EditChannelDialogComponent {
 
   editChannel(form: NgForm) {
     if (form.valid) {
+      this.channelData = this.channelCopy;
+      this.channelService.setActiveChannel(this.channelData!);
       this.updateChannel()
     }
   }
@@ -60,7 +71,7 @@ export class EditChannelDialogComponent {
   async updateChannel(){ 
     const channelDocRef = doc(this.firestore, `channels/${this.channelData?.id}`);
       try {
-        await updateDoc(channelDocRef, { ...this.channelData });
+        await updateDoc(channelDocRef, { ...this.channelCopy });
       } catch (error) {
         console.error(error);
       }
