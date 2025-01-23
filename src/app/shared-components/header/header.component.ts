@@ -97,8 +97,11 @@ export class HeaderComponent implements OnInit {
     );
 
     this.userService.user$.subscribe((user) => {
-      this.user = user;
+      if (user) {
+        this.user = user;
+      }
     });
+
   }
 
 
