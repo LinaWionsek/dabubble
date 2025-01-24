@@ -11,15 +11,8 @@ import { Router, NavigationEnd } from '@angular/router';
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.scss'
 })
-export class AuthLayoutComponent implements OnInit{
+export class AuthLayoutComponent {
 
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        console.log('NavigationEnd:', event.url);
-      }
-    });
-  }
 }
