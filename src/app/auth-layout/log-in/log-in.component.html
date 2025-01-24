@@ -31,6 +31,7 @@
           #emailInput="ngModel"
           required
           email
+          (keydown.enter)="onEnter($event)"
         />
         <img
           class="auth-input-icon"
@@ -53,9 +54,8 @@
           #passwordInput="ngModel"
           required
           minlength="8"
-          [type]="
-            passwordVisibilityService.isPasswordVisible ? 'text' : 'password'
-          "
+          [type]="passwordVisibilityService.isPasswordVisible ? 'text' : 'password'"
+          (keydown.enter)="onEnter($event)"
         />
         <div class="auth-input-icon-container" (click)="togglePassword()">
           <img
