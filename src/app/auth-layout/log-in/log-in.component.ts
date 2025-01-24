@@ -52,6 +52,12 @@ export class LogInComponent implements OnInit {
     this.passwordVisibilityService.togglePasswordInputType();
   }
 
+  onEnter(event: Event){
+    const keyboardEvent = event as KeyboardEvent;
+    event.preventDefault();
+    this.signIn();
+  }
+
   signIn(): void {
     this.authService
       .signIn(this.email, this.password)
