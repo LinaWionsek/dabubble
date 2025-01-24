@@ -3,6 +3,7 @@ import { AuthService } from '../../../services/authentication.service';
 import { Router } from '@angular/router';
 import { ChannelService } from '../../../services/channel.service';
 import { ChatService } from '../../../services/dm-chat.service';
+import { ThreadService } from '../../../services/thread.service';
 
 @Component({
   selector: 'app-header-user-dialog',
@@ -20,11 +21,13 @@ export class HeaderUserDialogComponent {
     private authService: AuthService,
     private router: Router,
     private channelService: ChannelService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private threadService: ThreadService
   ) {}
   signOut() {
     this.authService.signOut();
     this.authService.setOnlineStatus(false);
+    this.threadService.deactivateThread();
     this.channelService.clearActiveChannel();
     this.chatService.clearActiveChat();
 
