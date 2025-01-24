@@ -3,9 +3,10 @@ import { Message } from './../../models/message.class'
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.class';
 import { FormsModule } from '@angular/forms';
-import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData, DocumentReference, CollectionReference, DocumentData} from '@angular/fire/firestore';
+import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData, DocumentReference, CollectionReference, DocumentData } from '@angular/fire/firestore';
 import { Reaction } from '../../models/reaction.class';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ThreadService } from '../../services/thread.service';
 import { ChannelService } from '../../services/channel.service';
 import { Channel } from '../../models/channel.class';
@@ -54,6 +55,7 @@ export class MessageComponent {
   lastTwoReactions: string[] = [];
   allReactions = ['tick', 'hands_up', 'nerd_face', 'rocket'];
 
+  private unsubscribe$ = new Subject<void>();
 
   constructor(private threadService: ThreadService, private channelService: ChannelService, private reactionService: ReactionService) {}
 
@@ -160,10 +162,16 @@ export class MessageComponent {
   subscribeToMessageReactions(reactionsCollection: CollectionReference<DocumentData>){
     this.messageReactions$ = collectionData(reactionsCollection) as Observable<Reaction[]>;
 
-    this.messageReactions$.subscribe((reactions) => {
+    this.messageReactions$.pipe(takeUntil(this.unsubscribe$)).subscribe((reactions) => {
       this.messageReactions = reactions;
       this.sortReactionTypes();
     })
+  }
+
+
+  ngOnDestroy() {
+    this.unsubscribe$.next(); 
+    this.unsubscribe$.complete();
   }
   
 
@@ -410,6 +418,7 @@ deleteDmThreadMessage(){
   async addReactionForDmMessage(){
     const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
     const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
+
     await this.addReactionDocWithoutInitNewReaction(reactionsCollection);
     await this.addReactionDoc(reactionsCollection2);
     this.resetHasJustReactedBoolean();

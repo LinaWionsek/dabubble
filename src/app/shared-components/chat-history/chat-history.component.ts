@@ -2,8 +2,9 @@ import { Component, Input, inject, SimpleChanges } from '@angular/core';
 import { MessageComponent } from '../message/message.component';
 import { SeperatorComponent } from '../seperator/seperator.component';
 import { Channel } from '../../models/channel.class';
-import { Firestore, doc, collection, collectionData, CollectionReference, DocumentData } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, doc, collection, collectionData, CollectionReference, DocumentData, query, where } from '@angular/fire/firestore';
+import { Observable, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Message } from '../../models/message.class';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
@@ -61,14 +62,14 @@ export class ChatHistoryComponent {
       this.setMessagesLoaded();
       this.setChannelId();
     } else if (this.usedFor ==='dm-chat'){
-      const messagesCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
-      this.loadMessages(messagesCollection);
+      const messagesCollection = collection(this.firestore, `direct-messages/`);
+      this.loadDirectMessages(messagesCollection);
       this.setMessagesLoaded();
     } else if(this.usedFor ==='thread' && this.activeChannel){
       const answersCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
       this.loadActiveMessageAnswers(answersCollection);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
-      const answersCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
+      const answersCollection = collection(this.firestore, `direct-messages/${this.activeMessage?.id}/answers`);
       this.loadActiveMessageAnswers(answersCollection);
     }
   }
@@ -77,7 +78,7 @@ export class ChatHistoryComponent {
   setMessagesLoaded(){
     setTimeout(() => {
       this.messagesLoaded = true;
-    }, 100);
+    }, 25);
   }
   
 
@@ -115,6 +116,39 @@ export class ChatHistoryComponent {
       this.sortMessagesIntoGroups(this.allMessages, this.groupedMessages)
     })
   }
+
+
+  loadDirectMessages(collection: CollectionReference<DocumentData>) {
+    const senderQuery = query(collection, where('senderId', '==', this.currentUser!.id), where('receiverId', '==', this.userData!.id));
+    const receiverQuery = query(collection, where('receiverId', '==', this.currentUser!.id), where('senderId', '==', this.userData!.id));
+  
+    const senderMessages$ = collectionData(senderQuery, { idField: 'id' }) as Observable<Message[]>;
+    const receiverMessages$ = collectionData(receiverQuery, { idField: 'id' }) as Observable<Message[]>;
+  
+    this.messages$ = combineLatest([senderMessages$, receiverMessages$]).pipe(
+      map(([senderMessages, receiverMessages]) => [...senderMessages, ...receiverMessages])
+    );
+  
+    this.messages$.subscribe((messages) => {
+      this.allMessages = messages;
+      this.sortMessagesIntoGroups(this.allMessages, this.groupedMessages);
+    });
+  }
+
+  // loadDirectMessages(collection: CollectionReference<DocumentData>){
+
+  //   const collectionQuery = query(
+  //     collection,
+  //     where('receiverId', 'in', [this.currentUser!.id, this.userData!.id]),
+  //     where('senderId', 'in', [this.currentUser!.id, this.userData!.id])
+  //   );
+
+  //   this.messages$ = collectionData(collectionQuery, { idField: 'id'}) as Observable<Message[]>;
+  //   this.messages$.subscribe((messages) => {
+  //     // this.allMessages = messages.filter((message) => (message.receiverId === this.currentUser!.id) && (message.senderId === this.currentUser!.id));
+  //     this.sortMessagesIntoGroups(this.allMessages, this.groupedMessages)
+  //   })
+  // }
 
 
   sortMessagesIntoGroups(messagesArray: Message[], messagesObject: { [key: string]: Message[] }){
