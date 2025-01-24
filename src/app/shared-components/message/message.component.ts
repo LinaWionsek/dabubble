@@ -153,7 +153,7 @@ export class MessageComponent {
       const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
-      const reactionsCollection = collection(this.firestore, `direct-messages/${this.message?.id}/reactions`);
+      const reactionsCollection = collection(this.firestore, `direct-messages/${this.activatedMessage?.id}/answers/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     }
   }
