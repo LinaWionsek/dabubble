@@ -19,7 +19,7 @@
                 <div class="user-div">
                     <div class="user-avatar-div">
                         <img src="{{currentUser.avatar}}" class="user-img">
-                        <div class="online-marker" [ngClass]="{ online: currentUser.isOnline, offline: !currentUser.isOnline }"></div>
+                        <div class="online online-marker"></div>
                     </div>
                     <span class="user-name">{{currentUser.firstName + ' ' + currentUser.lastName}} (Du)</span>
                 </div>
