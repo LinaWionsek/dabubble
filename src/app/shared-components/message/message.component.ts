@@ -377,6 +377,20 @@ deleteDmThreadMessage(){
     try {
       await addDoc(reactionsCollection, { ...this.reaction });
       this.initializeNewReaction();
+      console.log('Reaction added', reactionsCollection);
+    } catch (error) {
+      console.error(error)
+    } finally {
+      if (this.activeChannel){
+        this.resetHasJustReactedBoolean();
+      }
+    }
+  }
+
+  async addReactionDocWithoutInitNewReaction(reactionsCollection: CollectionReference<DocumentData>){
+    try {
+      await addDoc(reactionsCollection, { ...this.reaction });
+      console.log('Reaction added', reactionsCollection);
     } catch (error) {
       console.error(error)
     } finally {
@@ -396,7 +410,7 @@ deleteDmThreadMessage(){
   async addReactionForDmMessage(){
     const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
     const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
-    await this.addReactionDoc(reactionsCollection);
+    await this.addReactionDocWithoutInitNewReaction(reactionsCollection);
     await this.addReactionDoc(reactionsCollection2);
     this.resetHasJustReactedBoolean();
   }
@@ -405,7 +419,7 @@ deleteDmThreadMessage(){
   async addReactionForDmThreadMessage(){
     const reactionsCollection = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.otherUser?.id}/messages/${this.message?.id}/reactions`);
     const reactionsCollection2 = collection(this.firestore, `users/${this.otherUser?.id}/dm-chats/${this.currentUser?.id}/messages/${this.message?.id}/reactions`);
-    await this.addReactionDoc(reactionsCollection);
+    await this.addReactionDocWithoutInitNewReaction(reactionsCollection);
     await this.addReactionDoc(reactionsCollection2);
     this.resetHasJustReactedBoolean();
   }
