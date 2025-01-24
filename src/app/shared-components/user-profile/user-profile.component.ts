@@ -143,8 +143,6 @@ export class UserProfileComponent {
         throw new Error('Kein Benutzer ist aktuell authentifiziert.');
       }
 
-      console.log('Aktueller Benutzer:', user);
-      console.log('E-Mail verifiziert:', user.emailVerified);
 
       let updatedData: Partial<User> = {};
 
@@ -181,7 +179,7 @@ export class UserProfileComponent {
 
       if (Object.keys(updatedData).length > 0) {
         await this.authService.updateUserData(user.uid, updatedData);
-        console.log('Benutzerdaten erfolgreich aktualisiert:', updatedData);
+
 
         this.userService.setUser({ ...this.user, ...updatedData } as User);
       }

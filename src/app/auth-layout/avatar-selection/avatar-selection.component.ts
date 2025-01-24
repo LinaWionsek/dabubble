@@ -105,7 +105,6 @@ export class AvatarSelectionComponent implements OnInit {
         this.router.navigate(['/main']);
         this.registrationDataService.clearUserData();
       }, 2250);
-      console.log('Benutzer erfolgreich registriert:', userData);
     } catch (error) {
       console.error('Fehler bei der Registrierung:', error);
     } finally {

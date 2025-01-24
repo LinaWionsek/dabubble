@@ -78,10 +78,8 @@ export class ChangeEmailComponent implements OnInit {
         throw new Error('Benutzer konnte nicht angemeldet werden.');
       }
 
-      console.log('Benutzer erfolgreich angemeldet:', userCredential.user);
 
       await userCredential.user?.getIdToken(true);
-      console.log('Authentifizierungs-Token erfolgreich erneuert.');
 
       await this.confirmEmailChange();
       this.isPasswordRequired = false;
@@ -102,26 +100,24 @@ export class ChangeEmailComponent implements OnInit {
         throw new Error('Kein authentifizierter Benutzer gefunden.');
       }
 
-      console.log('Authentifizierter Benutzer:', firebaseUser);
 
       this.currentEmail = firebaseUser.email;
 
       await applyActionCode(this.auth, this.oobCode);
-      console.log('Aktionscode erfolgreich angewendet.', this.oobCode);
+
 
       await updateEmail(firebaseUser, this.newEmail);
-      console.log('E-Mail erfolgreich geändert auf:', this.newEmail);
+
 
       const updatedData: Partial<User> = {
         email: this.newEmail,
         pendingEmail: '',
       };
 
-      console.log('Update UserData in Firebase:', updatedData);
 
       await this.authService.updateUserData(firebaseUser.uid, updatedData);
       await this.authService.signOut();
-      console.log('Firestore-Daten erfolgreich aktualisiert:', updatedData);
+
     } catch (error) {
       console.error('Fehler bei der E-Mail-Änderung:', error);
     }

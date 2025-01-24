@@ -62,7 +62,6 @@ export class LogInComponent implements OnInit {
     this.authService
       .signIn(this.email, this.password)
       .then(() => {
-        console.log('Successful login');
         this.toastService.showToast('Login erfolgreich!');
         this.email = '';
         this.password = '';

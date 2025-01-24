@@ -67,12 +67,9 @@ export class AuthService {
       } catch (error) {
         console.error('Fehler beim Löschen des anonymen Benutzers:', error);
       }
-    } else {
-      console.log('Nicht-anonymer Benutzer meldet sich ab.');
-    }
+    } 
 
     await signOut(this.auth);
-    console.log('Benutzer erfolgreich abgemeldet.');
   }
 
   signInWithGoogle() {
@@ -188,9 +185,6 @@ export class AuthService {
             isOnline: isOnline,
           },
           { merge: true }
-        );
-        console.log(
-          `Onlinestatus für Benutzer ${currentUser.uid} auf ${isOnline} gesetzt.`
         );
       }
     } catch (error) {

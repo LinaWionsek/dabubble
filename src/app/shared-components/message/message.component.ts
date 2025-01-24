@@ -377,8 +377,6 @@ deleteDmThreadMessage(){
     try {
       await addDoc(reactionsCollection, { ...this.reaction });
       this.initializeNewReaction();
-      console.log('Reaction added', reactionsCollection);
-      console.log('reaction added to:', this.message)
 
     } catch (error) {
       console.error(error)
@@ -392,8 +390,7 @@ deleteDmThreadMessage(){
   async addReactionDocWithoutInitNewReaction(reactionsCollection: CollectionReference<DocumentData>){
     try {
       await addDoc(reactionsCollection, { ...this.reaction });
-      console.log('Reaction added', reactionsCollection);
-      console.log('reaction added to:', this.message)
+
     } catch (error) {
       console.error(error)
     } finally {
