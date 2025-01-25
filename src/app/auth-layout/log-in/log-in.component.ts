@@ -69,7 +69,7 @@ export class LogInComponent implements OnInit {
         setTimeout(() => {
           this.navigateToMainPage();
           this.authService.setOnlineStatus(true);
-        }, 2250);
+        }, 1000);
       })
       .catch((error) => {
         this.showLoginError();

@@ -33,7 +33,7 @@ export class HeaderUserDialogComponent {
 
     setTimeout(() => {
       this.router.navigate(['/login']);
-    }, 1);
+    }, 200);
   }
 
   openUserProfile() {
