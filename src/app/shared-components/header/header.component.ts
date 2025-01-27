@@ -66,6 +66,8 @@ export class HeaderComponent implements OnInit {
   userDirectMessages: Message[] = [];
   searchedPrivateMessages: Message[] = [];
   receiverUser: User | null = null;
+  threadMessages: Message[] = [];
+  threadResults: Message[] = [];
 
   constructor(
     private router: Router,
@@ -80,7 +82,6 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeToWorkspaceService();
     this.updateScreenSize();
-    
 
     this.showSearchBar = false;
     this.showUserProfile = false;
@@ -93,7 +94,6 @@ export class HeaderComponent implements OnInit {
       }
     });
 
-    
     this.authSubscription = this.authService.getUserStatus().subscribe(
       (user) => {
         this.user = user;
@@ -106,31 +106,26 @@ export class HeaderComponent implements OnInit {
         this.user = user;
       }
     });
-
   }
 
-
-  subscribeToWorkspaceService(){
+  subscribeToWorkspaceService() {
     this.workspaceService.workspaceActivated$.subscribe((activated) => {
-        this.isWorkspaceActivated = activated;
-      }
-    );
+      this.isWorkspaceActivated = activated;
+    });
   }
 
   @HostListener('window:resize', ['$event'])
-    onResize(event: Event): void {
+  onResize(event: Event): void {
     this.updateScreenSize();
   }
 
-
-  updateScreenSize(){
+  updateScreenSize() {
     this.isSmallerScreen = window.innerWidth <= 900;
   }
 
-  activateWorkspace(){
+  activateWorkspace() {
     this.workspaceService.activateWorkspace();
   }
-
 
   ngOnDestroy(): void {
     if (this.authSubscription) {
@@ -246,6 +241,8 @@ export class HeaderComponent implements OnInit {
     this.getUserChannels();
     await this.fetchMessagesForChannels();
     this.filterSearchResults();
+    await this.fetchMessagesForThreads();
+    this.filterThreadResults();
   }
 
   getUserChannels() {
@@ -270,12 +267,43 @@ export class HeaderComponent implements OnInit {
       messages.forEach((message) => messagesMap.set(message.id, message));
     }
     this.allMessages = Array.from(messagesMap.values());
+    console.log(this.allMessages, 'messages');
   }
 
   filterSearchResults() {
     this.searchResults = this.allMessages.filter((message) =>
       message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
+  }
+
+  async fetchMessagesForThreads() {
+    const threadsMap = new Map<string, Message>();
+    for (const message of this.allMessages) {
+      console.log(message, 'message');
+      const refference = collection(
+        this.firestore,
+        `channels/${message.channel.id}/messages/${message.id}/answers`
+      );
+      const snapshot = await getDocs(refference);
+      const answers = snapshot.docs.map((doc) => ({
+        ...(doc.data() as Message),
+        id: doc.id,
+        channel: message.channel,
+      }));
+      answers.forEach((answer) => threadsMap.set(answer.id, answer));
+      this.threadMessages = Array.from(threadsMap.values());
+      console.log(this.threadMessages, 'answers');
+    }
+  }
+
+  filterThreadResults() {
+    this.threadResults = this.threadMessages.filter((message) =>
+      message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
+
+  activateThread(message: Message) {
+    this.threadService.activateThread(message);
   }
 
   updateHeaderOnRoute(url: string) {
