@@ -61,6 +61,11 @@ export class HeaderComponent implements OnInit {
   showDropDown: boolean = false;
   isSmallerScreen = window.innerWidth <= 900;
   isWorkspaceActivated = false;
+  dms$!: Observable<Message[]>;
+  allDirectMessages: Message[] = [];
+  userDirectMessages: Message[] = [];
+  searchedPrivateMessages: Message[] = [];
+  receiverUser: User | null = null;
 
   constructor(
     private router: Router,
@@ -153,12 +158,14 @@ export class HeaderComponent implements OnInit {
     this.showDropDown = true;
     this.searching = true;
     this.searchUser();
+    this.getAllPrivateMessages();
     this.getAllChannels();
   }
 
   resetSearch() {
     this.searchResults = [];
     this.searchedUsers = [];
+    this.searchedPrivateMessages = [];
     this.showDropDown = false;
     this.searching = false;
     this.searchTerm = '';
@@ -182,6 +189,44 @@ export class HeaderComponent implements OnInit {
             .includes(this.searchTerm.toLowerCase())
       );
     });
+  }
+
+  getAllPrivateMessages() {
+    const userId = this.user?.id;
+    const messagesRef = collection(this.firestore, 'direct-messages');
+    this.dms$ = collectionData(messagesRef, {
+      idField: 'id',
+    }) as Observable<Message[]>;
+    this.dms$.subscribe((changes) => {
+      this.allDirectMessages = Array.from(
+        new Map(
+          changes.map((directMessage) => [directMessage.id, directMessage])
+        ).values()
+      );
+      this.userDirectMessages = this.allDirectMessages.filter(
+        (message) =>
+          message.senderId === userId || message.receiverId === userId
+      );
+      this.searchedPrivateMessages = this.userDirectMessages.filter((message) =>
+        message.messageText
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+      );
+    });
+  }
+
+  openDirectMessage(senderId: string, receiverId: string) {
+    if (senderId === this.user?.id) {
+      this.receiverUser =
+        this.users.find((user) => user.id === receiverId) ?? null;
+      this.setActiveChat(this.receiverUser as User);
+      this.resetSearch();
+    } else {
+      this.receiverUser =
+        this.users.find((user) => user.id === senderId) ?? null;
+      this.setActiveChat(this.receiverUser as User);
+      this.resetSearch();
+    }
   }
 
   getAllChannels() {
