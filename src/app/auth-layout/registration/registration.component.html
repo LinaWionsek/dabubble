@@ -136,7 +136,7 @@
         [disabled]="
           !registrationForm.valid ||
           !isCheckboxChecked ||
-          passwordInput.value.length < 8 || isEmailInUse
+          passwordInput.value.length < 8 || isEmailInUse || !isValidEmail
         "
         name="checkbox"
         type="submit"
