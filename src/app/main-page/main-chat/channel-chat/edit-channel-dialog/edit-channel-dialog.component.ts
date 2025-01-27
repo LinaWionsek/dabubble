@@ -127,24 +127,24 @@ export class EditChannelDialogComponent {
   }
 
 
-  editChannelName(form: NgForm) {
-    if (!this.editingChannelName) {
-      this.editingChannelName = true;
-    } else if (this.editingChannelName && form.controls['channelName']?.valid) {
-      this.editingChannelName = false;
-      this.editChannel(form);
-    }
-  }
+  // editChannelName(form: NgForm) {
+  //   if (!this.editingChannelName) {
+  //     this.editingChannelName = true;
+  //   } else if (this.editingChannelName && form.controls['channelName']?.valid) {
+  //     this.editingChannelName = false;
+  //     this.editChannel(form);
+  //   }
+  // }
 
 
-  editChannelDescription(form: NgForm) {
-    if (!this.editingChannelDescription) {
-      this.editingChannelDescription = true;
-    } else {
-      this.editingChannelDescription = false;
-      this.editChannel(form);
-    }
-  }
+  // editChannelDescription(form: NgForm) {
+  //   if (!this.editingChannelDescription) {
+  //     this.editingChannelDescription = true;
+  //   } else {
+  //     this.editingChannelDescription = false;
+  //     this.editChannel(form);
+  //   }
+  // }
 
 
   leaveChannel() {
