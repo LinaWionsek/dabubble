@@ -2,7 +2,8 @@
     <span class="title">Neue Nachricht</span>
     <div class="input-container">
         <span class="input-prefix">An:</span>
-        <input type="text" placeholder="#channel, oder @jemand oder E-Mail Adresse" [(ngModel)]="inputValue" (keyup)="checkInputValue()" (blur)="checkForValidReceiverInput()">
+        <input type="text" [(ngModel)]="inputValue" (keyup)="checkInputValue()" (blur)="checkForValidReceiverInput()">
+        <span class="custom-placeholder">#channel, oder &#64;jemand oder E-Mail Adresse</span>
     </div>
 
     @if(displayInvalidReceiverMsg){

@@ -217,7 +217,7 @@ header {
 
 
 .mobile-menu{
-  width: 300px;
+  // width: 300px;
   @include display-flex($jc: flex-start);
   > span{
     @include font-style($font-size-24, $font-weight-700, $text-color-black);
@@ -235,3 +235,5 @@ header {
     margin-left: 0px;
   }
 }
+
+

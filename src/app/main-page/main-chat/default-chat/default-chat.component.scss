@@ -22,8 +22,6 @@
     border-top-right-radius: 30px;
     position: relative;
 
-
-    
 }
 
 .input-container{
@@ -39,6 +37,15 @@
         color: rgb(117, 117, 117);
     }
 
+    >.custom-placeholder{
+        position: absolute;
+        left: 56px;
+        top: 36px;
+        font-size: 18px;
+        color: rgb(117, 117, 117);
+        pointer-events: none;
+    }
+
     >input{
         width: 100%;
         height: 55px;
@@ -51,6 +58,10 @@
         &:focus{
             outline: none;
             border: 1px solid $highlight-color-purple;
+        }
+
+        &:focus + .custom-placeholder{
+            opacity: 0;
         }
     }
 }
@@ -144,4 +155,49 @@
         border-top-left-radius: 0px;
         border-top-right-radius: 0px;  
   }
+}
+
+
+@media(max-width: 950px) and (min-width: 900px){
+    .input-container{   
+    
+        >.custom-placeholder{
+            top: 38px;
+            font-size: 16px;
+        }
+    }
+}
+
+@media(max-width: 560px){
+    .input-container{
+    
+        >.custom-placeholder{
+            top: 38px;
+            font-size: 16px;
+        }
+    }
+    .default-chat-header{
+        padding: 32px 24px 20px 45px;
+
+    }
+}
+
+@media(max-width: 475px){
+    .input-container{
+    
+        >.custom-placeholder{
+            position: absolute;
+            left: 56px;
+            top: 30px;
+            font-size: 16px;
+            margin-right: 8px;
+            
+        }
+    }
+}
+
+@media(max-width: 350px){
+    .default-chat-header{
+        padding: 32px 16px 20px 45px;
+    }
 }
