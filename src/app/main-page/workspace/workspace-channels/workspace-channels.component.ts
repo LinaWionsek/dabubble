@@ -9,6 +9,7 @@ import { ThreadService } from '../../../services/thread.service';
 import { ChatService } from '../../../services/dm-chat.service';
 import { WorkspaceService } from '../../../services/workspace.service';
 import { Message } from '../../../models/message.class';
+import { Reaction } from '../../../models/reaction.class';
 
 
 @Component({
@@ -49,15 +50,21 @@ export class WorkspaceChannelsComponent {
   firestore: Firestore = inject(Firestore);
 
   welcomeMessage = new Message();
-  welcomeChannel?: Channel | null;
+  welcomeAnswer = new Message();
+  welcomeChannel = new Channel();
+  newWelcomeChannelId = '';
+  newWelcomeMessageId = '';
+  lastWelcomeAnswerId = '';
+  lastAnswerReaction = new Reaction();
   
 
   ngOnInit(){
     this.subscribeToChannelService();
     this.getAllChannels();
+    
     setTimeout(()=>{
       this.checkIfUserHasChannels();
-    }, 200)
+    }, 400)
   
   }
 
@@ -66,6 +73,7 @@ export class WorkspaceChannelsComponent {
     if(this.allUserChannels.length === 0){
       await this.addUserToWelcomeChannel();
       await this.addWelcomeMessageToWelcomeChannel();
+      await this.addAnswersToWelcomeMessage();
       const welcomeChannel = this.getWelcomeChannel();
       
       if(welcomeChannel){
@@ -75,26 +83,47 @@ export class WorkspaceChannelsComponent {
   }
 
   getWelcomeChannel(){
-    return this.allUserChannels.find(channel => channel.name === 'Welcome-Channel') || null;
+    return this.allUserChannels.find(channel => channel.id === this.newWelcomeChannelId);
   }
 
   async addUserToWelcomeChannel(){
-    const channelDocRef = doc(this.firestore, 'channels/11F7a9TqLf6BxuhTVD2H');
+    await this.initializeNewWelcomeChannel();
+    const channelCol = collection(this.firestore, 'channels')
     try {
-      await updateDoc(channelDocRef, {
-        userIds: this.currentUser?.id
-      })
+      const newChannelRef = await addDoc(channelCol, { ...this.welcomeChannel });
+      this.newWelcomeChannelId = newChannelRef.id;
     } catch (error) {
       console.error(error)
     }
   }
 
+
   async addWelcomeMessageToWelcomeChannel(){
     this.initializeNewWelcomeMessage();
-    const welcomeMsg = doc(this.firestore, 'channels/11F7a9TqLf6BxuhTVD2H/messages/hGa7XVRj51jDqXhq7gVp');
     
+      const msgCol = collection(this.firestore, `channels/${this.newWelcomeChannelId}/messages/`);
+      try {
+        const msgRef = await addDoc(msgCol, { ...this.welcomeMessage });
+        this.newWelcomeMessageId = msgRef.id;
+      } catch (error) {
+        console.error(error);
+      }
+  }
+
+  async addAnswersToWelcomeMessage(){
+     this.initializeNewAnswer1();
+     await this.addNewAnswerToWelcomeMsg();
+     this.initializeNewAnswer2();
+     await this.addNewAnswerToWelcomeMsg();
+     this.addReactionToLastAnswer(); 
+  }
+
+
+  async addNewAnswerToWelcomeMsg(){
+    const msgCol = collection(this.firestore, `channels/${this.newWelcomeChannelId}/messages/${this.newWelcomeMessageId}/answers`);
     try {
-      await updateDoc(welcomeMsg, { ...this.welcomeMessage });
+      const msgRef = await addDoc(msgCol, { ...this.welcomeAnswer });
+      this.lastWelcomeAnswerId = msgRef.id;
     } catch (error) {
       console.error(error);
     }
@@ -156,6 +185,14 @@ export class WorkspaceChannelsComponent {
   }
 
 
+  initializeNewWelcomeChannel(){
+    this.welcomeChannel.name = "Welcome-Channel";
+    this.welcomeChannel.creator = "Welcome-Bot";
+    this.welcomeChannel.description = "Das ist der Welcome-Channel für neue User."
+    this.welcomeChannel.userIds.push(this.currentUser!.id);
+  }
+
+
   initializeNewWelcomeMessage(){
     this.welcomeMessage.timeStamp = new Date().toISOString();
     this.welcomeMessage.messageText = "Herzlich Willkommen auf DABubble! Hier kannst du dich in Echtzeit mit deinen Teammitgliedern austauschen, entweder per Direktnachricht oder über einen Channel, den du ganz einfach im Workspace-Menü auf der linken Seite erstellen kannst. :-)"
@@ -163,5 +200,37 @@ export class WorkspaceChannelsComponent {
     this.welcomeMessage.senderId = "2BB0uxWkRwSjhhUSexrcOU9"
     this.welcomeMessage.senderAvatar = "assets/img/bot1.png"
   }
+
+
+  initializeNewAnswer1(){
+    this.welcomeAnswer.timeStamp = new Date().toISOString();
+    this.welcomeAnswer.messageText = "Mit welcher Angular-Version wurde dieses Projekt gebaut?"
+    this.welcomeAnswer.senderName = "Question-Bot"
+    this.welcomeAnswer.senderId = this.currentUser!.id;
+    this.welcomeAnswer.senderAvatar = "assets/img/bot2.png"
+  }
+
+  initializeNewAnswer2(){
+    this.welcomeAnswer.timeStamp = new Date().toISOString();
+    this.welcomeAnswer.messageText = "Für DABubble wurde Angular 17 verwendet."
+    this.welcomeAnswer.senderName = "Welcome-Bot"
+    this.welcomeAnswer.senderId = "randomID12312312312"
+    this.welcomeAnswer.senderAvatar = "assets/img/bot1.png"
+  }
+
+  async addReactionToLastAnswer(){
+    this.lastAnswerReaction.originatorName = "Question-Bot";
+    this.lastAnswerReaction.reactionType = "tick";
+    this.lastAnswerReaction.originatorId = "randomID12312313123"
+   
+    const lastAnswerReactions = collection(this.firestore, `channels/${this.newWelcomeChannelId}/messages/${this.newWelcomeMessageId}/answers/${this.lastWelcomeAnswerId}/reactions`);
+    	
+      try {
+        await addDoc(lastAnswerReactions, { ...this.lastAnswerReaction })
+      } catch (error) {
+        console.log(error)
+      }    
+  }
+
 
 }
