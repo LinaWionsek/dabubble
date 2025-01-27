@@ -28,8 +28,17 @@
                 }
 
 
-                <input type="text" id="names-input" placeholder="Namen eingeben" (input)="searchUsers($event)" [(ngModel)]="userSearchQuery" autocomplete="off">
-               
+                <input 
+                type="text" 
+                id="names-input" 
+                placeholder="Namen eingeben" 
+                (input)="searchUsers($event)" 
+                (focus)="displaySearchResultContainer = true" 
+                (blur)="displaySearchResultContainer = false" 
+                [(ngModel)]="userSearchQuery" 
+                autocomplete="off"
+              />
+                             
                 @if(displaySearchResultContainer){
                     <div class="search-result-container" [ngStyle]="{ top: selectedUsers!.length >= 2 ? '130px' : '64px' }">
                         @for (user of foundUsers; track $index) {

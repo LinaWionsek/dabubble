@@ -89,7 +89,7 @@ export class DefaultChatComponent {
       this.allUsers = Array.from(
         new Map(
           changes
-            .filter((user) => user.id !== this.currentUser?.id)
+            .filter((user) => user.id !== this.currentUser?.id && user.firstName !== 'Guest')
             .map((user) => [user.id, user])
         ).values()
       );
