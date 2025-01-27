@@ -28,6 +28,7 @@ export class RegistrationComponent implements OnInit {
   emailErrorMessage: string = 'Diese E-Mail ist leider ungültig';
   isEmailInUse: boolean = false;
   isValidEmail: boolean = false;
+  isValidName: boolean = true;
 
   constructor(
     private router: Router,
@@ -96,6 +97,11 @@ export class RegistrationComponent implements OnInit {
   validateEmail(email: string): void {
     let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     this.isValidEmail = !emailRegex.test(email);
+  }
+
+  validateFullName(): void {
+    let fullNameParts = this.fullName.trim().split(/\s+/);
+    this.isValidName = fullNameParts.length >= 2;
   }
   
 
