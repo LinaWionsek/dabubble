@@ -48,7 +48,7 @@
                 @if(searchResults.length > 0){
                   <div class="section-header">Channel</div>
                   @for (result of searchResults; track $index) {
-                    <div class="message-list" (click)="setActiveChannel(result.channel)">
+                    <div class="message-list"  (click)="closeThread()" (click)="setActiveChannel(result.channel)"> 
                       <b>{{result.channel.name}}</b>
                       <div>
                         {{result.senderName}}:
@@ -61,7 +61,7 @@
                 @if(threadResults.length > 0){
                   <div class="section-header">Thread</div>
                   @for (result of threadResults; track $index) {
-                    <div class="message-list" (click)="activateThread(result)" (click)="setActiveChannel(result.channel)">
+                    <div class="message-list" (click)="openThread(result)" (click)="setActiveChannel(result.channel)">
                       <b>{{result.channel.name}}</b>
                       <div>
                         {{result.senderName}}:

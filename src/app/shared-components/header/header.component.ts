@@ -10,6 +10,9 @@ import {
   collection,
   collectionData,
   getDocs,
+  query,
+  where,
+  documentId,
 } from '@angular/fire/firestore';
 import { AuthService } from '../../services/authentication.service';
 import { HeaderUserDialogComponent } from './header-user-dialog/header-user-dialog.component';
@@ -267,7 +270,6 @@ export class HeaderComponent implements OnInit {
       messages.forEach((message) => messagesMap.set(message.id, message));
     }
     this.allMessages = Array.from(messagesMap.values());
-    console.log(this.allMessages, 'messages');
   }
 
   filterSearchResults() {
@@ -279,8 +281,11 @@ export class HeaderComponent implements OnInit {
   async fetchMessagesForThreads() {
     const threadsMap = new Map<string, Message>();
     for (const message of this.allMessages) {
-      console.log(message, 'message');
       const refference = collection(
+        this.firestore,
+        `channels/${message.channel.id}/messages/${message.id}/answers`
+      );
+      const refference2 = collection(
         this.firestore,
         `channels/${message.channel.id}/messages/${message.id}/answers`
       );
@@ -289,10 +294,10 @@ export class HeaderComponent implements OnInit {
         ...(doc.data() as Message),
         id: doc.id,
         channel: message.channel,
+        referenceMessageId: message.id,
       }));
       answers.forEach((answer) => threadsMap.set(answer.id, answer));
       this.threadMessages = Array.from(threadsMap.values());
-      console.log(this.threadMessages, 'answers');
     }
   }
 
@@ -300,6 +305,30 @@ export class HeaderComponent implements OnInit {
     this.threadResults = this.threadMessages.filter((message) =>
       message.messageText.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
+  }
+  async openThread(result: any) {
+    const messagesRef = collection(
+      this.firestore,
+      `channels/${result.channel.id}/messages/`
+    );
+
+    const snapshot = await getDocs(messagesRef);
+    const message = snapshot.docs.find((doc) => doc.id === result.referenceMessageId);
+
+    if (message) {
+      const messageData = {
+        ...(message.data() as Message),
+        id: message.id,
+        channel: result.channel,
+      };
+      this.activateThread(messageData);
+    }
+
+  //channels -> channelid -> messages -> messageid
+  }
+
+  closeThread(){
+    this.threadService.deactivateThread();
   }
 
   activateThread(message: Message) {
