@@ -27,6 +27,7 @@ export class RegistrationComponent implements OnInit {
   @ViewChild('emailInput') emailInput!: NgModel;
   emailErrorMessage: string = 'Diese E-Mail ist leider ungültig';
   isEmailInUse: boolean = false;
+  isValidEmail: boolean = false;
 
   constructor(
     private router: Router,
@@ -91,6 +92,12 @@ export class RegistrationComponent implements OnInit {
 
     this.router.navigate(['/avatar-selection']);
   }
+
+  validateEmail(email: string): void {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    this.isValidEmail = !emailRegex.test(email);
+  }
+  
 
   async isEmailAlreadyUsed(): Promise<boolean> {
     if (!this.email || this.email.trim() === '') {
