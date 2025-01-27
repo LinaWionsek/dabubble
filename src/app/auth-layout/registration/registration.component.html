@@ -59,10 +59,12 @@
         alt="password_icon"
       />
       <span
-        class="invalid-input"
-        [class.is-invalid]="
-          emailInput.invalid && emailInput.touched && emailInput.value != '' || isEmailInUse || isValidEmail
-        "
+      class="invalid-input"
+      [class.is-invalid]="
+        (emailInput.invalid && emailInput.touched && emailInput.value != '') ||
+        (isEmailInUse && emailInput.value != '') ||
+        (isValidEmail && emailInput.value != '')
+      "
       >
       {{ emailErrorMessage }}
       </span>
