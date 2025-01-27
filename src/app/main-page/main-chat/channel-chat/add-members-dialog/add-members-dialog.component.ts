@@ -33,7 +33,8 @@ export class AddMembersDialogComponent {
 
 
   ngOnInit(){
-    this.subscribeToActiveChannel()
+    this.subscribeToActiveChannel();
+    this.foundUsers = this.allUsers.filter((user) => user.firstName !== 'Guest');
   }
 
 
@@ -76,10 +77,10 @@ export class AddMembersDialogComponent {
     const inputElement = event.target as HTMLInputElement;
     this.userSearchQuery = inputElement.value.toLowerCase().trim();
 
-    if(this.userSearchQuery.length >= 3){
+    if(this.userSearchQuery.length >= 1){
       this.foundUsers = this.allUsers.filter(user => 
-        (user.firstName.toLowerCase().includes(this.userSearchQuery) || 
-        user.lastName.toLowerCase().includes(this.userSearchQuery)) &&
+        (user.firstName.toLowerCase().startsWith(this.userSearchQuery) || 
+        user.lastName.toLowerCase().startsWith(this.userSearchQuery)) &&
         !this.selectedUsers?.some(selectedUser => selectedUser.id === user.id)
       );
     } else {
