@@ -34,7 +34,6 @@ export class ChannelChatHeaderComponent {
 
   ngOnInit(){
     this.listenToActiveChannelChanges();
-    // this.updateChannelUsers();
   }
 
   ngOnDestroy(){

@@ -144,7 +144,7 @@ export class LogInComponent implements OnInit {
 
         setTimeout(() => {
           this.navigateToMainPage();
-        }, 2250);
+        }, 1000);
       }
     } catch (error) {
       console.error('Fehler beim Guest-Login:', error);

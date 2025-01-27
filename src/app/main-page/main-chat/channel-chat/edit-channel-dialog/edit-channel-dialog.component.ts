@@ -16,11 +16,11 @@ import { User } from '../../../../models/user.class';
   styleUrl: './edit-channel-dialog.component.scss',
 })
 export class EditChannelDialogComponent {
-  @Input() channelData?: Channel | null;
   @Output() dialogClosed = new EventEmitter<void>();
 
   firestore: Firestore = inject(Firestore);
   currentUser?: User | null ;
+  channelData: Channel | null = null;
   channelCopy: Channel | null = null;
 
   editingChannelName = false;
@@ -31,15 +31,23 @@ export class EditChannelDialogComponent {
 
   ngOnInit(){
     this.getCurrentUser();
-    this.createChannelCopy()
+    this.getChannelData();
   }
+
+
+  getChannelData(){
+    this.channelData = this.channelService.getActiveChannel();
+    if(this.channelData){
+      this.createChannelCopy();
+    }
+  }
+
 
   createChannelCopy(){
     if(this.channelData){
       this.channelCopy = {...this.channelData}
     }
   }
-
 
 
   async getCurrentUser(){
@@ -77,7 +85,6 @@ export class EditChannelDialogComponent {
       }
     }
   
-
 
   saveChanges(form: NgForm) {
     if (form.valid) {
@@ -123,26 +130,6 @@ export class EditChannelDialogComponent {
       this.editingChannelName = !this.editingChannelName;
     } else if (field === 'description') {
       this.editingChannelDescription = !this.editingChannelDescription;
-    }
-  }
-
-
-  editChannelName(form: NgForm) {
-    if (!this.editingChannelName) {
-      this.editingChannelName = true;
-    } else if (this.editingChannelName && form.controls['channelName']?.valid) {
-      this.editingChannelName = false;
-      this.editChannel(form);
-    }
-  }
-
-
-  editChannelDescription(form: NgForm) {
-    if (!this.editingChannelDescription) {
-      this.editingChannelDescription = true;
-    } else {
-      this.editingChannelDescription = false;
-      this.editChannel(form);
     }
   }
 

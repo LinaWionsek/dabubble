@@ -50,7 +50,7 @@
                     <span class="input-label">Beschreibung</span>
                     <button 
                         class="edit-btn" 
-                        (click)="editChannelDescription(editChannelForm)" 
+                        (click)="onEditButtonClick($event, 'description')" 
                         [ngClass]="{ 'active-btn': editingChannelDescription }" 
                         [type]="editingChannelDescription ? 'submit' : 'button'">
                         {{ editingChannelDescription ? 'Speichern' : 'Bearbeiten' }}

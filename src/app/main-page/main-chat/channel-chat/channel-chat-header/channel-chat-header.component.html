@@ -7,7 +7,6 @@
         @if(editChannelDialogOpened){
             <div class="edit-channel-dialog-container">
                 <app-edit-channel-dialog
-                    [channelData]="activeChannelData"
                     (dialogClosed)="closeEditChannelDialog()"
                 ></app-edit-channel-dialog>
             </div>

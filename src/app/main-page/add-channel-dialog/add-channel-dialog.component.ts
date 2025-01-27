@@ -37,6 +37,7 @@ export class AddChannelDialogComponent {
   selectedUsers?: User[] = [];
 
   channelNameInvalid = false;
+  duplicateChannelName = false;
   
 
   firestore: Firestore = inject(Firestore);
@@ -106,17 +107,41 @@ export class AddChannelDialogComponent {
     }
 
 
-    displayAddPeopleDialog(ngForm: NgForm){
-      if(this.channel.name.length < 4 || this.channel.name.length > 20){
-        this.channelNameInvalid = true
-        setTimeout(()=>{
-          this.channelNameInvalid = false;
-        }, 3000);
+    async validateChannelName(ngForm: NgForm){
+      const existingChannelWithSameName = this.checkForDuplicateChannelName();
+
+      if(existingChannelWithSameName){
+        this.displayDuplicateChannelNameMsg();
+      } else if (this.channel.name.length < 4 || this.channel.name.length > 20){
+        this.displayInvalidChannelNameMsg();
       } else if(ngForm.submitted && ngForm.form.valid){
-        this.channelNameInvalid = false;
-        this.mainDialogOpened = false;
-        this.addPeopleDialogOpened = true;
+       this.displayAddPeopleDialog();
       }
+    }
+
+
+    checkForDuplicateChannelName(){ 
+      return this.allUserChannels.some((channel) => channel.name.toLowerCase() === this.channel.name.toLowerCase());
+    }
+
+    displayDuplicateChannelNameMsg(){
+      this.duplicateChannelName = true;
+      setTimeout(()=>{
+        this.duplicateChannelName = false;
+      }, 2000);
+    }
+
+    displayInvalidChannelNameMsg(){
+      this.channelNameInvalid = true
+      setTimeout(()=>{
+        this.channelNameInvalid = false;
+      }, 2000);
+    }
+
+    displayAddPeopleDialog(){
+      this.channelNameInvalid = false;
+      this.mainDialogOpened = false;
+      this.addPeopleDialogOpened = true;
     }
 
     async createNewChannel(){
