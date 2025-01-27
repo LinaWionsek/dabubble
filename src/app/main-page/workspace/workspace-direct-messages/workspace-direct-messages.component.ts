@@ -69,8 +69,6 @@ export class WorkspaceDirectMessagesComponent {
   }
 
  
-
-
   loadAllUsers(){
     const usersCollection = collection(this.firestore, 'users')
     this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
@@ -78,7 +76,7 @@ export class WorkspaceDirectMessagesComponent {
     this.users$.subscribe((changes) => {
       this.allUsers = Array.from(new Map(
         changes
-        .filter(user => user.id !== this.currentUser?.id)
+        .filter(user => user.id !== this.currentUser?.id && user.firstName !== 'Guest')
         .map(user => [user.id, user])
       ).values());
     })
