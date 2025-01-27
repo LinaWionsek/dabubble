@@ -14,7 +14,7 @@
                 <span class="dialog-description">Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein 
                     #marketing zum Beispiel.
                 </span>
-                <form (ngSubmit)="displayAddPeopleDialog(addChannelForm)" #addChannelForm="ngForm">
+                <form (ngSubmit)="validateChannelName(addChannelForm)" #addChannelForm="ngForm">
                     <div class="input-div">
                         <label for="channel-name">Channel-Name</label>
                         <input type="text" name="channelName" id="channel-name" #channelName="ngModel" spellcheck="false"
@@ -25,6 +25,9 @@
 
                         @if(channelNameInvalid){
                             <div class="form-validation-div">Der Channel-Name muss zwischen 4 und 20 Zeichen lang sein.</div>
+                        } @else if(duplicateChannelName){
+                            <div class="form-validation-div">Ein Channel mit diesem Namen exisitiert bereits.</div>
+
                         }
                     </div>
                     <div class="input-div">
