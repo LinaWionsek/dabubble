@@ -1,4 +1,4 @@
-import { Component, Input, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, inject} from '@angular/core';
 import { Message } from './../../models/message.class'
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.class';
@@ -150,7 +150,7 @@ export class MessageComponent {
       const reactionsCollection = collection(this.firestore, `direct-messages/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     } else if(this.usedFor === 'thread' && this.activeChannel){
-      const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
+      const reactionsCollection = collection(this.firestore, `channels/${this.activeChannel.id}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
       const reactionsCollection = collection(this.firestore, `direct-messages/${this.activatedMessage?.id}/answers/${this.message?.id}/reactions`);
@@ -185,7 +185,6 @@ export class MessageComponent {
       }
       this.groupedReactions[reactionType].push(reaction);
     })
-
   }
 
   
