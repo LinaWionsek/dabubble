@@ -51,7 +51,7 @@
         #emailInput="ngModel"
         required
         email
-        (change)="isEmailAlreadyUsed()"
+        (change)="isEmailAlreadyUsed(); validateEmail(emailInput.value)"
       />
       <img
         class="auth-input-icon"
@@ -61,7 +61,7 @@
       <span
         class="invalid-input"
         [class.is-invalid]="
-          emailInput.invalid && emailInput.touched && emailInput.value != '' || isEmailInUse
+          emailInput.invalid && emailInput.touched && emailInput.value != '' || isEmailInUse || isValidEmail
         "
       >
       {{ emailErrorMessage }}
