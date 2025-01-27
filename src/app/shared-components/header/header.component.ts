@@ -285,10 +285,7 @@ export class HeaderComponent implements OnInit {
         this.firestore,
         `channels/${message.channel.id}/messages/${message.id}/answers`
       );
-      const refference2 = collection(
-        this.firestore,
-        `channels/${message.channel.id}/messages/${message.id}/answers`
-      );
+     
       const snapshot = await getDocs(refference);
       const answers = snapshot.docs.map((doc) => ({
         ...(doc.data() as Message),
