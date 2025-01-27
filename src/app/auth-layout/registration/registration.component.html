@@ -51,7 +51,7 @@
         #emailInput="ngModel"
         required
         email
-        (change)="isEmailAlreadyUsed()"
+        (change)="isEmailAlreadyUsed(); validateEmail(emailInput.value)"
       />
       <img
         class="auth-input-icon"
@@ -59,10 +59,12 @@
         alt="password_icon"
       />
       <span
-        class="invalid-input"
-        [class.is-invalid]="
-          emailInput.invalid && emailInput.touched && emailInput.value != '' || isEmailInUse
-        "
+      class="invalid-input"
+      [class.is-invalid]="
+        (emailInput.invalid && emailInput.touched && emailInput.value != '') ||
+        (isEmailInUse && emailInput.value != '') ||
+        (isValidEmail && emailInput.value != '')
+      "
       >
       {{ emailErrorMessage }}
       </span>
@@ -134,7 +136,7 @@
         [disabled]="
           !registrationForm.valid ||
           !isCheckboxChecked ||
-          passwordInput.value.length < 8 || isEmailInUse
+          passwordInput.value.length < 8 || isEmailInUse || !isValidEmail
         "
         name="checkbox"
         type="submit"
