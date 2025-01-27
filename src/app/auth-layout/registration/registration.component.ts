@@ -94,7 +94,7 @@ export class RegistrationComponent implements OnInit {
   }
 
   validateEmail(email: string): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     this.isValidEmail = !emailRegex.test(email);
   }
   
