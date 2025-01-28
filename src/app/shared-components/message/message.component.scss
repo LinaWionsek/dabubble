@@ -231,6 +231,19 @@
   border-bottom-left-radius: 0;
 }
 
+.message-options-div.thread{
+  top: -40px;
+  left: 8px;
+}
+
+.received.message-options-div.thread{
+  top: -40px;
+  left: unset;
+  right: 8px;
+}
+
+
+
 .emoji-div:hover img {
   filter: none;
 }
