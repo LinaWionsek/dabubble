@@ -96,7 +96,7 @@
     
     
         @if(!editingMessage){
-            <div class="message-options-div">
+            <div class="message-options-div" [ngClass]="{'thread': usedFor==='thread'}">
                 @for (reaction of lastTwoReactions; track $index) {
                     <div class="emoji-div icon-container" (click)="addReaction(reaction)">
                         <img [src]="'./../../../assets/img/emojis/' + reaction + '.png'">
@@ -218,7 +218,7 @@
     
         
     
-        <div class="received message-options-div">
+        <div class="received message-options-div" [ngClass]="{'thread': usedFor==='thread'}">
             @for (reaction of lastTwoReactions; track $index) {
                 <div class="emoji-div icon-container" (click)="addReaction(reaction)">
                     <img [src]="'./../../../assets/img/emojis/' + reaction + '.png'">
