@@ -83,7 +83,7 @@ export class ChatInputComponent {
     this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
 
     this.users$.subscribe((changes) => {
-      this.allUsers = Array.from(new Map(changes.filter(user => user.id !== this.currentUser?.id)
+      this.allUsers = Array.from(new Map(changes.filter(user => user.id !== this.currentUser?.id && user.firstName !== 'Guest')
         .map(user => [user.id, user])
       ).values());
       this.filterUsersForUsecase();
