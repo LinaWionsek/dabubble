@@ -2,7 +2,7 @@
 
 .content {
   @include display-flex($jc: space-between, $fd: column);
-  @include size(100vw, 100dvh);
+  @include size(100vw, 100vh);
   background: $bg-color-gray;
 }
 
