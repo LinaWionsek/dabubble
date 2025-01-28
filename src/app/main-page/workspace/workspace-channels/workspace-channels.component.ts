@@ -10,6 +10,8 @@ import { ChatService } from '../../../services/dm-chat.service';
 import { WorkspaceService } from '../../../services/workspace.service';
 import { Message } from '../../../models/message.class';
 import { Reaction } from '../../../models/reaction.class';
+import { AuthService } from '../../../services/authentication.service';
+import { WelcomeService } from '../../../services/welcome.service';
 
 
 @Component({
@@ -38,7 +40,9 @@ export class WorkspaceChannelsComponent {
     private channelService: ChannelService, 
     private threadService: ThreadService, 
     private chatService: ChatService,
-    private workspaceService: WorkspaceService
+    private workspaceService: WorkspaceService,
+    private welcomeService: WelcomeService,
+    private authService: AuthService
   ) {}
 
   showSubmenu = true;
@@ -58,19 +62,28 @@ export class WorkspaceChannelsComponent {
   lastAnswerReaction = new Reaction();
   
 
-  ngOnInit(){
+  async ngOnInit(){
+    await this.getCurrentUser();
     this.subscribeToChannelService();
     this.getAllChannels();
-    
-    setTimeout(()=>{
-      this.checkIfUserHasChannels();
-    }, 400)
-  
+    this.checkIfUserHasWelcomeChannel();
+   
   }
 
+  async getCurrentUser(){
+    this.currentUser = await this.authService.getFullUser();
+  }
 
-  async checkIfUserHasChannels(){
-    if(this.allUserChannels.length === 0){
+  async checkIfUserHasWelcomeChannel(){
+    const userId = this.currentUser?.id;
+    if(userId && !this.welcomeService.isUserWelcomed(userId)){
+      await this.createNewWelcomeChannel();
+    }
+  }
+
+  async createNewWelcomeChannel(){
+    if(this.currentUser){
+      this.welcomeService.addUserToWelcomed(this.currentUser.id);
       await this.addUserToWelcomeChannel();
       await this.addWelcomeMessageToWelcomeChannel();
       await this.addAnswersToWelcomeMessage();
@@ -82,12 +95,14 @@ export class WorkspaceChannelsComponent {
     }
   }
 
+
   getWelcomeChannel(){
     return this.allUserChannels.find(channel => channel.id === this.newWelcomeChannelId);
   }
 
+
   async addUserToWelcomeChannel(){
-    await this.initializeNewWelcomeChannel();
+    this.initializeNewWelcomeChannel();
     const channelCol = collection(this.firestore, 'channels')
     try {
       const newChannelRef = await addDoc(channelCol, { ...this.welcomeChannel });
@@ -170,9 +185,9 @@ export class WorkspaceChannelsComponent {
 
 
   getAllChannelsForCurrentUser(){
-    setTimeout(() => {
+    if(this.currentUser){
       this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
-    }, 100)
+    }
   }
 
 
