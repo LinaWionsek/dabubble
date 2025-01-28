@@ -45,6 +45,13 @@ export class ChatInputComponent {
   allUsers: User[] = [];
   filteredUsers: User[] = [];
 
+  showChannelSelection = false;
+  showUserSelection = false;
+  filteredChannels: Channel[] = [];
+  allUserChannels: Channel[] = [];
+  allChannels: Channel[] = [];
+  channels$!: Observable<Channel[]>;
+
   firestore: Firestore = inject(Firestore);
 
 
@@ -61,6 +68,7 @@ export class ChatInputComponent {
     this.setCurrentUser();
     this.subscribeToChannelService();
     this.loadUsers();
+    this.loadUserChannels();
     this.addFocusToChatInput();
   }
 
@@ -88,6 +96,25 @@ export class ChatInputComponent {
       ).values());
       this.filterUsersForUsecase();
     })
+  }
+
+
+  loadUserChannels(){
+    const userChannelsCollection = collection(this.firestore, 'channels' );
+    this.channels$ = collectionData(userChannelsCollection, { idField: 'id'}) as Observable<Channel[]>;
+    
+  
+    this.channels$.subscribe((changes) => {
+      this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+      this.getAllChannelsForCurrentUser();
+    })
+  }
+
+
+  getAllChannelsForCurrentUser(){
+    setTimeout(() => {
+      this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
+    }, 100)
   }
 
 
@@ -172,6 +199,71 @@ export class ChatInputComponent {
     })
   }
 
+  checkInputValue(){
+    if (this.newMessage.messageText.startsWith('#')) {
+      this.showUserSelection = false;
+      this.showChannelSelection = true;
+      this.setFilteredChannels();
+    } else if (this.newMessage.messageText.startsWith('@')) {
+      this.showChannelSelection = false;
+      this.showUserSelection = true;
+      this.setFilteredUsers();
+    } else {
+      this.showChannelSelection = false;
+      this.showUserSelection = false;
+    }
+  }
+
+
+  setFilteredChannels() {
+    if (this.newMessage.messageText.length > 1) {
+      this.filterChannels();
+    } else {
+      this.filteredChannels = [...this.allUserChannels];
+    }
+  }
+
+  setFilteredUsers() {
+    if (this.newMessage.messageText.length > 1) {
+      this.filterUsers();
+    } else {
+      this.filteredUsers = [...this.allUsers];
+    }
+  }
+
+  filterChannels() {
+    const trimmedInput = this.newMessage.messageText.slice(1).toLowerCase();
+    this.filteredChannels = this.allUserChannels.filter((channel) =>
+      channel.name.toLowerCase().startsWith(trimmedInput)
+    );
+    this.showChannelSelection = this.filteredChannels.length > 0;
+  }
+
+  filterUsers() {
+    const trimmedInput = this.newMessage.messageText.slice(1).toLowerCase();
+    this.filteredUsers = this.allUsers.filter(
+      (user) =>
+        user.firstName.toLowerCase().startsWith(trimmedInput) ||
+        user.lastName.toLowerCase().startsWith(trimmedInput)
+    );
+    this.showUserSelection = this.filteredUsers.length > 0;
+  }
+
+  setReceiver(receiver: Channel | User) {
+    if(this.usedFor === 'default'){
+      this.receiverService.setReceiver(receiver);
+    }
+
+    if ('creator' in receiver) {
+      this.newMessage.messageText = '#' + receiver.name;
+      this.showChannelSelection = false;
+    } else if ('email' in receiver) {
+      this.newMessage.messageText = receiver.firstName + ' ' + receiver.lastName;
+      this.showUserSelection = false;
+    }
+  }
+
+
 
   async sendMessage(){
     if(this.newMessage.messageText){
@@ -226,24 +318,6 @@ export class ChatInputComponent {
       this.receiverService.setInvalidReceiver();
     }
   }
-
-
-  // sendDmMessage(){
-  //   const dmSubcollectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
-  //   const dmSubcollectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages`);
-  //   this.addMessageToCollection(dmSubcollectionCurrentUser);
-  //   this.addMessageToCollection(dmSubcollectionOtherUser);
-  // }
-
-
-  // sendDmThreadMessage(){
-  //   const collectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
-  //   const collectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/answers`);
-  //   this.addMessageToCollection(collectionCurrentUser);
-  //   this.addMessageToCollection(collectionOtherUser);
-  // }
-
-
 
   initializeNewMessage(){
     this.newMessage = new Message();

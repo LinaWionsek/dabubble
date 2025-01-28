@@ -15,6 +15,7 @@
     margin-bottom: 64px;
     padding: 20px 20px 0 20px;
     @include display-flex($fd: column, $jc:space-between, $ai: flex-start);
+    position: relative;
 
     &:hover{
         cursor: pointer;
@@ -151,3 +152,52 @@ emoji-mart {
     
 }
 
+.drop-down-div{
+    position: absolute;
+    bottom: 140px;
+    left: 32px;
+    background-color: white;
+    border-radius: 12px;
+    border-bottom-left-radius: 0 !important;
+    padding: 12px 0px;
+    box-shadow: 0px 6px 10px 0px #00000033;
+}
+
+.scroll-div{
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0 24px;
+}
+
+.channel-title-div{
+    width: 100%;
+    height: 33px;
+    margin-bottom: 8px;
+}
+
+.channel-title-container{
+    @include display-flex($jc:flex-start);
+    width: 240px;
+    height: 100%;
+    border-radius: 30px; 
+    transition: all 125ms ease;
+    padding: 4px 16px;
+
+    &:hover{
+        cursor: pointer;
+        background-color: $bg-color-gray;
+        color: $primary-color-purple;
+        font-weight: 700;
+    }
+
+    &:hover img{
+        filter: brightness(0) saturate(100%) invert(24%) sepia(92%) saturate(2852%) hue-rotate(233deg) brightness(96%) contrast(98%);
+    }
+}
+
+.channel-title{
+    font-size: 18px;
+    margin-left: 8px;
+}
