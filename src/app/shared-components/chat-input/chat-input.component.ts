@@ -112,9 +112,9 @@ export class ChatInputComponent {
 
 
   getAllChannelsForCurrentUser(){
-    setTimeout(() => {
+    if(this.currentUser && this.currentUser.id){
       this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
-    }, 100)
+    }
   }
 
 
@@ -270,14 +270,14 @@ export class ChatInputComponent {
       this.newMessage.timeStamp = new Date().toISOString();
       
       if(this.usedFor === 'channel'){
-        const channelMessagesCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
+        const channelMessagesCollection = collection(this.firestore, `channels/${this.activeChannel?.id}/messages`);
         this.addMessageToCollection(channelMessagesCollection);
       } else if(this.usedFor === 'dm-chat'){
         this.newMessage.receiverId = this.userData!.id;
         const messageCollection = collection(this.firestore, 'direct-messages/');
         this.addMessageToCollection(messageCollection);
       } else if(this.usedFor === 'thread' && this.activeChannel){
-        const answersSubcollection = collection (this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
+        const answersSubcollection = collection (this.firestore, `channels/${this.activeChannel?.id}/messages/${this.activeMessage?.id}/answers`);
         this.addMessageToCollection(answersSubcollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
         const messageCollection = collection(this.firestore, `direct-messages/${this.activeMessage?.id}/answers/`);

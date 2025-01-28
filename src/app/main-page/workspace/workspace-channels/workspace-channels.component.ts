@@ -185,11 +185,11 @@ export class WorkspaceChannelsComponent {
 
 
   getAllChannelsForCurrentUser(){
-    setTimeout(()=>{
-      if(this.currentUser && this.currentUser.id){
-        this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
-      }
-    }, 100)
+    if (!this.currentUser || !this.currentUser.id) {
+      return;
+    } else {
+      this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id)); 
+    }
   }
 
 
@@ -214,7 +214,7 @@ export class WorkspaceChannelsComponent {
     this.welcomeMessage.timeStamp = new Date().toISOString();
     this.welcomeMessage.messageText = "Herzlich Willkommen auf DABubble! Hier kannst du dich in Echtzeit mit deinen Teammitgliedern austauschen, entweder per Direktnachricht oder über einen Channel, den du ganz einfach im Workspace-Menü auf der linken Seite erstellen kannst. :-)"
     this.welcomeMessage.senderName = "Welcome-Bot";
-    this.welcomeMessage.senderId = "2BB0uxWkRwSjhhUSexrcOU9"
+    this.welcomeMessage.senderId = "WelcomeBotId1"
     this.welcomeMessage.senderAvatar = "assets/img/bot1.png"
   }
 
