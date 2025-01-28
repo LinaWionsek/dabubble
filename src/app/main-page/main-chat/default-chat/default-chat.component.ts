@@ -20,6 +20,7 @@ export class DefaultChatComponent {
   inputValue: string = '';
   showChannelDropdown = false;
   showUserDropdown = false;
+  displayCustomPlaceholder = true;
 
   filteredChannels: Channel[] = [];
   filteredUsers: User[] = [];
@@ -32,6 +33,7 @@ export class DefaultChatComponent {
   allUsers: User[] = [];
 
   displayInvalidReceiverMsg = false;
+  receiver: Channel | User | null = null;
 
   firestore: Firestore = inject(Firestore);
 
@@ -45,11 +47,21 @@ export class DefaultChatComponent {
     this.getAllChannels();
     this.getAllUsers();
     this.subscribeToInvalidReceiverSubject();
+    this.subscribeToActiveReceiver();
   }
 
   subscribeToInvalidReceiverSubject() {
     this.receiverService.invalidReceiver$.subscribe((isInvalid) => {
       this.displayInvalidReceiverMsg = isInvalid;
+    });
+  }
+
+  subscribeToActiveReceiver(){
+    this.receiverService.activeReceiver$.subscribe((receiver) => {
+      if(receiver){
+        this.displayCustomPlaceholder = false;
+        this.setReceiverLocally(receiver);
+      }
     });
   }
 
@@ -155,6 +167,14 @@ export class DefaultChatComponent {
       this.inputValue = receiver.firstName + ' ' + receiver.lastName;
       this.receiverService.setReceiver(receiver);
       this.showUserDropdown = false;
+    }
+  }
+
+  setReceiverLocally(receiver: Channel | User){
+    if ('creator' in receiver) {
+      this.inputValue = '#' + receiver.name;
+    } else if ('email' in receiver) {
+      this.inputValue = receiver.firstName + ' ' + receiver.lastName;
     }
   }
 

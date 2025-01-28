@@ -258,7 +258,7 @@ export class ChatInputComponent {
       this.newMessage.messageText = '#' + receiver.name;
       this.showChannelSelection = false;
     } else if ('email' in receiver) {
-      this.newMessage.messageText = receiver.firstName + ' ' + receiver.lastName;
+      this.newMessage.messageText += receiver.firstName + ' ' + receiver.lastName;
       this.showUserSelection = false;
     }
   }
