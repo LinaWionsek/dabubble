@@ -249,10 +249,14 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserChannels() {
-    this.allUserChannels = this.allChannels.filter((channel) =>
-      channel.userIds.includes(this.user!.id)
-    );
+    if (this.user && !this.user.id) {
+      this.allUserChannels = this.allChannels.filter((channel) =>
+        channel.userIds.includes(this.user!.id)
+      );
+    }
   }
+
+
 
   async fetchMessagesForChannels() {
     const messagesMap = new Map<string, Message>();

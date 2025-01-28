@@ -84,11 +84,13 @@ export class DefaultChatComponent {
   }
 
   getAllChannelsForCurrentUser() {
-    setTimeout(() => {
+    if(!this.currentUser || !this.currentUser.id){
+      return
+    }else {
       this.allUserChannels = this.allChannels.filter((channel) =>
         channel.userIds.includes(this.currentUser!.id)
       );
-    }, 100);
+    }
   }
 
   getAllUsers() {
