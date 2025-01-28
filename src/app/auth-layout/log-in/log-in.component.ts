@@ -69,7 +69,7 @@ export class LogInComponent implements OnInit {
         setTimeout(() => {
           this.navigateToMainPage();
           this.authService.setOnlineStatus(true);
-        }, 1000);
+        }, 2000);
       })
       .catch((error) => {
         this.showLoginError();
@@ -144,7 +144,7 @@ export class LogInComponent implements OnInit {
 
         setTimeout(() => {
           this.navigateToMainPage();
-        }, 1000);
+        }, 2000);
       }
     } catch (error) {
       console.error('Fehler beim Guest-Login:', error);
