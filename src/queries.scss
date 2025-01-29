@@ -50,7 +50,7 @@
   }
 
   .auth-button-container {
-    gap: 20px;
+    gap: 16px;
   }
 
   .auth-form,
@@ -74,6 +74,32 @@
 @media only screen and (max-width: $mobile) {
   .form-header > .header-title > h3 {
     font-size: $font-size-24;
+  }
+
+  .auth-form {
+    padding: 12px 24px;
+  }
+
+  .auth-input {
+    padding: 10px 15px 10px 50px;
+  }
+
+  .auth-input-icon {
+    @include position(absolute, 20px, 18px);
+    @include size(20px, 20px);
+  }
+
+  .auth-input-icon-hover {
+    @include size(20px, 20px);
+  }
+
+  .auth-input-icon-container {
+    left: 12px;
+  }
+
+  .primary-button,
+  .secondary-button {
+    padding: 10px 16px;
   }
 }
 
