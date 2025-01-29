@@ -3,7 +3,9 @@
     <div class="input-container">
         <span class="input-prefix">An:</span>
         <input type="text" [(ngModel)]="inputValue" (keyup)="checkInputValue()" (blur)="checkForValidReceiverInput()">
-        <span class="custom-placeholder">#channel, oder &#64;jemand oder E-Mail Adresse</span>
+        @if(displayCustomPlaceholder){
+            <span class="custom-placeholder">#channel, oder &#64;jemand oder E-Mail Adresse</span>
+        }
     </div>
 
     @if(displayInvalidReceiverMsg){

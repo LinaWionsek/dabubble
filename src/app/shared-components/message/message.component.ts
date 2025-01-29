@@ -1,4 +1,4 @@
-import { Component, Input, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, inject, SimpleChanges} from '@angular/core';
 import { Message } from './../../models/message.class'
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.class';
@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import {  Firestore,  collection,  deleteDoc,  doc,  updateDoc, addDoc, collectionData, DocumentReference, CollectionReference, DocumentData } from '@angular/fire/firestore';
 import { Reaction } from '../../models/reaction.class';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { ThreadService } from '../../services/thread.service';
 import { ChannelService } from '../../services/channel.service';
 import { Channel } from '../../models/channel.class';
@@ -70,6 +70,16 @@ export class MessageComponent {
     this.setLastTwoReactions();
   }
 
+  ngOnChanges(changes: SimpleChanges){
+    if (changes['message']) {
+      this.unsubscribe$.next(); 
+      this.messageAnswers = [];
+      this.messageReactions = [];
+      this.loadMessageAnswers(); 
+      this.loadMessageReactions();
+    }
+  }
+
 
   setLastTwoReactions(){
     if(this.currentUser?.lastReactions.length === 2){
@@ -110,7 +120,7 @@ export class MessageComponent {
 
   loadMessageAnswers(){
     if(this.usedFor === 'channel'){
-      const answersCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/answers`);
+      const answersCollection = collection(this.firestore, `channels/${this.activeChannel?.id}/messages/${this.message?.id}/answers`);
       this.subscribeToAnswersCollection(answersCollection);
     } else if(this.usedFor === 'dm-chat'){
       const answersCollection = collection(this.firestore, `direct-messages/${this.message?.id}/answers`);
@@ -119,14 +129,33 @@ export class MessageComponent {
   }
 
 
-  subscribeToAnswersCollection(answersCollection: CollectionReference<DocumentData>){
-    this.messageAnswers$ = collectionData(answersCollection, { idField: 'id'}) as Observable<Message[]>;
+  // subscribeToAnswersCollection(answersCollection: CollectionReference<DocumentData>){
+  //   this.messageAnswers$ = collectionData(answersCollection, { idField: 'id'}) as Observable<Message[]>;
 
-    this.messageAnswers$.subscribe((answers) => {
-      this.messageAnswers = answers;
-      this.getLastAnswerTime();
-    })
+  //   this.messageAnswers$.subscribe((answers) => {
+  //     this.messageAnswers = answers;
+  //     this.getLastAnswerTime();
+  //   })
+  // }
+
+  subscribeToAnswersCollection(answersCollection: CollectionReference<DocumentData>) {
+    collectionData(answersCollection, { idField: 'id' })
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map((documents) =>
+          documents.map((doc) => ({
+            ...(doc as Message), 
+            id: doc['id'],       
+          }))
+        )
+      )
+      .subscribe((answers: Message[]) => {
+        this.messageAnswers = answers;
+        this.getLastAnswerTime();
+      });
   }
+
+ 
 
 
   getLastAnswerTime(){
@@ -143,14 +172,15 @@ export class MessageComponent {
 
 
   async loadMessageReactions(){
-    if(this.usedFor === 'channel' && this.channelId){
-      const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
+    this.messageReactions = [];
+    if(this.usedFor === 'channel' && this.activeChannel?.id){
+      const reactionsCollection = collection(this.firestore, `channels/${this.activeChannel?.id}/messages/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     } else if(this.usedFor === 'dm-chat'){
       const reactionsCollection = collection(this.firestore, `direct-messages/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     } else if(this.usedFor === 'thread' && this.activeChannel){
-      const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
+      const reactionsCollection = collection(this.firestore, `channels/${this.activeChannel.id}/messages/${this.activatedMessage?.id}/answers/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     } else if(this.usedFor === 'thread' && !this.activeChannel){
       const reactionsCollection = collection(this.firestore, `direct-messages/${this.activatedMessage?.id}/answers/${this.message?.id}/reactions`);
@@ -159,13 +189,30 @@ export class MessageComponent {
   }
 
 
-  subscribeToMessageReactions(reactionsCollection: CollectionReference<DocumentData>){
-    this.messageReactions$ = collectionData(reactionsCollection) as Observable<Reaction[]>;
+  // subscribeToMessageReactions(reactionsCollection: CollectionReference<DocumentData>){
+  //   this.messageReactions$ = collectionData(reactionsCollection) as Observable<Reaction[]>;
 
-    this.messageReactions$.pipe(takeUntil(this.unsubscribe$)).subscribe((reactions) => {
-      this.messageReactions = reactions;
-      this.sortReactionTypes();
-    })
+  //   this.messageReactions$.pipe(takeUntil(this.unsubscribe$)).subscribe((reactions) => {
+  //     this.messageReactions = reactions;
+  //     this.sortReactionTypes();
+  //   })
+  // }
+
+  subscribeToMessageReactions(reactionsCollection: CollectionReference<DocumentData>) {
+    collectionData(reactionsCollection, { idField: 'id' }) 
+      .pipe(
+        takeUntil(this.unsubscribe$), 
+        map((documents) =>
+          documents.map((doc) => ({
+            ...(doc as Reaction), 
+            id: doc['id'], 
+          }))
+        )
+      )
+      .subscribe((reactions: Reaction[]) => {
+        this.messageReactions = reactions;
+        this.sortReactionTypes(); 
+      });
   }
 
 
@@ -185,7 +232,6 @@ export class MessageComponent {
       }
       this.groupedReactions[reactionType].push(reaction);
     })
-
   }
 
   
@@ -242,8 +288,8 @@ export class MessageComponent {
 
 
   updateMessage(){
-    if(this.usedFor === 'channel' && this.channelId){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
+    if(this.usedFor === 'channel' && this.activeChannel?.id){
+      const messageDocRef = doc(this.firestore, `channels/${this.activeChannel?.id}/messages/${this.message?.id}`);
       this.updateMessageDoc(messageDocRef);
     } else if(this.usedFor === 'dm-chat'){
       const messageDocRef = doc(this.firestore, `direct-messages/${this.message?.id}`);
@@ -285,8 +331,8 @@ export class MessageComponent {
 
 
   deleteMessage(){
-    if(this.usedFor === 'channel' && this.channelId){
-      const messageDocRef = doc(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}`);
+    if(this.usedFor === 'channel' && this.activeChannel?.id){
+      const messageDocRef = doc(this.firestore, `channels/${this.activeChannel?.id}/messages/${this.message?.id}`);
       this.deleteMessageDoc(messageDocRef);
     } else if(this.usedFor === 'dm-chat'){
       const messageDocRef = doc(this.firestore, `direct-messages/${this.message?.id}`);
@@ -338,13 +384,13 @@ async deleteMessageDoc(messageRef: DocumentReference<DocumentData>){
       this.hasJustReacted = true; 
 
       if(this.usedFor === 'channel'){
-        const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.message?.id}/reactions`);
+        const reactionsCollection = collection(this.firestore, `channels/${this.activeChannel?.id}/messages/${this.message?.id}/reactions`);
         this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'dm-chat'){
         const reactionsCollection = collection(this.firestore, `direct-messages/${this.message?.id}/reactions`);
         this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'thread' && this.activeChannel){
-        const reactionsCollection = collection(this.firestore, `channels/${this.channelId}/messages/${this.activeMessage?.id}/answers/${this.message?.id}/reactions`);
+        const reactionsCollection = collection(this.firestore, `channels/${this.activeChannel?.id}/messages/${this.activatedMessage?.id}/answers/${this.message?.id}/reactions`);
         this.addReactionDoc(reactionsCollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
         const reactionsCollection = collection(this.firestore, `direct-messages/${this.activatedMessage?.id}/answers/${this.message?.id}/reactions`);

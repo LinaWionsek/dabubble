@@ -23,6 +23,7 @@
         required
         pattern="[a-zA-ZÀ-ž\s\-]+"
         [maxLength]="30"
+        (change)="validateFullName()"
       />
       <img
         class="auth-input-icon"
@@ -32,9 +33,10 @@
       <span
         class="invalid-input"
         [class.is-invalid]="
-          fullNameInput.invalid &&
+          (fullNameInput.invalid &&
           fullNameInput.touched &&
-          fullNameInput.value != ''
+          fullNameInput.value != '') || 
+          (!isValidName && fullNameInput.value != '')
         "
       >
         Dieser Name ist leider ungültig.
@@ -136,7 +138,7 @@
         [disabled]="
           !registrationForm.valid ||
           !isCheckboxChecked ||
-          passwordInput.value.length < 8 || isEmailInUse || !isValidEmail
+          passwordInput.value.length < 8 || isEmailInUse  || isValidEmail || !isValidName
         "
         name="checkbox"
         type="submit"

@@ -10,7 +10,8 @@
             ? 'Nachricht an ' + sendMessagesTo
             : 'Antworten...'
           "
-        [(ngModel)]="newMessage.messageText" 
+        [(ngModel)]="newMessage.messageText"
+        (keyup)="checkInputValue()" 
         (keydown.enter)="onEnter($event)">
     </textarea>
 
@@ -44,4 +45,32 @@
         </div>
         <img src="./../../../assets/img/send.png" class="send-icon" (click)="sendMessage()">
     </div>
+
+    @if(showChannelSelection){
+        <div class="drop-down-div">
+            <div class="scroll-div">
+                @for (channel of filteredChannels; track $index) {
+                    <div class="channel-title-div">
+                        <div class="channel-title-container" (click)="setReceiver(channel)">
+                            <img src= './../../../../assets/img/tag2.png'>
+                            <span class="channel-title">{{channel.name}}</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }@else if(showUserSelection){
+        <div class="drop-down-div">
+            <div class="scroll-div">
+                @for (user of filteredUsers; track $index) {
+                    <div class="user-div" (click)="setReceiver(user)">
+                        <div class="user-avatar-div">
+                            <img src="{{user.avatar}}" class="user-img">
+                        </div>
+                        <span class="user-name">{{user.firstName + ' ' + user.lastName}}</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </div>

@@ -20,6 +20,7 @@ export class DefaultChatComponent {
   inputValue: string = '';
   showChannelDropdown = false;
   showUserDropdown = false;
+  displayCustomPlaceholder = true;
 
   filteredChannels: Channel[] = [];
   filteredUsers: User[] = [];
@@ -32,6 +33,7 @@ export class DefaultChatComponent {
   allUsers: User[] = [];
 
   displayInvalidReceiverMsg = false;
+  receiver: Channel | User | null = null;
 
   firestore: Firestore = inject(Firestore);
 
@@ -45,11 +47,21 @@ export class DefaultChatComponent {
     this.getAllChannels();
     this.getAllUsers();
     this.subscribeToInvalidReceiverSubject();
+    this.subscribeToActiveReceiver();
   }
 
   subscribeToInvalidReceiverSubject() {
     this.receiverService.invalidReceiver$.subscribe((isInvalid) => {
       this.displayInvalidReceiverMsg = isInvalid;
+    });
+  }
+
+  subscribeToActiveReceiver(){
+    this.receiverService.activeReceiver$.subscribe((receiver) => {
+      if(receiver){
+        this.displayCustomPlaceholder = false;
+        this.setReceiverLocally(receiver);
+      }
     });
   }
 
@@ -72,11 +84,13 @@ export class DefaultChatComponent {
   }
 
   getAllChannelsForCurrentUser() {
-    setTimeout(() => {
+    if(!this.currentUser || !this.currentUser.id){
+      return
+    }else {
       this.allUserChannels = this.allChannels.filter((channel) =>
         channel.userIds.includes(this.currentUser!.id)
       );
-    }, 100);
+    }
   }
 
   getAllUsers() {
@@ -89,7 +103,7 @@ export class DefaultChatComponent {
       this.allUsers = Array.from(
         new Map(
           changes
-            .filter((user) => user.id !== this.currentUser?.id)
+            .filter((user) => user.id !== this.currentUser?.id && user.firstName !== 'Guest')
             .map((user) => [user.id, user])
         ).values()
       );
@@ -155,6 +169,14 @@ export class DefaultChatComponent {
       this.inputValue = receiver.firstName + ' ' + receiver.lastName;
       this.receiverService.setReceiver(receiver);
       this.showUserDropdown = false;
+    }
+  }
+
+  setReceiverLocally(receiver: Channel | User){
+    if ('creator' in receiver) {
+      this.inputValue = '#' + receiver.name;
+    } else if ('email' in receiver) {
+      this.inputValue = receiver.firstName + ' ' + receiver.lastName;
     }
   }
 

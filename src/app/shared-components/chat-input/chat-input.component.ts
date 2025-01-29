@@ -12,6 +12,7 @@ import { ReceiverService } from '../../services/receiver.service';
 import { ClickOutsideModule } from 'ng-click-outside';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { Observable } from 'rxjs';
+import { ThreadService } from '../../services/thread.service';
 
 
 
@@ -33,6 +34,7 @@ export class ChatInputComponent {
   sendMessagesTo: string  = '';
   currentUser?: User | null ;
   newMessage = new Message();
+  activatedMessage?: Message | null;
 
   activeChannel?: Channel | null;
   activeReceiver?: Channel | User | null;
@@ -45,10 +47,17 @@ export class ChatInputComponent {
   allUsers: User[] = [];
   filteredUsers: User[] = [];
 
+  showChannelSelection = false;
+  showUserSelection = false;
+  filteredChannels: Channel[] = [];
+  allUserChannels: Channel[] = [];
+  allChannels: Channel[] = [];
+  channels$!: Observable<Channel[]>;
+
   firestore: Firestore = inject(Firestore);
 
 
-  constructor(private authService: AuthService, private channelService: ChannelService, private receiverService: ReceiverService, private chatService: ChatService){}
+  constructor(private authService: AuthService, private channelService: ChannelService, private receiverService: ReceiverService, private chatService: ChatService, private threadService:ThreadService){}
 
 
   ngAfterViewInit() {
@@ -61,9 +70,16 @@ export class ChatInputComponent {
     this.setCurrentUser();
     this.subscribeToChannelService();
     this.loadUsers();
+    this.loadUserChannels();
     this.addFocusToChatInput();
+    this.subscribeToThreadService();
   }
 
+  subscribeToThreadService(){
+    this.threadService.activeMessage$.subscribe((message) => {
+      this.activatedMessage = message;
+    })
+  }
 
   addFocusToChatInput(){
     setTimeout(() => {
@@ -83,11 +99,30 @@ export class ChatInputComponent {
     this.users$ = collectionData(usersCollection, { idField: 'id'}) as Observable<User[]>;
 
     this.users$.subscribe((changes) => {
-      this.allUsers = Array.from(new Map(changes.filter(user => user.id !== this.currentUser?.id)
+      this.allUsers = Array.from(new Map(changes.filter(user => user.id !== this.currentUser?.id && user.firstName !== 'Guest')
         .map(user => [user.id, user])
       ).values());
       this.filterUsersForUsecase();
     })
+  }
+
+
+  loadUserChannels(){
+    const userChannelsCollection = collection(this.firestore, 'channels' );
+    this.channels$ = collectionData(userChannelsCollection, { idField: 'id'}) as Observable<Channel[]>;
+    
+  
+    this.channels$.subscribe((changes) => {
+      this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+      this.getAllChannelsForCurrentUser();
+    })
+  }
+
+
+  getAllChannelsForCurrentUser(){
+    if(this.currentUser && this.currentUser.id){
+      this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id));
+    }
   }
 
 
@@ -172,23 +207,88 @@ export class ChatInputComponent {
     })
   }
 
+  checkInputValue(){
+    if (this.newMessage.messageText.startsWith('#')) {
+      this.showUserSelection = false;
+      this.showChannelSelection = true;
+      this.setFilteredChannels();
+    } else if (this.newMessage.messageText.startsWith('@')) {
+      this.showChannelSelection = false;
+      this.showUserSelection = true;
+      this.setFilteredUsers();
+    } else {
+      this.showChannelSelection = false;
+      this.showUserSelection = false;
+    }
+  }
+
+
+  setFilteredChannels() {
+    if (this.newMessage.messageText.length > 1) {
+      this.filterChannels();
+    } else {
+      this.filteredChannels = [...this.allUserChannels];
+    }
+  }
+
+  setFilteredUsers() {
+    if (this.newMessage.messageText.length > 1) {
+      this.filterUsers();
+    } else {
+      this.filteredUsers = [...this.allUsers];
+    }
+  }
+
+  filterChannels() {
+    const trimmedInput = this.newMessage.messageText.slice(1).toLowerCase();
+    this.filteredChannels = this.allUserChannels.filter((channel) =>
+      channel.name.toLowerCase().startsWith(trimmedInput)
+    );
+    this.showChannelSelection = this.filteredChannels.length > 0;
+  }
+
+  filterUsers() {
+    const trimmedInput = this.newMessage.messageText.slice(1).toLowerCase();
+    this.filteredUsers = this.allUsers.filter(
+      (user) =>
+        user.firstName.toLowerCase().startsWith(trimmedInput) ||
+        user.lastName.toLowerCase().startsWith(trimmedInput)
+    );
+    this.showUserSelection = this.filteredUsers.length > 0;
+  }
+
+  setReceiver(receiver: Channel | User) {
+    if(this.usedFor === 'default'){
+      this.receiverService.setReceiver(receiver);
+    }
+
+    if ('creator' in receiver) {
+      this.newMessage.messageText = '#' + receiver.name;
+      this.showChannelSelection = false;
+    } else if ('email' in receiver) {
+      this.newMessage.messageText += receiver.firstName + ' ' + receiver.lastName;
+      this.showUserSelection = false;
+    }
+  }
+
+
 
   async sendMessage(){
     if(this.newMessage.messageText){
       this.newMessage.timeStamp = new Date().toISOString();
       
       if(this.usedFor === 'channel'){
-        const channelMessagesCollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
+        const channelMessagesCollection = collection(this.firestore, `channels/${this.activeChannel?.id}/messages`);
         this.addMessageToCollection(channelMessagesCollection);
       } else if(this.usedFor === 'dm-chat'){
         this.newMessage.receiverId = this.userData!.id;
         const messageCollection = collection(this.firestore, 'direct-messages/');
         this.addMessageToCollection(messageCollection);
       } else if(this.usedFor === 'thread' && this.activeChannel){
-        const answersSubcollection = collection (this.firestore, `channels/${this.channelData?.id}/messages/${this.activeMessage?.id}/answers`);
+        const answersSubcollection = collection (this.firestore, `channels/${this.activeChannel?.id}/messages/${this.activatedMessage?.id}/answers`);
         this.addMessageToCollection(answersSubcollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
-        const messageCollection = collection(this.firestore, `direct-messages/${this.activeMessage?.id}/answers/`);
+        const messageCollection = collection(this.firestore, `direct-messages/${this.activatedMessage?.id}/answers/`);
         this.addMessageToCollection(messageCollection);
       } else if(this.usedFor === 'default'){
         this.sendMessageWithDefaultChat();
@@ -226,24 +326,6 @@ export class ChatInputComponent {
       this.receiverService.setInvalidReceiver();
     }
   }
-
-
-  // sendDmMessage(){
-  //   const dmSubcollectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages`);
-  //   const dmSubcollectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages`);
-  //   this.addMessageToCollection(dmSubcollectionCurrentUser);
-  //   this.addMessageToCollection(dmSubcollectionOtherUser);
-  // }
-
-
-  // sendDmThreadMessage(){
-  //   const collectionCurrentUser = collection(this.firestore, `users/${this.currentUser?.id}/dm-chats/${this.userData?.id}/messages/${this.activeMessage?.id}/answers`);
-  //   const collectionOtherUser = collection(this.firestore, `users/${this.userData?.id}/dm-chats/${this.currentUser?.id}/messages/${this.activeMessage?.id}/answers`);
-  //   this.addMessageToCollection(collectionCurrentUser);
-  //   this.addMessageToCollection(collectionOtherUser);
-  // }
-
-
 
   initializeNewMessage(){
     this.newMessage = new Message();
