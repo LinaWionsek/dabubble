@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-seperator',
@@ -12,8 +12,11 @@ export class SeperatorComponent {
   formattedDate: string = '';
 
 
-  ngOnInit(){
-    this.setDateInput();
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['date'] && changes['date'].currentValue) {
+      this.setDateInput();
+    }
   }
 
 
