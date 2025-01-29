@@ -249,7 +249,7 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserChannels() {
-    if (this.user && !this.user.id) {
+    if (this.user && this.user.id) {
       this.allUserChannels = this.allChannels.filter((channel) =>
         channel.userIds.includes(this.user!.id)
       );
