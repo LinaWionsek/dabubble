@@ -12,6 +12,7 @@ import { ReceiverService } from '../../services/receiver.service';
 import { ClickOutsideModule } from 'ng-click-outside';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { Observable } from 'rxjs';
+import { ThreadService } from '../../services/thread.service';
 
 
 
@@ -33,6 +34,7 @@ export class ChatInputComponent {
   sendMessagesTo: string  = '';
   currentUser?: User | null ;
   newMessage = new Message();
+  activatedMessage?: Message | null;
 
   activeChannel?: Channel | null;
   activeReceiver?: Channel | User | null;
@@ -55,7 +57,7 @@ export class ChatInputComponent {
   firestore: Firestore = inject(Firestore);
 
 
-  constructor(private authService: AuthService, private channelService: ChannelService, private receiverService: ReceiverService, private chatService: ChatService){}
+  constructor(private authService: AuthService, private channelService: ChannelService, private receiverService: ReceiverService, private chatService: ChatService, private threadService:ThreadService){}
 
 
   ngAfterViewInit() {
@@ -70,8 +72,14 @@ export class ChatInputComponent {
     this.loadUsers();
     this.loadUserChannels();
     this.addFocusToChatInput();
+    this.subscribeToThreadService();
   }
 
+  subscribeToThreadService(){
+    this.threadService.activeMessage$.subscribe((message) => {
+      this.activatedMessage = message;
+    })
+  }
 
   addFocusToChatInput(){
     setTimeout(() => {
@@ -277,10 +285,10 @@ export class ChatInputComponent {
         const messageCollection = collection(this.firestore, 'direct-messages/');
         this.addMessageToCollection(messageCollection);
       } else if(this.usedFor === 'thread' && this.activeChannel){
-        const answersSubcollection = collection (this.firestore, `channels/${this.activeChannel?.id}/messages/${this.activeMessage?.id}/answers`);
+        const answersSubcollection = collection (this.firestore, `channels/${this.activeChannel?.id}/messages/${this.activatedMessage?.id}/answers`);
         this.addMessageToCollection(answersSubcollection);
       } else if(this.usedFor === 'thread' && !this.activeChannel){
-        const messageCollection = collection(this.firestore, `direct-messages/${this.activeMessage?.id}/answers/`);
+        const messageCollection = collection(this.firestore, `direct-messages/${this.activatedMessage?.id}/answers/`);
         this.addMessageToCollection(messageCollection);
       } else if(this.usedFor === 'default'){
         this.sendMessageWithDefaultChat();
