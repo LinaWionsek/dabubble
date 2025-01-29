@@ -1,7 +1,7 @@
 @import "mixins", "styles";
 
 :host {
-  // max-height: 55vh;
+  max-height: 55vh;
   width: 100%;
   flex: 1;
   // margin-bottom: 40px;
@@ -97,4 +97,11 @@
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.1);
   z-index: 400;
+}
+
+
+@media(max-width: 350px){
+  .seperator-div{
+    padding: 0 8px;
+  }
 }
