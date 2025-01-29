@@ -171,6 +171,10 @@
     .add-members-dialog-container{
         right: 450px;
     }
+    .channel-chat-header{
+        padding: 25px 25px;
+
+    }
   }
 
 @media(max-width: 525px){
@@ -179,5 +183,31 @@
         right: unset;
         left: 25px;
         top: 190px;
+    }
+
+    .channel-chat-header{
+        padding: 25px 16px;
+    }
+}
+
+
+@media(max-width: 400px){
+    .channel-chat-header{
+        padding: 25px 8px;
+    }
+
+    .channel-title-div{
+        padding: 6px 5px;
+
+        >img{
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    .channel-title{
+        margin-left: 1px;
+        margin-right: 4px;
+        font-size: 20px;
     }
 }
