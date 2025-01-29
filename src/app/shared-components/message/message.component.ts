@@ -56,11 +56,15 @@ export class MessageComponent {
   allReactions = ['tick', 'hands_up', 'nerd_face', 'rocket'];
 
   private unsubscribe$ = new Subject<void>();
+  answersLoaded = false;
+  reactionsLoaded = false;
 
   constructor(private threadService: ThreadService, private channelService: ChannelService, private reactionService: ReactionService) {}
 
 
   ngOnInit(){
+    this.unsubscribe$.next(); 
+
     this.subscribeToChannelService();
     this.subscribeToThreadService();
     this.loadMessageAnswers();
@@ -126,6 +130,9 @@ export class MessageComponent {
       const answersCollection = collection(this.firestore, `direct-messages/${this.message?.id}/answers`);
       this.subscribeToAnswersCollection(answersCollection);
     } 
+    setTimeout(() => {
+      this.answersLoaded = true;
+    }, 200)
   }
 
 
@@ -186,6 +193,10 @@ export class MessageComponent {
       const reactionsCollection = collection(this.firestore, `direct-messages/${this.activatedMessage?.id}/answers/${this.message?.id}/reactions`);
       this.subscribeToMessageReactions(reactionsCollection);
     }
+
+    setTimeout(() => {
+      this.reactionsLoaded = true
+    }, 200)
   }
 
 
