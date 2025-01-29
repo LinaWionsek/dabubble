@@ -165,9 +165,9 @@
   }
 
   @media(max-width: 600px){
-    .edit-channel-dialog-container{
-        left: -30px;
-    }
+    // .edit-channel-dialog-container{
+    //     left: -30px;
+    // }
     .add-members-dialog-container{
         right: 450px;
     }
@@ -180,13 +180,21 @@
 @media(max-width: 525px){
     .add-members-dialog-container{
         position: fixed;
-        right: unset;
+        right: 150px;
         left: 25px;
-        top: 190px;
+        top: 185px;
     }
 
     .channel-chat-header{
         padding: 25px 16px;
+    }
+}
+
+@media(max-width: 450px){
+    .add-members-dialog-container{
+        
+        right: 40px;
+       
     }
 }
 
