@@ -265,7 +265,7 @@ export class HeaderComponent implements OnInit {
       const messages = snapshot.docs.map((doc) => ({
         ...(doc.data() as Message),
         id: doc.id,
-        channel: channel,
+        channelId: channel.id,
       }));
       messages.forEach((message) => messagesMap.set(message.id, message));
     }
@@ -283,14 +283,14 @@ export class HeaderComponent implements OnInit {
     for (const message of this.allMessages) {
       const refference = collection(
         this.firestore,
-        `channels/${message.channel.id}/messages/${message.id}/answers`
+        `channels/${message.channelId}/messages/${message.id}/answers`
       );
      
       const snapshot = await getDocs(refference);
       const answers = snapshot.docs.map((doc) => ({
         ...(doc.data() as Message),
         id: doc.id,
-        channel: message.channel,
+        channelId: message.channelId,
         referenceMessageId: message.id,
       }));
       answers.forEach((answer) => threadsMap.set(answer.id, answer));
@@ -306,7 +306,7 @@ export class HeaderComponent implements OnInit {
   async openThread(result: any) {
     const messagesRef = collection(
       this.firestore,
-      `channels/${result.channel.id}/messages/`
+      `channels/${result.channelId}/messages/`
     );
 
     const snapshot = await getDocs(messagesRef);
@@ -316,7 +316,7 @@ export class HeaderComponent implements OnInit {
       const messageData = {
         ...(message.data() as Message),
         id: message.id,
-        channel: result.channel,
+        channelId: result.channelId,
       };
       this.activateThread(messageData);
     }
