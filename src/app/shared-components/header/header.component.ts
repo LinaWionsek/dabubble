@@ -249,14 +249,10 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserChannels() {
-    if (this.user && this.user.id) {
-      this.allUserChannels = this.allChannels.filter((channel) =>
-        channel.userIds.includes(this.user!.id)
-      );
-    }
+    this.allUserChannels = this.allChannels.filter((channel) =>
+      channel.userIds.includes(this.user!.id)
+    );
   }
-
-
 
   async fetchMessagesForChannels() {
     const messagesMap = new Map<string, Message>();
@@ -269,7 +265,7 @@ export class HeaderComponent implements OnInit {
       const messages = snapshot.docs.map((doc) => ({
         ...(doc.data() as Message),
         id: doc.id,
-        channelId: channel.id,
+        channel: channel,
       }));
       messages.forEach((message) => messagesMap.set(message.id, message));
     }
@@ -287,14 +283,14 @@ export class HeaderComponent implements OnInit {
     for (const message of this.allMessages) {
       const refference = collection(
         this.firestore,
-        `channels/${message.channelId}/messages/${message.id}/answers`
+        `channels/${message.channel.id}/messages/${message.id}/answers`
       );
      
       const snapshot = await getDocs(refference);
       const answers = snapshot.docs.map((doc) => ({
         ...(doc.data() as Message),
         id: doc.id,
-        channelId: message.channelId,
+        channel: message.channel,
         referenceMessageId: message.id,
       }));
       answers.forEach((answer) => threadsMap.set(answer.id, answer));
@@ -310,7 +306,7 @@ export class HeaderComponent implements OnInit {
   async openThread(result: any) {
     const messagesRef = collection(
       this.firestore,
-      `channels/${result.channelId}/messages/`
+      `channels/${result.channel.id}/messages/`
     );
 
     const snapshot = await getDocs(messagesRef);
@@ -320,7 +316,7 @@ export class HeaderComponent implements OnInit {
       const messageData = {
         ...(message.data() as Message),
         id: message.id,
-        channelId: result.channelId,
+        channel: result.channel,
       };
       this.activateThread(messageData);
     }

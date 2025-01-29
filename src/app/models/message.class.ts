@@ -10,8 +10,7 @@ export class Message {
     timeStamp: string;
     reactions: string[];
     messageText: string;
-    channelId!: string;
-    // channel!: Channel;  
+    channel!: Channel;  
 
     constructor(data?: messageData) {
         this.id = data?.id ?? '';
