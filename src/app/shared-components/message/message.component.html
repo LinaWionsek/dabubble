@@ -23,45 +23,48 @@
                 <div class="message-text-div">{{ message!.messageText }}</div>
                 <div class="message-div-footer">
 
-                    @if(messageAnswers && messageAnswers.length > 0){
+                    @if(messageAnswers && messageAnswers.length > 0 && answersLoaded){
                         <span class="answers-count" (click)="activateThread(message!)">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
                         <span class="last-answer-time" (click)="activateThread(message!)">Letzte Antwort {{lastAnswerTime}}</span>
                     }
         
-                    @for (reactionType of groupedReactions | keyvalue; track $index) {
-                        <div class="reaction-div" (click)="addReaction(reactionType.key)">
-                            <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
-                            <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
-
-                            <div class="reaction-bubble">
-                                <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">
-                                @for (reaction of reactionType.value; track $index) {
+                    @if(reactionsLoaded){
+                        @for (reactionType of groupedReactions | keyvalue; track $index) {
+                            <div class="reaction-div" (click)="addReaction(reactionType.key)">
+                                <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
+                                <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
+    
+                                <div class="reaction-bubble">
+                                    <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">
+                                    @for (reaction of reactionType.value; track $index) {
+                                        <span class="reaction-bubble-text">
+                                            @if(reaction.originatorId === currentUser?.id){
+                                                <span class="reaction-originator-name-span">Du</span>                            
+                                            }@else {
+                                                <span class="reaction-originator-name-span">{{ reaction.originatorName }}</span>                            
+                                            }
+                                            @if ($index === reactionType.value.length - 2) {
+                                                <span class="reaction-originator-name-span"> und </span>
+                                            }
+                                        </span>
+                                    }
+    
                                     <span class="reaction-bubble-text">
-                                        @if(reaction.originatorId === currentUser?.id){
-                                            <span class="reaction-originator-name-span">Du</span>                            
-                                        }@else {
-                                            <span class="reaction-originator-name-span">{{ reaction.originatorName }}</span>                            
-                                        }
-                                        @if ($index === reactionType.value.length - 2) {
-                                            <span class="reaction-originator-name-span"> und </span>
+                                        @if (reactionType.value.length === 1 && reactionType.value[0]!.originatorId !== currentUser?.id) {
+                                            <span>hat reagiert</span>
+                                        } @else if (reactionType?.value?.length === 1 && reaction.originatorId === currentUser?.id) {
+                                            <span>hast reagiert</span>
+                                        } @else if (reactionType.value.length > 1) {
+                                            <span>haben reagiert</span>
                                         }
                                     </span>
-                                }
-
-                                <span class="reaction-bubble-text">
-                                    @if (reactionType.value.length === 1 && reactionType.value[0]!.originatorId !== currentUser?.id) {
-                                        <span>hat reagiert</span>
-                                    } @else if (reactionType?.value?.length === 1 && reaction.originatorId === currentUser?.id) {
-                                        <span>hast reagiert</span>
-                                    } @else if (reactionType.value.length > 1) {
-                                        <span>haben reagiert</span>
-                                    }
-                                </span>
-                                
+                                    
+                                </div>
                             </div>
-                        </div>
-
+    
+                        }
                     }
+                    
 
                     <div class="add-reaction-icon-container" (click)="showMainReactionOptions()">
                         <img src="./../../../assets/img/add_reaction.png" class="add-reaction-icon">
@@ -174,41 +177,45 @@
                         </div>
                     }
                 </div>
-                @for (reactionType of groupedReactions | keyvalue; track $index) {
-                    <div class="reaction-div" (click)="addReaction(reactionType.key)">
-                        <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
-                        <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
 
-                        <div class="reaction-bubble received">
-                            <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">                          
-                            
-                            @for (reaction of reactionType.value; track $index) {
+                @if(reactionsLoaded){
+                    @for (reactionType of groupedReactions | keyvalue; track $index) {
+                        <div class="reaction-div" (click)="addReaction(reactionType.key)">
+                            <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'">
+                            <span class="reaction-count-span"> {{ reactionType.value.length }} </span>
+    
+                            <div class="reaction-bubble received">
+                                <img [src]="'/assets/img/emojis/' + reactionType.key + '.png'" class="reaction-bubble-img">                          
+                                
+                                @for (reaction of reactionType.value; track $index) {
+                                    <span class="reaction-bubble-text">
+                                        @if(reaction.originatorId === currentUser?.id){
+                                            <span class="reaction-originator-name-span">Du</span>                            
+                                        }@else {
+                                            <span class="reaction-originator-name-span">{{ reaction.originatorName }}</span>                            
+                                        }
+                                        @if ($index === reactionType.value.length - 2) {
+                                            <span class="reaction-originator-name-span"> und </span>
+                                        }
+                                    </span>
+                                }
                                 <span class="reaction-bubble-text">
-                                    @if(reaction.originatorId === currentUser?.id){
-                                        <span class="reaction-originator-name-span">Du</span>                            
-                                    }@else {
-                                        <span class="reaction-originator-name-span">{{ reaction.originatorName }}</span>                            
-                                    }
-                                    @if ($index === reactionType.value.length - 2) {
-                                        <span class="reaction-originator-name-span"> und </span>
+                                    @if (reactionType.value.length === 1 && reactionType.value[0]!.originatorId !== currentUser?.id) {
+                                        <span>hat reagiert</span>
+                                    } @else if (reactionType?.value?.length === 1 && reaction.originatorId === currentUser?.id) {
+                                        <span>hast reagiert</span>
+                                    } @else if (reactionType.value.length > 1) {
+                                        <span>haben reagiert</span>
                                     }
                                 </span>
-                            }
-                            <span class="reaction-bubble-text">
-                                @if (reactionType.value.length === 1 && reactionType.value[0]!.originatorId !== currentUser?.id) {
-                                    <span>hat reagiert</span>
-                                } @else if (reactionType?.value?.length === 1 && reaction.originatorId === currentUser?.id) {
-                                    <span>hast reagiert</span>
-                                } @else if (reactionType.value.length > 1) {
-                                    <span>haben reagiert</span>
-                                }
-                            </span>
+                            </div>
                         </div>
-                    </div>
-
+    
+                    }
                 }
                 
-                @if(messageAnswers && messageAnswers.length > 0){
+                
+                @if(messageAnswers && messageAnswers.length > 0 && answersLoaded){
                     <span class="answers-count" (click)="activateThread(message!)">{{messageAnswers.length}} @if(messageAnswers.length > 1){Antworten} @else{Antwort}</span>
                     <span class="last-answer-time" (click)="activateThread(message!)">Letzte Antwort {{lastAnswerTime}}</span>
                 }
