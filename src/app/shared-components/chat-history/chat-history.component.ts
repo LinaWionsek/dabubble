@@ -3,8 +3,8 @@ import { MessageComponent } from '../message/message.component';
 import { SeperatorComponent } from '../seperator/seperator.component';
 import { Channel } from '../../models/channel.class';
 import { Firestore, doc, collection, collectionData, CollectionReference, DocumentData, query, where } from '@angular/fire/firestore';
-import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, combineLatest, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { Message } from '../../models/message.class';
 import { User } from '../../models/user.class';
 import { AuthService } from '../../services/authentication.service';
@@ -42,6 +42,7 @@ export class ChatHistoryComponent {
   firestore: Firestore = inject(Firestore);
 
   userProfileOpened=false;
+  private unsubscribe$ = new Subject<void>();
 
 
   constructor(private authService: AuthService, private channelService: ChannelService){}
@@ -82,13 +83,12 @@ export class ChatHistoryComponent {
   }
   
 
-  loadActiveMessageAnswers(collection: CollectionReference<DocumentData>){
-    this.activeMessageAnswers$ = collectionData(collection, { idField: 'id'}) as Observable<Message[]>;
-
-    this.activeMessageAnswers$.subscribe((answers) => {
-      this.allMessageAnswers = answers;
-      this.sortMessagesIntoGroups(this.allMessageAnswers, this.groupedMessageAnswers);
-    })
+  loadActiveMessageAnswers(collection: CollectionReference<DocumentData>) {
+    (collectionData(collection, { idField: 'id' }) as Observable<Message[]>)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((answers) => {
+        this.groupedMessageAnswers = this.sortMessagesIntoGroups(answers); 
+      });
   }
 
 
@@ -109,12 +109,13 @@ export class ChatHistoryComponent {
   }
 
 
-  loadMessages(collection: CollectionReference<DocumentData>){
-    this.messages$ = collectionData(collection, { idField: 'id'}) as Observable<Message[]>;
-    this.messages$.subscribe((messages) => {
-      this.allMessages = messages;
-      this.sortMessagesIntoGroups(this.allMessages, this.groupedMessages)
-    })
+  loadMessages(collection: CollectionReference<DocumentData>) {
+    (collectionData(collection, { idField: 'id' }) as Observable<Message[]>)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((messages) => {
+        this.allMessages = messages;
+        this.groupedMessages = this.sortMessagesIntoGroups(messages);
+      });
   }
 
 
@@ -126,78 +127,40 @@ export class ChatHistoryComponent {
     const receiverMessages$ = collectionData(receiverQuery, { idField: 'id' }) as Observable<Message[]>;
   
     this.messages$ = combineLatest([senderMessages$, receiverMessages$]).pipe(
-      map(([senderMessages, receiverMessages]) => [...senderMessages, ...receiverMessages])
-    );
-  
+      takeUntil(this.unsubscribe$), 
+      map(([senderMessages, receiverMessages]) => [...senderMessages, ...receiverMessages]), 
+      map((messages) => messages.sort((a, b) => new Date(b.timeStamp).getTime() - new Date(a.timeStamp).getTime())) 
+     );
+
     this.messages$.subscribe((messages) => {
-      this.allMessages = messages;
-      this.sortMessagesIntoGroups(this.allMessages, this.groupedMessages);
+        this.allMessages = messages;
+        this.groupedMessages = this.sortMessagesIntoGroups(messages); 
     });
   }
 
-  // loadDirectMessages(collection: CollectionReference<DocumentData>){
-
-  //   const collectionQuery = query(
-  //     collection,
-  //     where('receiverId', 'in', [this.currentUser!.id, this.userData!.id]),
-  //     where('senderId', 'in', [this.currentUser!.id, this.userData!.id])
-  //   );
-
-  //   this.messages$ = collectionData(collectionQuery, { idField: 'id'}) as Observable<Message[]>;
-  //   this.messages$.subscribe((messages) => {
-  //     // this.allMessages = messages.filter((message) => (message.receiverId === this.currentUser!.id) && (message.senderId === this.currentUser!.id));
-  //     this.sortMessagesIntoGroups(this.allMessages, this.groupedMessages)
-  //   })
-  // }
-
-
-  sortMessagesIntoGroups(messagesArray: Message[], messagesObject: { [key: string]: Message[] }){
-    Object.keys(messagesObject).forEach((key) => delete messagesObject[key]);
+  
+  sortMessagesIntoGroups(messagesArray: Message[]): { [key: string]: Message[] } {
+    const groupedMessages: { [key: string]: Message[] } = {};
 
     messagesArray.forEach((message) => {
-      const date = new Date(message.timeStamp);
-      const dateKey = this.formatDate(date);
-     
-      if (!messagesObject[dateKey]) {
-        messagesObject[dateKey] = [];
-      }
-      messagesObject[dateKey].push(message);
+        const dateKey = new Date(message.timeStamp).toISOString().split('T')[0]; 
+        if (!groupedMessages[dateKey]) {
+            groupedMessages[dateKey] = [];
+        }
+        groupedMessages[dateKey].push(message);
     });
 
-    this.sortGroupedMessages(messagesObject);
+    Object.values(groupedMessages).forEach((messages) =>
+        messages.sort((a, b) => new Date(b.timeStamp).getTime() - new Date(a.timeStamp).getTime())
+    );
+
+    return groupedMessages; 
   }
-  
-
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based, pad to 2 digits
-    const day = String(date.getDate()).padStart(2, '0'); // Pad to 2 digits
-  
-    return `${year}-${month}-${day}`; // Format as YYYY-MM-DD
-  }
-
-
-  sortGroupedMessages(messagesObject: { [key: string]: Message[] }){
-    Object.keys(messagesObject).forEach((dateKey) => {
-      messagesObject[dateKey].sort((a, b) => {
-        const timeA = new Date(a.timeStamp).getTime();
-        const timeB = new Date(b.timeStamp).getTime();
-        return timeB - timeA; 
-      });
-    });
-  }
-
 
   sortedDateKeys(messagesObject: { [key: string]: Message[] }): string[] {
-    const keys = Object.keys(messagesObject);
-    const sortedKeys = keys.sort((a, b) => {
-      const dateA = new Date(a).getTime();
-      const dateB = new Date(b).getTime();
-      return dateB - dateA; // Descending order
-    });
-
-    return sortedKeys;
+    return Object.keys(messagesObject).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
   }
+
 
 
   showUserProfile(){
