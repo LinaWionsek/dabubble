@@ -16,13 +16,14 @@ import { User } from '../../../../models/user.class';
   styleUrl: './edit-channel-dialog.component.scss',
 })
 export class EditChannelDialogComponent {
+  @Input() allUsers?: User[];
   @Output() dialogClosed = new EventEmitter<void>();
 
   firestore: Firestore = inject(Firestore);
   currentUser?: User | null ;
   channelData: Channel | null = null;
   channelCopy: Channel | null = null;
-
+  creatorName: string = '';
   editingChannelName = false;
   editingChannelDescription = false;
 
@@ -30,6 +31,7 @@ export class EditChannelDialogComponent {
 
 
   ngOnInit(){
+
     this.getCurrentUser();
     this.getChannelData();
   }
@@ -38,10 +40,19 @@ export class EditChannelDialogComponent {
   getChannelData(){
     this.channelData = this.channelService.getActiveChannel();
     if(this.channelData){
+      this.getCreatorName();
       this.createChannelCopy();
     }
   }
 
+  getCreatorName(){
+    const creatorData = this.allUsers?.find((user) => user.id === this.channelData?.creator);
+    if(creatorData){
+      this.creatorName = creatorData.firstName + ' ' + creatorData.lastName;
+    } else{
+      this.creatorName = this.channelData!.creator
+    }
+  }
 
   createChannelCopy(){
     if(this.channelData){

@@ -34,7 +34,8 @@ export class AddMembersDialogComponent {
 
   ngOnInit(){
     this.subscribeToActiveChannel();
-    this.foundUsers = this.allUsers.filter((user) => user.firstName !== 'Guest');
+    const excludedNames = ['Guest', 'Welcome-Bot', 'Question-Bot'];
+    this.foundUsers = this.allUsers.filter(user => !excludedNames.includes(user.firstName));
   }
 
 
