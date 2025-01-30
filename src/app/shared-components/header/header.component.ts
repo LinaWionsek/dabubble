@@ -170,13 +170,14 @@ export class HeaderComponent implements OnInit {
   }
 
   searchUser() {
+    const excludedNames = ['Guest', 'Welcome-Bot', 'Question-Bot']; 
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
       idField: 'id',
     }) as Observable<User[]>;
 
     this.allUsers$.subscribe((changes) => {
-      this.users = changes;
+      this.users = changes.filter(user => !excludedNames.includes(user.firstName));
       this.searchedUsers = this.users.filter(
         (filterResult) =>
           filterResult.firstName
