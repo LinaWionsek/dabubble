@@ -105,12 +105,14 @@ export class MessageComponent {
   }
 
   
-
   updateSenderData() {
     const completeSenderObject = this.allUsers.find(user => user.id === this.message?.senderId);
     if (completeSenderObject) {
       this.senderData.name = `${completeSenderObject.firstName} ${completeSenderObject.lastName}`;
       this.senderData.avatar = completeSenderObject.avatar;
+    } else {
+      this.senderData.name = this.message!.senderName;
+      this.senderData.avatar = this.message!.senderAvatar;
     }
   }
 
