@@ -67,7 +67,6 @@ export class WorkspaceChannelsComponent {
     this.subscribeToChannelService();
     this.getAllChannels();
     this.checkIfUserHasWelcomeChannel();
-   
   }
 
   async getCurrentUser(){
