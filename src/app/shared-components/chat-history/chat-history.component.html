@@ -5,7 +5,7 @@
                 <div class="channel-div">
                     <span class="channel-name-span"># {{activeChannel?.name}}</span>
                 </div>
-                <span class="info-span">@if(currentUser?.firstName + ' ' + currentUser?.lastName === activeChannel?.creator){Du hast}@else { {{activeChannel?.creator}} hat } diesen Channel erstellt. Das ist der Anfang des Channels <span class="blue"># {{activeChannel?.name}}</span>. </span>
+                <span class="info-span">@if(currentUser?.id === activeChannel?.creator){Du hast}@else { {{creatorName}} hat } diesen Channel erstellt. Das ist der Anfang des Channels <span class="blue"># {{activeChannel?.name}}</span>. </span>
             </div>
         } @else {
         @for (dateKey of sortedDateKeys(groupedMessages); track $index) {
@@ -37,6 +37,7 @@
                         [usedFor]="'thread'"
                         [activeMessage]="activeMessage"
                         [messageAnswers$]="activeMessageAnswers$"
+                        
                      ></app-message>
                 }
 

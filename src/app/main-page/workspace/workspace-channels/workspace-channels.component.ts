@@ -67,7 +67,6 @@ export class WorkspaceChannelsComponent {
     this.subscribeToChannelService();
     this.getAllChannels();
     this.checkIfUserHasWelcomeChannel();
-   
   }
 
   async getCurrentUser(){
@@ -185,9 +184,7 @@ export class WorkspaceChannelsComponent {
 
 
   getAllChannelsForCurrentUser(){
-    if (!this.currentUser || !this.currentUser.id) {
-      return;
-    } else {
+    if (this.currentUser) {
       this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id)); 
     }
   }
@@ -206,7 +203,8 @@ export class WorkspaceChannelsComponent {
     this.welcomeChannel.name = "Welcome-Channel";
     this.welcomeChannel.creator = "Welcome-Bot";
     this.welcomeChannel.description = "Das ist der Welcome-Channel für neue User."
-    this.welcomeChannel.userIds.push(this.currentUser!.id);
+    this.welcomeChannel.userIds.push(this.currentUser!.id, 'welcomebot1', 'questionbot1');
+    console.log(this.welcomeChannel)
   }
 
 
@@ -214,7 +212,7 @@ export class WorkspaceChannelsComponent {
     this.welcomeMessage.timeStamp = new Date().toISOString();
     this.welcomeMessage.messageText = "Herzlich Willkommen auf DABubble! Hier kannst du dich in Echtzeit mit deinen Teammitgliedern austauschen, entweder per Direktnachricht oder über einen Channel, den du ganz einfach im Workspace-Menü auf der linken Seite erstellen kannst. :-)"
     this.welcomeMessage.senderName = "Welcome-Bot";
-    this.welcomeMessage.senderId = "WelcomeBotId1"
+    this.welcomeMessage.senderId = "welcomebot1"
     this.welcomeMessage.senderAvatar = "assets/img/bot1.png"
   }
 
@@ -223,7 +221,7 @@ export class WorkspaceChannelsComponent {
     this.welcomeAnswer.timeStamp = new Date().toISOString();
     this.welcomeAnswer.messageText = "Mit welcher Angular-Version wurde dieses Projekt gebaut?"
     this.welcomeAnswer.senderName = "Question-Bot"
-    this.welcomeAnswer.senderId = this.currentUser!.id;
+    this.welcomeAnswer.senderId = "questionbot1"
     this.welcomeAnswer.senderAvatar = "assets/img/bot2.png"
   }
 
@@ -231,14 +229,14 @@ export class WorkspaceChannelsComponent {
     this.welcomeAnswer.timeStamp = new Date().toISOString();
     this.welcomeAnswer.messageText = "Für DABubble wurde Angular 17 verwendet."
     this.welcomeAnswer.senderName = "Welcome-Bot"
-    this.welcomeAnswer.senderId = "randomID12312312312"
+    this.welcomeAnswer.senderId = "welcomebot1"
     this.welcomeAnswer.senderAvatar = "assets/img/bot1.png"
   }
 
   async addReactionToLastAnswer(){
     this.lastAnswerReaction.originatorName = "Question-Bot";
     this.lastAnswerReaction.reactionType = "tick";
-    this.lastAnswerReaction.originatorId = "randomID12312313123"
+    this.lastAnswerReaction.originatorId = "questionbot1"
    
     const lastAnswerReactions = collection(this.firestore, `channels/${this.newWelcomeChannelId}/messages/${this.newWelcomeMessageId}/answers/${this.lastWelcomeAnswerId}/reactions`);
     	

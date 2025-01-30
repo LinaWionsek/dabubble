@@ -60,7 +60,7 @@ export class AddChannelDialogComponent {
 
   async setCurrentUser(){
     this.currentUser = await this.authService.getFullUser();
-    this.channel.creator = this.currentUser!.firstName + ' ' + this.currentUser!.lastName;
+    this.channel.creator = this.currentUser!.id;
     this.channel.userIds.push(this.currentUser!.id);
   }
 
@@ -76,11 +76,14 @@ export class AddChannelDialogComponent {
 
 
   getAllUsers(){
+    const excludedNames = ['Guest', 'Welcome-Bot', 'Question-Bot'];
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, { idField: 'id'}) as Observable<User[]>;
 
     this.allUsers$.subscribe((changes) => {
-      this.users = Array.from(new Map(changes.map(user => [user.id, user])).values());
+      this.users = Array.from(new Map(changes
+        .filter(user => user.id !== this.currentUser?.id && !excludedNames.includes(user.firstName))
+        .map(user => [user.id, user])).values());
     })
   }
 

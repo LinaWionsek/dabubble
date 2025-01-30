@@ -12,6 +12,7 @@ import { ChannelService } from '../../services/channel.service';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
 
 
+
 @Component({
   selector: 'app-chat-history',
   standalone: true,
@@ -28,6 +29,8 @@ export class ChatHistoryComponent {
   channelId?: string;
   chatId?: string;
   activeChannel?: Channel | null;
+  creatorName?: string;
+  allUsers?: User[];
 
   activeMessageAnswers$!: Observable<Message[]>;
   allMessageAnswers?: Message[];
@@ -39,6 +42,7 @@ export class ChatHistoryComponent {
 
   messagesLoaded = false;
   currentUser!: User | null ;
+  users$!: Observable<User[]>;
   firestore: Firestore = inject(Firestore);
 
   userProfileOpened=false;
@@ -52,6 +56,10 @@ export class ChatHistoryComponent {
   ngOnInit(){
     this.getCurrentUser();
     this.subscribeToChannelService();
+    
+    if(this.usedFor === 'channel'){
+      this.loadAllUsers();
+    }
   }
 
 
@@ -75,6 +83,29 @@ export class ChatHistoryComponent {
     }
   }
 
+  loadAllUsers(){
+    const usersCollection = collection(this.firestore, 'users');
+    this.users$ = collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
+
+    this.users$.pipe(takeUntil(this.unsubscribe$)).subscribe(users => {
+      this.allUsers = users;
+      this.getChannelCreatorName();
+    })
+  }
+
+  getChannelCreatorName(){
+    const creatorData = this.allUsers?.find((user) => user.id === this.channelData?.creator);
+    if(creatorData){
+      this.creatorName = creatorData.firstName + ' ' + creatorData.lastName;
+    } else{
+      this.creatorName = this.channelData!.creator
+    }
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 
   setMessagesLoaded(){
     setTimeout(() => {

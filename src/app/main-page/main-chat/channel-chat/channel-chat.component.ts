@@ -62,7 +62,9 @@ export class ChannelChatComponent {
     this.allUsers$ = collectionData(userCollection, { idField: 'id', }) as Observable<User[]>;
 
     this.allUsers$.subscribe((changes) => { 
-      this.users = Array.from(new Map(changes.map((user) => [user.id, user])).values());
+      this.users = Array.from(new Map(
+        changes
+        .map((user) => [user.id, user])).values());
       this.updateActiveChannelUsers();
     });
   }
