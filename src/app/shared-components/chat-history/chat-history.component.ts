@@ -39,6 +39,7 @@ export class ChatHistoryComponent {
 
   messagesLoaded = false;
   currentUser!: User | null ;
+  users$!: Observable<User[]>;
   firestore: Firestore = inject(Firestore);
 
   userProfileOpened=false;
@@ -52,6 +53,7 @@ export class ChatHistoryComponent {
   ngOnInit(){
     this.getCurrentUser();
     this.subscribeToChannelService();
+    
   }
 
 

@@ -31,6 +31,13 @@ export class MessageComponent {
   @Input() messageAnswers$?: Observable<Message[]>;
   @Input() activeMessage?: Message | null;
 
+  allUsers: User[]= [];
+  users$!: Observable<User[]>;
+  senderData: { name: string; avatar: string } = {
+    name: "",
+    avatar: ""
+  };
+
   messageAnswers?: Message[];
   lastAnswerTime = '';
   messageClockTimer = '';
@@ -64,7 +71,7 @@ export class MessageComponent {
 
   ngOnInit(){
     this.unsubscribe$.next(); 
-
+    this.loadAllUsers();
     this.subscribeToChannelService();
     this.subscribeToThreadService();
     this.loadMessageAnswers();
@@ -74,16 +81,38 @@ export class MessageComponent {
     this.setLastTwoReactions();
   }
 
+
   ngOnChanges(changes: SimpleChanges){
     if (changes['message']) {
       this.unsubscribe$.next(); 
       this.messageAnswers = [];
       this.messageReactions = [];
+      this.updateSenderData();
       this.loadMessageAnswers(); 
       this.loadMessageReactions();
     }
   }
 
+  
+  loadAllUsers(){
+    const usersCollection = collection(this.firestore, 'users');
+    this.users$ = collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
+
+    this.users$.pipe(takeUntil(this.unsubscribe$)).subscribe(users => {
+      this.allUsers = users;
+      this.updateSenderData();
+    });
+  }
+
+  
+
+  updateSenderData() {
+    const completeSenderObject = this.allUsers.find(user => user.id === this.message?.senderId);
+    if (completeSenderObject) {
+      this.senderData.name = `${completeSenderObject.firstName} ${completeSenderObject.lastName}`;
+      this.senderData.avatar = completeSenderObject.avatar;
+    }
+  }
 
   setLastTwoReactions(){
     if(this.currentUser?.lastReactions.length === 2){
