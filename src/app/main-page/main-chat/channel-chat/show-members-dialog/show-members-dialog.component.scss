@@ -38,6 +38,8 @@
     box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.2);
     @include display-flex($fd: column, $jc: flex-start);
     padding: 40px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .dialog-header{
@@ -55,6 +57,7 @@
     @include display-flex($fd: column, $ai: flex-start);
     gap: 8px;
     margin-top: 8px;
+    
 }
 
 .member-div{
