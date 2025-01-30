@@ -101,7 +101,10 @@
             [(ngModel)]="userEditfullName"
             name="fullName"
             #userEditfullNameInput="ngModel"
+            required
             pattern="[a-zA-ZÀ-ž\s\-]+"
+            [maxLength]="30"
+            (change)="validateFullName()"
           />
           <img
             class="auth-input-icon"
@@ -111,9 +114,10 @@
           <span
             class="invalid-input"
             [class.is-invalid]="
-              userEditfullNameInput.invalid &&
-              userEditfullNameInput.touched &&
-              userEditfullNameInput.value != ''
+              (userEditfullNameInput.invalid &&
+                userEditfullNameInput.touched &&
+                userEditfullNameInput.value != '') ||
+              (!isValidName && userEditfullNameInput.value != '')
             "
           >
             Dieser Name ist leider ungültig.
@@ -139,7 +143,9 @@
             name="userEditEmail"
             #userEditEmailInput="ngModel"
             email
-            (change)="isEmailAlreadyUsed()"
+            (change)="
+              isEmailAlreadyUsed(); validateEmail(userEditEmailInput.value)
+            "
           />
           <img
             class="auth-input-icon"
@@ -152,7 +158,8 @@
               (userEditEmailInput.invalid &&
                 userEditEmailInput.touched &&
                 userEditEmailInput.value != '') ||
-              isEmailInUse
+              (isEmailInUse && userEditEmailInput.value != '') ||
+              (isValidEmail && userEditEmailInput.value != '')
             "
           >
             {{ emailErrorMessage }}
@@ -166,9 +173,17 @@
         </button>
         <button
           [disabled]="
-            (isSubmitDisabled() &&
-              (userEditfullNameInput.valid || userEditEmailInput.valid)) ||
-            isEmailInUse
+            (userEditEmailInput.value.trim() !== '' && isValidEmail) ||
+            (userEditEmailInput.value.trim() !== '' && isEmailInUse) ||
+            (userEditfullNameInput.value.trim() !== '' && !isValidName) ||
+            !(
+              (userEditEmailInput.value.trim() !== '' &&
+                userEditEmailInput.value.trim() !== user?.email) ||
+              (userEditfullNameInput.value.trim() !== '' &&
+                userEditfullNameInput.value.trim() !==
+                  user?.firstName + ' ' + user?.lastName) ||
+              selectedAvatar !== user?.avatar
+            )
           "
           type="submit"
           class="primary-button"

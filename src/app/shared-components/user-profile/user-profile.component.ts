@@ -51,6 +51,8 @@ export class UserProfileComponent {
   isPasswordInvalid: boolean = false;
   emailErrorMessage: string = 'Diese E-Mail ist leider ungültig';
   isEmailInUse: boolean = false;
+  isValidEmail: boolean = false;
+  isValidName: boolean = true;
 
   constructor(
     private authService: AuthService,
@@ -109,31 +111,16 @@ export class UserProfileComponent {
     this.isAvatarListOpen = false;
   }
 
-  isSubmitDisabled(): boolean {
-    let isNameValid = this.isValidName(this.userEditfullName);
-
-    let isEmailValid =
-      this.userEditEmail.trim() !== '' && this.userEditEmailInput?.valid;
-
-    let isNameEmpty = this.userEditfullName.trim() === '';
-    let isEmailEmpty = this.userEditEmail.trim() === '';
-
-    return (
-      (isNameValid && !isEmailEmpty && !isEmailValid) ||
-      (isEmailValid && !isNameEmpty && !isNameValid) ||
-      (!isNameValid && !isEmailValid)
-    );
+  validateEmail(email: string): void {
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    this.isValidEmail = !emailRegex.test(email);
   }
 
-  isValidName(name: string): boolean {
-    if (!name || name.trim() === '') return false;
-
-    let parts = name.trim().split(' ');
-
-    if (parts.length < 2) return false;
-
-    return parts.every((part) => /^[a-zA-ZÀ-ÖØ-öø-ÿ\-]+$/.test(part));
+  validateFullName(): void {
+    let fullNameParts = this.userEditfullName.trim().split(/\s+/);
+    this.isValidName = fullNameParts.length >= 2;
   }
+
 
   async saveEditingChanges(): Promise<void> {
     try {
