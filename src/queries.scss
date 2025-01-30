@@ -69,6 +69,7 @@
   .intro > .intro-content > .logo-container > .logo {
     @include size(100px, 100px);
   }
+
 }
 
 @media only screen and (max-width: $mobile) {
