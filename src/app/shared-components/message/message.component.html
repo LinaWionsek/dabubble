@@ -3,7 +3,7 @@
         <div class="message-div">
             <div class="message-div-header">
                 <span class="time-span">{{ formatMessageTime(message!.timeStamp) }} Uhr</span>
-                <span class="name-span">{{ message!.senderName }}</span>
+                <span class="name-span">{{ senderData.name }}</span>
             </div>
 
             @if(editingMessage){
@@ -93,7 +93,7 @@
         </div>
     
         <div class="profile-img-div">
-            <img [src]="message!.senderAvatar" class="profile-img">
+            <img [src]="senderData.avatar" class="profile-img">
         </div>
     
     
@@ -147,12 +147,12 @@
 } @else {
     <div class="received message-container" [class.active]="activatedMessage?.id === message?.id" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="received profile-img-div">
-            <img [src]="message!.senderAvatar" class="profile-img">
+            <img [src]="senderData.avatar" class="profile-img">
         </div>
     
         <div class="received message-div">
             <div class="received message-div-header">
-                <span class="name-span">{{ message!.senderName }}</span>
+                <span class="name-span">{{ senderData.name }}</span>
                 <span class="received time-span">{{ formatMessageTime(message!.timeStamp) }} Uhr</span>
             </div>
             <div class="received message-text-div">{{ message!.messageText }}</div>

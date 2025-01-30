@@ -10,7 +10,7 @@ export class WelcomeService {
 
   isUserWelcomed(userId: string): boolean {
     const welcomedUserIds = this.getWelcomedUserIds();
-    return welcomedUserIds.includes(userId); // O(n) lookup
+    return welcomedUserIds.includes(userId); 
   }
 
   addUserToWelcomed(userId: string): void {
