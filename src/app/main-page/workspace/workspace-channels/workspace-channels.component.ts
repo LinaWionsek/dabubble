@@ -204,7 +204,6 @@ export class WorkspaceChannelsComponent {
     this.welcomeChannel.creator = "Welcome-Bot";
     this.welcomeChannel.description = "Das ist der Welcome-Channel für neue User."
     this.welcomeChannel.userIds.push(this.currentUser!.id, 'welcomebot1', 'questionbot1');
-    console.log(this.welcomeChannel)
   }
 
 
