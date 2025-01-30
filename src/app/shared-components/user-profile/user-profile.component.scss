@@ -1,8 +1,7 @@
 @import "mixins", "styles";
 
-
 .user-profile {
-  @include size(500px, 600px);
+  @include size(500px);
   min-height: fit-content;
   @include display-flex($fd: column, $ai: inherit, $jc: inherit, $gap: 24px);
   @include position(absolute, $top: 112px, $rig: 16px);
@@ -18,7 +17,7 @@
   }
 }
 
-.user-profile.centralized{
+.user-profile.centralized {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -168,4 +167,47 @@
 
 .password-verification-info {
   @include font-style($font-size-20, $font-weight-700, $text-color-black);
+}
+
+@media only screen and (max-width: $mobile-large) {
+  .user-profile {
+    width: 100%;
+    left: 50%;
+    transform: translate(-50%);
+    padding: 32px 28px;
+  }
+
+  .user-info > .user-info-wrapper > .user-name {
+    font-size: $font-size-24;
+  }
+
+  .edit-user {
+    font-size: $font-size-14;
+  }
+
+  .user-online-status-wrapper {
+    > .user-online-status-dot {
+      @include size(12px, 12px);
+    }
+    > .user-online-status-text {
+      font-size: $font-size-16;
+    }
+  }
+
+  .user-email-address {
+    width: 100%;
+    > header {
+      > span {
+        font-size: $font-size-16;
+      }
+      > img {
+        @include size(24px, 24px);
+      }
+    }
+    > .user-email {
+      font-size: $font-size-16;
+      display: flex;
+      align-self: center;
+    }
+  }
 }
