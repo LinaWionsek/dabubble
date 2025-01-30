@@ -58,11 +58,15 @@ export class ChannelChatComponent {
 
 
   loadUsers(){
+    const excludedNames = ['Guest', 'Welcome-Bot', 'Question-Bot']; 
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, { idField: 'id', }) as Observable<User[]>;
 
     this.allUsers$.subscribe((changes) => { 
-      this.users = Array.from(new Map(changes.map((user) => [user.id, user])).values());
+      this.users = Array.from(new Map(
+        changes
+        .filter(user => !excludedNames.includes(user.firstName))
+        .map((user) => [user.id, user])).values());
       this.updateActiveChannelUsers();
     });
   }

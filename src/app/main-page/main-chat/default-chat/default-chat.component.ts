@@ -94,6 +94,7 @@ export class DefaultChatComponent {
   }
 
   getAllUsers() {
+    const excludedNames = ['Guest', 'Welcome-Bot', 'Question-Bot'];
     const usersCollection = collection(this.firestore, 'users');
     this.users$ = collectionData(usersCollection, {
       idField: 'id',
@@ -103,13 +104,15 @@ export class DefaultChatComponent {
       this.allUsers = Array.from(
         new Map(
           changes
-            .filter((user) => user.id !== this.currentUser?.id && user.firstName !== 'Guest')
+            .filter((user) => user.id !== this.currentUser?.id && !excludedNames.includes(user.firstName))
             .map((user) => [user.id, user])
         ).values()
       );
     });
   }
 
+
+  
   checkInputValue() {
     this.displayInvalidReceiverMsg = false;
     if (this.inputValue.startsWith('#')) {
