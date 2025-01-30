@@ -185,9 +185,7 @@ export class WorkspaceChannelsComponent {
 
 
   getAllChannelsForCurrentUser(){
-    if (!this.currentUser || !this.currentUser.id) {
-      return;
-    } else {
+    if (this.currentUser) {
       this.allUserChannels = this.allChannels.filter((channel) => channel.userIds.includes(this.currentUser!.id)); 
     }
   }

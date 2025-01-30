@@ -30,9 +30,10 @@ export class MessageComponent {
   @Input() usedFor = '';
   @Input() messageAnswers$?: Observable<Message[]>;
   @Input() activeMessage?: Message | null;
+  @Input() users$!: Observable<User[]>;
+
 
   allUsers: User[]= [];
-  users$!: Observable<User[]>;
   senderData: { name: string; avatar: string } = {
     name: "",
     avatar: ""
@@ -71,7 +72,6 @@ export class MessageComponent {
 
   ngOnInit(){
     this.unsubscribe$.next(); 
-    this.loadAllUsers();
     this.subscribeToChannelService();
     this.subscribeToThreadService();
     this.loadMessageAnswers();
@@ -91,13 +91,14 @@ export class MessageComponent {
       this.loadMessageAnswers(); 
       this.loadMessageReactions();
     }
+
+    if (changes['users$'] && this.users$) {  
+      this.subscribeToUsersObservable();
+    }
   }
 
   
-  loadAllUsers(){
-    const usersCollection = collection(this.firestore, 'users');
-    this.users$ = collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
-
+  subscribeToUsersObservable(){
     this.users$.subscribe(users => {
       this.allUsers = users;
       this.updateSenderData();
