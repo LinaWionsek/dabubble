@@ -60,7 +60,7 @@ export class AddChannelDialogComponent {
 
   async setCurrentUser(){
     this.currentUser = await this.authService.getFullUser();
-    this.channel.creator = this.currentUser!.firstName + ' ' + this.currentUser!.lastName;
+    this.channel.creator = this.currentUser!.id;
     this.channel.userIds.push(this.currentUser!.id);
   }
 
