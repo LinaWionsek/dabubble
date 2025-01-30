@@ -137,7 +137,7 @@ export class EditChannelDialogComponent {
   async leaveChannel() {
     if (this.channelData && this.channelData.userIds) {
       const updatedUserArray = this.channelData.userIds.filter(userId => userId !== this.currentUser?.id);
-      this.channelData.userIds = updatedUserArray;
+      this.channelCopy!.userIds = updatedUserArray;
       await this.updateChannel();
       this.closeDialog();
       this.channelService.clearActiveChannel();
