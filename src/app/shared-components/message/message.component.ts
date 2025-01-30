@@ -98,7 +98,7 @@ export class MessageComponent {
     const usersCollection = collection(this.firestore, 'users');
     this.users$ = collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
 
-    this.users$.pipe(takeUntil(this.unsubscribe$)).subscribe(users => {
+    this.users$.subscribe(users => {
       this.allUsers = users;
       this.updateSenderData();
     });
