@@ -53,7 +53,7 @@ export class ChatHistoryComponent {
   ngOnInit(){
     this.getCurrentUser();
     this.subscribeToChannelService();
-    
+    this.loadAllUsers();
   }
 
 
@@ -77,6 +77,10 @@ export class ChatHistoryComponent {
     }
   }
 
+  loadAllUsers(){
+    const usersCollection = collection(this.firestore, 'users');
+    this.users$ = collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
+  }
 
   setMessagesLoaded(){
     setTimeout(() => {
