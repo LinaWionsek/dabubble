@@ -44,7 +44,7 @@
           <div class="drop-down-div">
             <div class="scroll-div">
 
-              @if(searchResults.length > 0 || threadResults.length > 0|| searchedUsers.length > 0 || searchedPrivateMessages.length > 0) {
+              @if(searchResults.length > 0 || threadResults.length > 0|| searchedUsers.length > 0 || searchedPrivateMessages.length > 0 || channelResults.length > 0) {
                 @if(searchResults.length > 0){
                   <div class="section-header">Channel</div>
                   @for (result of searchResults; track $index) {
@@ -78,6 +78,18 @@
                       <b>{{privateMessage.senderName}}</b>
                       <div>
                         {{privateMessage.messageText}}
+                      </div>
+                    </div>
+                  }
+                }
+
+                @if(channelResults.length > 0){
+                  <div class="section-header">Channels</div>
+                  @for (channel of channelResults; track $index) {
+                    <div class="user-list" (click)="setActiveChannel(channel)">
+                      
+                      <div>
+                        {{ channel.name }}
                       </div>
                     </div>
                   }

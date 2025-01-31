@@ -71,6 +71,7 @@ export class HeaderComponent implements OnInit {
   receiverUser: User | null = null;
   threadMessages: Message[] = [];
   threadResults: Message[] = [];
+  channelResults: Channel[] = [];
 
   constructor(
     private router: Router,
@@ -158,11 +159,14 @@ export class HeaderComponent implements OnInit {
     this.searchUser();
     this.getAllPrivateMessages();
     this.getAllChannels();
+    this.searchChannels();
   }
 
   resetSearch() {
     this.searchResults = [];
     this.searchedUsers = [];
+    this.threadResults = [];
+    this.channelResults = [];
     this.searchedPrivateMessages = [];
     this.showDropDown = false;
     this.searching = false;
@@ -188,6 +192,10 @@ export class HeaderComponent implements OnInit {
             .includes(this.searchTerm.toLowerCase())
       );
     });
+  }
+
+  searchChannels() {
+    this.channelResults = this.allUserChannels.filter((channel) => channel.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
   }
 
   getAllPrivateMessages() {
