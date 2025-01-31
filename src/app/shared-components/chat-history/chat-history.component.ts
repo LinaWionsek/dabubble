@@ -67,6 +67,7 @@ export class ChatHistoryComponent {
     await this.getCurrentUser();
     if (this.usedFor ==='channel') {
       const channelMessagesSubcollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
+      this.getChannelCreatorName();
       this.loadMessages(channelMessagesSubcollection);
       this.setMessagesLoaded();
       this.setChannelId();
@@ -134,8 +135,9 @@ export class ChatHistoryComponent {
 
 
   subscribeToChannelService(){
-    this.channelService.activeChannel$.subscribe((channel) => {
+    this.channelService.activeChannel$.pipe(takeUntil(this.unsubscribe$)).subscribe((channel) => {
       this.activeChannel = channel;
+      this.getChannelCreatorName();
     })
   }
 
