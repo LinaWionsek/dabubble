@@ -173,14 +173,14 @@
         </button>
         <button
           [disabled]="
-            (userEditEmailInput.value.trim() !== '' && isValidEmail) ||
-            (userEditEmailInput.value.trim() !== '' && isEmailInUse) ||
-            (userEditfullNameInput.value.trim() !== '' && !isValidName) ||
+            (userEditEmailInput.value !== '' && isValidEmail) ||
+            (userEditEmailInput.value !== '' && isEmailInUse) ||
+            (userEditfullNameInput.value !== '' && !isValidName) ||
             !(
-              (userEditEmailInput.value.trim() !== '' &&
-                userEditEmailInput.value.trim() !== user?.email) ||
-              (userEditfullNameInput.value.trim() !== '' &&
-                userEditfullNameInput.value.trim() !==
+              (userEditEmailInput.value !== '' &&
+                userEditEmailInput.value !== user?.email) ||
+              (userEditfullNameInput.value !== '' &&
+                userEditfullNameInput.value !==
                   user?.firstName + ' ' + user?.lastName) ||
               selectedAvatar !== user?.avatar
             )
