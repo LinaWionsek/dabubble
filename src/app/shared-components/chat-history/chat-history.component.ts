@@ -65,7 +65,7 @@ export class ChatHistoryComponent {
 
   async ngOnChanges(changes: SimpleChanges){
     await this.getCurrentUser();
-    if (this.usedFor ==='channel') {
+    if (this.usedFor ==='channel' && this.channelData) {
       const channelMessagesSubcollection = collection(this.firestore, `channels/${this.channelData?.id}/messages`);
       this.getChannelCreatorName();
       this.loadMessages(channelMessagesSubcollection);
@@ -95,11 +95,13 @@ export class ChatHistoryComponent {
   }
 
   getChannelCreatorName(){
-    const creatorData = this.allUsers?.find((user) => user.id === this.channelData?.creator);
-    if(creatorData){
-      this.creatorName = creatorData.firstName + ' ' + creatorData.lastName;
-    } else{
-      this.creatorName = this.channelData!.creator
+    if(this.channelData && this.allUsers){
+      const creatorData = this.allUsers?.find((user) => user.id === this.channelData?.creator);
+      if(creatorData){
+        this.creatorName = creatorData.firstName + ' ' + creatorData.lastName;
+      } else{
+        this.creatorName = this.channelData!.creator
+      }
     }
   }
 
