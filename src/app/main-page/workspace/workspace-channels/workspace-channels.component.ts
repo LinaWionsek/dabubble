@@ -61,6 +61,9 @@ export class WorkspaceChannelsComponent {
   lastWelcomeAnswerId = '';
   lastAnswerReaction = new Reaction();
   
+  newExampleChannel1 = new Channel();
+  newExampleChannel2 = new Channel();
+
 
   async ngOnInit(){
     await this.getCurrentUser();
@@ -77,6 +80,7 @@ export class WorkspaceChannelsComponent {
     const userId = this.currentUser?.id;
     if(userId && !this.welcomeService.isUserWelcomed(userId)){
       await this.createNewWelcomeChannel();
+      this.createExampleChannels();
     }
   }
 
@@ -94,6 +98,21 @@ export class WorkspaceChannelsComponent {
     }
   }
 
+  createExampleChannels(){
+    this.initializeNewExampleChannel1();
+    this.initializeNewExampleChannel2();
+    this.uploadExampleChannels();
+  }
+
+  async uploadExampleChannels(){
+    const channelCol = collection(this.firestore, 'channels')
+    try {
+      await addDoc(channelCol, { ...this.newExampleChannel1 });
+      await addDoc(channelCol, { ...this.newExampleChannel2 });
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   getWelcomeChannel(){
     return this.allUserChannels.find(channel => channel.id === this.newWelcomeChannelId);
@@ -204,9 +223,21 @@ export class WorkspaceChannelsComponent {
     this.welcomeChannel.creator = "Welcome-Bot";
     this.welcomeChannel.description = "Das ist der Welcome-Channel für neue User."
     this.welcomeChannel.userIds.push(this.currentUser!.id, 'welcomebot1', 'questionbot1');
-    console.log(this.welcomeChannel)
   }
 
+  initializeNewExampleChannel1(){
+    this.newExampleChannel1.name = "Entwicklerteam";
+    this.newExampleChannel1.creator = "7chpI7OAToO5RjFBaJJUjLRFCO03";
+    this.newExampleChannel1.description = "Dies ist nur ein Beispiel-Channel.";
+    this.newExampleChannel1.userIds.push(this.currentUser!.id, '7chpI7OAToO5RjFBaJJUjLRFCO03', '3cBlASSsPhObUqz4bjq8zHXlLig1');
+  }
+
+  initializeNewExampleChannel2(){
+    this.newExampleChannel2.name = "Marketingteam";
+    this.newExampleChannel2.creator = "MPysNe0NopNPrCMWEA8jaovXcHn2";
+    this.newExampleChannel2.description = "Dies ist nur ein Beispiel-Channel.";
+    this.newExampleChannel2.userIds.push(this.currentUser!.id, 'MPysNe0NopNPrCMWEA8jaovXcHn2', 'syH6N9T8MjaujfJ5JLDIILBBQ6A2');
+  }
 
   initializeNewWelcomeMessage(){
     this.welcomeMessage.timeStamp = new Date().toISOString();
