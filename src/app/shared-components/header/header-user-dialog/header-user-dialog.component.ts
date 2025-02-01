@@ -16,6 +16,8 @@ export class HeaderUserDialogComponent {
   isUserProfileOpen: boolean = false;
   selectedUserId: string | null = null;
   @Output() userProfileOpened = new EventEmitter<string>();
+  @Output() dialogClosed = new EventEmitter<void>();
+
 
   constructor(
     private authService: AuthService,
@@ -41,5 +43,9 @@ export class HeaderUserDialogComponent {
     if (userId) {
       this.userProfileOpened.emit(userId);
     }
+  }
+
+  closeDialog(){
+    this.dialogClosed.emit();
   }
 }

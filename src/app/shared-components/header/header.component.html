@@ -125,6 +125,16 @@
           <span class="online online-status"></span>
         </div>
         <img class="drop_down_arrow" src="./../../../assets/img/drop_down_arrow.png" alt="" />
+
+        @if(isUserMenuOpen){
+          <div class="user-menu-container">
+            <app-header-user-dialog 
+              (userProfileOpened)="openUserProfile($event)"
+              (dialogClosed)="closeUserMenu()"
+          ></app-header-user-dialog>
+          </div>
+            
+        } 
       </section>
       }
     </div>
@@ -137,11 +147,7 @@
     </section>
   }
 
-  @if(isUserMenuOpen){
-    <div (click)="toggleUserMenu()" class="dialog-bg">
-      <app-header-user-dialog (userProfileOpened)="openUserProfile($event)"></app-header-user-dialog>
-    </div>
-  } 
+  
 
   @if(isUserProfileOpen){
     <div (click)="closeUserProfile()" class="dialog-bg">
