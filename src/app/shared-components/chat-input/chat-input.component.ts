@@ -13,7 +13,8 @@ import { ClickOutsideModule } from 'ng-click-outside';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { Observable } from 'rxjs';
 import { ThreadService } from '../../services/thread.service';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 
@@ -55,6 +56,7 @@ export class ChatInputComponent {
   channels$!: Observable<Channel[]>;
 
   firestore: Firestore = inject(Firestore);
+  private destroy$ = new Subject<void>();
 
 
   constructor(private authService: AuthService, private channelService: ChannelService, private receiverService: ReceiverService, private chatService: ChatService, private threadService:ThreadService){}
@@ -62,12 +64,13 @@ export class ChatInputComponent {
 
   ngAfterViewInit() {
     this.addFocusToChatInput();
+    this.loadUserChannels();
   }
 
 
-  ngOnChanges(changes: SimpleChanges){
+  async ngOnChanges(changes: SimpleChanges){
     this.checkInputUsecase();
-    this.setCurrentUser();
+    await this.setCurrentUser();
     this.subscribeToChannelService();
     this.loadUsers();
     this.loadUserChannels();
@@ -109,16 +112,22 @@ export class ChatInputComponent {
 
 
   loadUserChannels(){
-    const userChannelsCollection = collection(this.firestore, 'channels' );
+    const userChannelsCollection = collection(this.firestore, 'channels');
     this.channels$ = collectionData(userChannelsCollection, { idField: 'id'}) as Observable<Channel[]>;
     
   
-    this.channels$.subscribe((changes) => {
-      this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
-      this.getAllChannelsForCurrentUser();
-    })
+    this.channels$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((changes) => {
+        this.allChannels = Array.from(new Map(changes.map(channel => [channel.id, channel])).values());
+        this.getAllChannelsForCurrentUser();
+      });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   getAllChannelsForCurrentUser(){
     if(this.currentUser && this.currentUser.id){
@@ -209,14 +218,14 @@ export class ChatInputComponent {
   }
 
   checkInputValue(){
-    if (this.newMessage.messageText.startsWith('#')) {
+    if (this.newMessage.messageText.startsWith('#') && this.usedFor === 'default') {
+      this.setFilteredChannels();
       this.showUserSelection = false;
       this.showChannelSelection = true;
-      this.setFilteredChannels();
-    } else if (this.newMessage.messageText.startsWith('@')) {
+    } else if (this.newMessage.messageText.startsWith('@') && this.usedFor === 'default') {
+      this.setFilteredUsers();
       this.showChannelSelection = false;
       this.showUserSelection = true;
-      this.setFilteredUsers();
     } else {
       this.showChannelSelection = false;
       this.showUserSelection = false;
