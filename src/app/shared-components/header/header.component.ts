@@ -86,6 +86,8 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeToWorkspaceService();
     this.updateScreenSize();
+    this.getAllChannels();
+    this.loadUsers();
 
     this.showSearchBar = false;
     this.showUserProfile = false;
@@ -154,12 +156,19 @@ export class HeaderComponent implements OnInit {
       this.resetSearch();
       return;
     }
+
     this.showDropDown = true;
     this.searching = true;
-    this.searchUser();
-    this.getAllPrivateMessages();
-    this.getAllChannels();
-    this.searchChannels();
+    
+    if(this.searchTerm.startsWith('#')){      
+      this.searchOnlyChannels();
+    } else if(this.searchTerm.startsWith('@')){
+      this.searchOnlyUsers();
+    } else {
+      this.searchUsers();
+      this.getAllPrivateMessages();
+      this.searchChannels();
+    }
   }
 
   resetSearch() {
@@ -173,7 +182,7 @@ export class HeaderComponent implements OnInit {
     this.searchTerm = '';
   }
 
-  searchUser() {
+  loadUsers() {
     const excludedNames = ['Guest', 'Welcome-Bot', 'Question-Bot']; 
     const userCollection = collection(this.firestore, 'users');
     this.allUsers$ = collectionData(userCollection, {
@@ -182,20 +191,49 @@ export class HeaderComponent implements OnInit {
 
     this.allUsers$.subscribe((changes) => {
       this.users = changes.filter(user => !excludedNames.includes(user.firstName));
-      this.searchedUsers = this.users.filter(
-        (filterResult) =>
-          filterResult.firstName
-            .toLowerCase()
-            .includes(this.searchTerm.toLowerCase()) ||
-          filterResult.lastName
-            .toLowerCase()
-            .includes(this.searchTerm.toLowerCase())
-      );
     });
+  }
+
+
+  searchUsers(){
+    this.searchedUsers = this.users.filter(
+      (filterResult) =>
+        filterResult.firstName
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase()) ||
+        filterResult.lastName
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+    );
+  }
+
+  searchOnlyUsers(){
+    if(this.searchTerm.length > 1){
+      const trimmedInput = this.searchTerm.slice(1).toLowerCase();;
+      this.searchedUsers = this.users.filter((user) => 
+        user.firstName
+         .toLowerCase()
+          .includes(trimmedInput.toLowerCase()) ||
+         user.lastName
+          .toLowerCase()
+          .includes(trimmedInput.toLowerCase())
+      );
+    } else {
+      this.searchedUsers = [...this.users]
+    }
   }
 
   searchChannels() {
     this.channelResults = this.allUserChannels.filter((channel) => channel.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
+  }
+
+  searchOnlyChannels(){
+    if(this.searchTerm.length > 1){
+      const trimmedInput = this.searchTerm.slice(1).toLowerCase();
+      this.channelResults = this.allUserChannels.filter((channel) => channel.name.toLowerCase().includes(trimmedInput));
+    } else {
+      this.channelResults = [...this.allUserChannels];
+    }
   }
 
   getAllPrivateMessages() {
