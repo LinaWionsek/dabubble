@@ -25,6 +25,7 @@ import { ThreadService } from '../../services/thread.service';
 import { WorkspaceService } from '../../services/workspace.service';
 import { UserService } from '../../services/user.service';
 
+
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -80,7 +81,7 @@ export class HeaderComponent implements OnInit {
     private chatService: ChatService,
     private threadService: ThreadService,
     private workspaceService: WorkspaceService,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {
@@ -205,6 +206,12 @@ export class HeaderComponent implements OnInit {
           .toLowerCase()
           .includes(this.searchTerm.toLowerCase())
     );
+  }
+
+  closeUserMenu(){
+    setTimeout(()=>{
+      this.isUserMenuOpen = false;
+    }, 20);
   }
 
   searchOnlyUsers(){
