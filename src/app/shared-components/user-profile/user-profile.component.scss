@@ -95,6 +95,10 @@
     @include font-style($font-size-18, $font-weight-500, $highlight-color-cyan);
     transition: 225ms ease-in-out;
     text-decoration: none;
+    width: 95%;
+    display: inline-block;
+    word-wrap: break-word;     
+
     align-self: flex-end;
     &:hover {
       cursor: pointer;
