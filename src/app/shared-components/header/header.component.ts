@@ -228,6 +228,9 @@ export class HeaderComponent implements OnInit {
   }
 
   searchOnlyChannels(){
+    this.searchResults = [];
+    this.searchedUsers = [];
+    this.threadResults = [];
     if(this.searchTerm.length > 1){
       const trimmedInput = this.searchTerm.slice(1).toLowerCase();
       this.channelResults = this.allUserChannels.filter((channel) => channel.name.toLowerCase().includes(trimmedInput));

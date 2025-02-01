@@ -72,7 +72,7 @@
                 }
 
                 @if(searchedPrivateMessages.length > 0){
-                  <div class="section-header">Privatnachrichten</div>
+                  <div class="section-header">Direktnachrichten</div>
                   @for (privateMessage of searchedPrivateMessages; track $index) {
                     <div class="message-list" (click)="openDirectMessage(privateMessage.senderId, privateMessage.receiverId)">
                       <b>{{privateMessage.senderName}}</b>
