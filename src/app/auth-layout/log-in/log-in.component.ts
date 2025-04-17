@@ -52,6 +52,13 @@ export class LogInComponent implements OnInit {
     this.passwordVisibilityService.togglePasswordInputType();
   }
 
+  /**
+ * Handles the Enter key press event on a form field.
+ * Prevents the default browser behavior (e.g., submitting the form)
+ * and manually triggers the sign-in process instead.
+ * 
+ * @param event - The keyboard event triggered by pressing Enter
+ */
   onEnter(event: Event){
     const keyboardEvent = event as KeyboardEvent;
     event.preventDefault();
