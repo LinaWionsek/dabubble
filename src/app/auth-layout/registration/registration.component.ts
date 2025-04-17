@@ -51,6 +51,15 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
+/**
+   * Loads previously entered registration data from the service
+   * and pre-fills the form fields. This is useful in multi-step
+   * registration flows where data from earlier steps is reused,
+   * such as transitioning to or from the avatar selection step.
+   * 
+   * Even if no data exists yet, calling this method is safe,
+   * as it simply assigns empty strings as fallbacks.
+   */
   fillRegistrationForm(): void {
     const userData = this.registrationDataService.getUserData();
     if (userData) {
@@ -61,7 +70,11 @@ export class RegistrationComponent implements OnInit {
       this.password = userData.password ?? '';
     }
   }
-
+  
+ /**
+   * Listens to route changes. If the user navigates to the login page,
+   * any temporarily stored registration data is cleared.
+   */
   checkNavigation(): void {
     this.navigationSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -94,11 +107,17 @@ export class RegistrationComponent implements OnInit {
     this.router.navigate(['/avatar-selection']);
   }
 
+   /**
+   * Validates the format of the entered email address using a basic regex.
+   */
   validateEmail(email: string): void {
     let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     this.isValidEmail = !emailRegex.test(email);
   }
 
+  /**
+   * Checks whether the entered full name contains at least a first and last name.
+   */
   validateFullName(): void {
     let fullNameParts = this.fullName.trim().split(/\s+/);
     this.isValidName = fullNameParts.length >= 2;
