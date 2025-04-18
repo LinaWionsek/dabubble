@@ -20,6 +20,11 @@ export class SeperatorComponent {
   }
 
 
+ /**
+   * Converts the input date into a human-friendly label.
+   * If the date is today → "Heute", yesterday → "Gestern",
+   * otherwise shows formatted weekday and date.
+   */
   setDateInput() {
     const currentDate = new Date();
     const yesterdayDate = new Date();
@@ -37,6 +42,9 @@ export class SeperatorComponent {
   }
 
 
+    /**
+   * Parses a date string (YYYY-MM-DD) into a Date object.
+   */
   parseDate(dateString: string): Date {
     const [year, month, day] = dateString.split('-').map((part) => parseInt(part, 10));
     return new Date(year, month - 1, day); 
@@ -51,7 +59,10 @@ export class SeperatorComponent {
     );
   }
 
-
+  
+  /**
+   * Formats a date to German weekday + day + month, e.g. "Donnerstag, 17. April".
+   */
   formatDate(date: Date): string {
     const formatter = new Intl.DateTimeFormat('de-DE', {
       weekday: 'long',
