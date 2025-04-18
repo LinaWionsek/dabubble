@@ -19,46 +19,47 @@ export const routes: Routes = [
     path: '',
     component: AuthLayoutComponent,
     children: [
-      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: '', redirectTo: 'login', pathMatch: 'full' },  // Default route redirects to login
       {
         path: 'login',
         component: LogInComponent,
         canActivate: [reverseAuthGuard],
-      },
+      }, // Only accessible if NOT logged in
       {
         path: 'registration',
         component: RegistrationComponent,
         canActivate: [reverseAuthGuard],
-      },
+      }, // Only accessible if NOT logged in
       {
         path: 'avatar-selection',
         component: AvatarSelectionComponent,
         canActivate: [reverseAuthGuard],
-      },
+      }, // Next step after registration
       {
         path: 'password-reset',
         component: PasswordResetComponent,
         canActivate: [reverseAuthGuard],
-      },
+      }, // Public password reset request page
       {
         path: 'new-password',
         component: NewPasswordComponent,
-      },
+      }, // Handles setting a new password via oobCode
       {
         path: 'email-verification',
         component: EmailVerificationComponent,
-      },
+      }, // Shown after email is verified
       {
         path: 'change-email',
         component: ChangeEmailComponent,
-      },
+      }, // Finalizes email change requests
       {
         path: 'action-handler',
-        component: ActionHandlerComponent,
-      },
+        component: ActionHandlerComponent, 
+      }, // Processes Firebase email links and redirects accordingly
       { path: 'imprint', component: ImprintComponent },
       { path: 'privacy-policy', component: PrivacyPolicyComponent },
     ],
   },
-  { path: 'main', component: MainPageComponent, canActivate: [authGuard] },
+  { path: 'main', component: MainPageComponent, canActivate: [authGuard] }, 
+  // Protected main page, only for authenticated users
 ];
